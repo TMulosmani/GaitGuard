@@ -1,0 +1,22 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(python3 -c \":*)",
+      "Read(//usr/local/bin/**)",
+      "Read(//opt/homebrew/bin/**)",
+      "Bash(/opt/homebrew/bin/python3.12 -c \":*)",
+      "Bash(/opt/homebrew/bin/python3.12 -m pip install numpy scipy torch matplotlib pandas tqdm --quiet)",
+      "Bash(/opt/homebrew/bin/python3.12 -m pip install numpy scipy torch matplotlib pandas tqdm --quiet --break-system-packages)",
+      "Bash(/opt/homebrew/bin/python3.12 -m pip install numpy scipy torch matplotlib pandas tqdm --quiet --break-system-packages --ignore-requires-python)",
+      "Bash(/opt/homebrew/bin/python3.12 -m pip install numpy scipy torch matplotlib pandas tqdm)",
+      "Bash(/opt/homebrew/bin/python3.12 -m pip install --user numpy scipy torch matplotlib pandas tqdm)",
+      "Bash(.venv/bin/pip install:*)",
+      "Bash(.venv/bin/python -c \":*)",
+      "Bash(grep -rn 'from signal\\\\.' . --include=*.py)",
+      "Bash(.venv/bin/python run_pipeline.py --source synthetic --pathology mixed --n-strides 50 --no-plots)",
+      "Bash(.venv/bin/python -:*)",
+      "Bash(.venv/bin/python run_pipeline.py --source synthetic --pathology healthy --n-strides 50)",
+      "Bash(.venv/bin/python run_pipeline.py --source compwalk --condition acl)"
+    ]
+  }
+}

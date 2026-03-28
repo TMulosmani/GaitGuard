@@ -1,0 +1,56 @@
+{
+  "version": "0.1",
+  "configurations": [
+    {
+      "name": "GaitGuard — Synthetic Healthy",
+      "runtimeExecutable": ".venv/bin/python",
+      "runtimeArgs": [
+        "run_pipeline.py",
+        "--source", "synthetic",
+        "--pathology", "healthy",
+        "--n-strides", "80"
+      ],
+      "port": null
+    },
+    {
+      "name": "GaitGuard — Synthetic Mixed (Pathological)",
+      "runtimeExecutable": ".venv/bin/python",
+      "runtimeArgs": [
+        "run_pipeline.py",
+        "--source", "synthetic",
+        "--pathology", "mixed",
+        "--n-strides", "80"
+      ],
+      "port": null
+    },
+    {
+      "name": "GaitGuard — COMPWALK-ACL (synthetic fallback)",
+      "runtimeExecutable": ".venv/bin/python",
+      "runtimeArgs": [
+        "run_pipeline.py",
+        "--source", "compwalk",
+        "--condition", "acl"
+      ],
+      "port": null
+    },
+    {
+      "name": "GaitGuard — Train LSTM only",
+      "runtimeExecutable": ".venv/bin/python",
+      "runtimeArgs": [
+        "run_pipeline.py",
+        "--train-only"
+      ],
+      "port": null
+    },
+    {
+      "name": "LSTM Train (standalone)",
+      "runtimeExecutable": ".venv/bin/python",
+      "runtimeArgs": [
+        "-m", "ml.train",
+        "--n", "3000",
+        "--epochs", "60"
+      ],
+      "port": null
+    }
+  ]
+}

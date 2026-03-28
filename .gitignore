@@ -1,0 +1,24 @@
+# Python virtual environment
+gaitguard/.venv/
+.venv/
+
+# Python cache
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+
+# Session logs and output
+gaitguard/sessions/
+sessions/
+
+# Trained model weights (large binary files)
+gaitguard/models/*.pt
+models/*.pt
+
+# macOS
+.DS_Store
+
+# Jupyter
+.ipynb_checkpoints/
