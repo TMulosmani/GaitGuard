@@ -61,6 +61,31 @@ python -m ml.train --n 3000 --epochs 60
 Same training as config 4 but invoked as a **module** with CLI flags, bypassing `run_pipeline.py` entirely. Useful for tuning: you can pass `--data /path/to/csv` to train on real recorded strides instead of synthetic ones, or change `--epochs` without touching `run_pipeline.py`. This reflects the original design principle of keeping the ML component independently testable.
 
 ---
+Commands: 
+
+```
+# 1. Go to project directory    
+cd /Users/trashgimmulosmani/Cornell/comp/yhack/gaitguard
+
+# 2. Activate the Python environment (ALWAYS do this first)
+source .venv/bin/activate
+
+# 3. Generate 10,000 matched training strides → training_data/healthy_strides.npy
+python generate_training_data.py --n 10000
+
+# 4. Delete old model and retrain on the larger matched dataset
+rm -f models/lstm_twin.pt
+python -m ml.train --data training_data/healthy_strides.npy --epochs 100
+
+# 5. Run the pipeline (healthy — should score high)
+python run_pipeline.py --source synthetic --pathology healthy --n-strides 80
+
+# 6. Run the pipeline (pathological — should score lower + fire haptics)
+python run_pipeline.py --source synthetic --pathology mixed --n-strides 80
+
+# 7. Run with ACL adapter
+python run_pipeline.py --source compwalk --condition acl
+```
 
 ## Summary table
 
