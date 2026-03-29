@@ -9,6 +9,9 @@ __pycache__/
 *.pyd
 .Python
 
+# node modules
+node_modules/
+
 # Session logs and output
 gaitguard/sessions/
 sessions/
