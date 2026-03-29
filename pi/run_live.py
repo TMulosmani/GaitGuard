@@ -13,6 +13,8 @@ Usage:
 from __future__ import annotations
 
 import argparse
+import json
+import math
 import os
 import signal
 import sys
@@ -91,6 +93,19 @@ def main():
         if not calibration_sent and cmd._esp2_ip:
             cmd.send_display_update(0, "green", 1)  # STATE_CALIBRATING
             calibration_sent = True
+
+        # Write raw IMU data for dashboard
+        def _imu_dict(r):
+            angle = math.degrees(math.atan2(r.accel_x, math.sqrt(r.accel_y**2 + r.accel_z**2)))
+            return {"angle": round(angle, 1), "ax": round(r.accel_x, 3),
+                    "ay": round(r.accel_y, 3), "az": round(r.accel_z, 3),
+                    "gx": round(r.gyro_x, 2), "gy": round(r.gyro_y, 2), "gz": round(r.gyro_z, 2)}
+        try:
+            with open("/tmp/gaitguard_imu.json", "w") as _f:
+                json.dump({"thigh": _imu_dict(packet.thigh), "shin": _imu_dict(packet.shin),
+                           "foot": _imu_dict(packet.foot), "knee": 0, "ankle": 0}, _f)
+        except Exception:
+            pass
 
         result = pipeline.step(packet)
 

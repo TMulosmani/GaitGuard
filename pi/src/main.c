@@ -412,7 +412,7 @@ int main(int argc, char **argv) {
     int esp1_miss_count = 0;
     int esp2_miss_count = 0;
     int last_foot_counter = 0;
-    #define DISCONNECT_MISSES 150  /* 150 * 200ms timeout = 30 seconds */
+    #define DISCONNECT_MISSES 1500  /* generous timeout — don't flap */
 
     /* Main loop */
     while (running) {
@@ -443,6 +443,12 @@ int main(int argc, char **argv) {
             last_foot_counter = cur_foot;
         }
 
+        /* Always grab latest foot data regardless of ESP#1 state */
+        pthread_mutex_lock(&foot_lock);
+        live_foot_raw = latest_foot;
+        pthread_mutex_unlock(&foot_lock);
+        live_foot_angle = accel_to_angle(live_foot_raw.ax, live_foot_raw.az);
+
         if (n < 27) {
             /* No ESP#1 packet this cycle */
             if (esp1_known) {
@@ -461,15 +467,7 @@ int main(int argc, char **argv) {
             else if (pipeline.state == STATE_MONITORING) st = "MONITORING";
             else if (esp1_known) st = "ACTIVE";
             write_status_json(&pipeline, st);
-
-            /* Write foot IMU data even without ESP#1 */
-            if (esp2_known) {
-                pthread_mutex_lock(&foot_lock);
-                live_foot_raw = latest_foot;
-                pthread_mutex_unlock(&foot_lock);
-                live_foot_angle = accel_to_angle(live_foot_raw.ax, live_foot_raw.az);
-                write_imu_json();
-            }
+            write_imu_json();
             continue;
         }
         if (buf[0] != DEVICE_ID_THIGH_SHIN) continue;

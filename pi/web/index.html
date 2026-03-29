@@ -83,9 +83,9 @@
 
             .container {
                 width: 100%;
-                max-width: 1120px;
+                max-width: 100%;
                 margin: 0 auto;
-                padding: 16px;
+                padding: 16px 24px;
                 display: grid;
                 grid-template-columns: 1fr 340px;
                 gap: var(--md-gap);
@@ -517,35 +517,20 @@
             </header>
 
             <section class="main">
-                <div class="card score-card" aria-live="polite" aria-atomic="true">
-                    <h2>Gait Health Score</h2>
-                    <div class="score">
-                        <div>
-                            <div id="ghsNum" class="value" aria-label="Gait health score">—</div>
-                            <div style="color: var(--md-on-primary-container); opacity: 0.5; margin-top: 4px; font-size: 0.85rem; font-weight: 500">out of 100</div>
-                        </div>
-                        <div class="meta" style="align-self: center">
-                            <div class="label">Haptic</div>
-                            <div id="hapticTag" class="tag" role="status" aria-live="polite">—</div>
-                        </div>
+                <div class="card" style="display: flex; flex-direction: column; gap: 14px;">
+                    <h2>Pipeline Control</h2>
+                    <div style="display: flex; gap: 10px; align-items: center; flex-wrap: wrap;">
+                        <button class="haptic-btn" onclick="pipelineStart('record')" style="background: var(--md-good); color: #fff; border-color: var(--md-good);">
+                            Record Healthy Gait
+                        </button>
+                        <button class="haptic-btn" onclick="pipelineStart('test')" style="background: var(--md-primary); color: #fff; border-color: var(--md-primary);">
+                            Test Patient Gait
+                        </button>
+                        <button class="haptic-btn" onclick="pipelineStop()" style="background: var(--md-bad); color: #fff; border-color: var(--md-bad);">
+                            Stop
+                        </button>
                     </div>
-                </div>
-
-                <div class="card" style="display: flex; flex-direction: column; gap: 12px">
-                    <h2>GHS Over Time</h2>
-                    <div class="chart-well">
-                        <canvas id="ghsChart" style="width: 100%; height: 100%; display: block"></canvas>
-                    </div>
-                </div>
-
-                <div class="card" style="display: flex; flex-direction: column; gap: 12px">
-                    <h2>Haptic Test</h2>
-                    <div style="display: flex; gap: 8px; flex-wrap: wrap">
-                        <button class="haptic-btn" onclick="sendHaptic(1)">Two Short</button>
-                        <button class="haptic-btn" onclick="sendHaptic(2)">One Long</button>
-                        <button class="haptic-btn" onclick="sendHaptic(3)">Three Short</button>
-                    </div>
-                    <div id="hapticStatus" style="font-size: 0.82rem; color: var(--md-on-surface-variant); min-height: 1.2em;"></div>
+                    <div id="pipelineMsg" style="font-size: 0.82rem; color: var(--md-on-surface-variant); min-height: 1.2em;"></div>
                 </div>
 
                 <div id="imuCard" class="card" style="display: flex; flex-direction: column; gap: 12px; position: relative;">
@@ -580,6 +565,37 @@
                         <span>Knee: <strong id="kneeAngleLabel" style="font-size: 1.3rem;">0.0°</strong></span>
                         <span>Ankle: <strong id="ankleAngleLabel" style="font-size: 1.3rem;">0.0°</strong></span>
                     </div>
+                </div>
+
+                <div class="card score-card" aria-live="polite" aria-atomic="true">
+                    <h2>Gait Health Score</h2>
+                    <div class="score">
+                        <div>
+                            <div id="ghsNum" class="value" aria-label="Gait health score">—</div>
+                            <div style="color: var(--md-on-primary-container); opacity: 0.5; margin-top: 4px; font-size: 0.85rem; font-weight: 500">out of 100</div>
+                        </div>
+                        <div class="meta" style="align-self: center">
+                            <div class="label">Haptic</div>
+                            <div id="hapticTag" class="tag" role="status" aria-live="polite">—</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card" style="display: flex; flex-direction: column; gap: 12px">
+                    <h2>GHS Over Time</h2>
+                    <div class="chart-well">
+                        <canvas id="ghsChart" style="width: 100%; height: 100%; display: block"></canvas>
+                    </div>
+                </div>
+
+                <div class="card" style="display: flex; flex-direction: column; gap: 12px">
+                    <h2>Haptic Test</h2>
+                    <div style="display: flex; gap: 8px; flex-wrap: wrap">
+                        <button class="haptic-btn" onclick="sendHaptic(1)">Two Short</button>
+                        <button class="haptic-btn" onclick="sendHaptic(2)">One Long</button>
+                        <button class="haptic-btn" onclick="sendHaptic(3)">Three Short</button>
+                    </div>
+                    <div id="hapticStatus" style="font-size: 0.82rem; color: var(--md-on-surface-variant); min-height: 1.2em;"></div>
                 </div>
 
                 <div class="card" style="display: flex; flex-direction: column; gap: 12px">
@@ -881,7 +897,11 @@
 
             /* ---- Fullscreen + Calibrate for IMU card ---- */
             let imuFullscreen = false;
-            const imuCalibOffsets = {thigh: 0, shin: 0, foot: 0};
+            const imuCalibOffsets = {
+                thigh: {angle: 0, ax: 0, ay: 0, az: 0, gx: 0, gy: 0, gz: 0},
+                shin:  {angle: 0, ax: 0, ay: 0, az: 0, gx: 0, gy: 0, gz: 0},
+                foot:  {angle: 0, ax: 0, ay: 0, az: 0, gx: 0, gy: 0, gz: 0}
+            };
             let lastIMUData = null;
 
             function toggleIMUFullscreen() {
@@ -916,9 +936,16 @@
 
             function calibrateIMU() {
                 if (lastIMUData) {
-                    imuCalibOffsets.thigh = lastIMUData.thigh ? lastIMUData.thigh.angle : 0;
-                    imuCalibOffsets.shin = lastIMUData.shin ? lastIMUData.shin.angle : 0;
-                    imuCalibOffsets.foot = lastIMUData.foot ? lastIMUData.foot.angle : 0;
+                    for (const part of ["thigh", "shin", "foot"]) {
+                        const imu = lastIMUData[part];
+                        if (imu) {
+                            imuCalibOffsets[part] = {
+                                angle: imu.angle || 0,
+                                ax: imu.ax || 0, ay: imu.ay || 0, az: imu.az || 0,
+                                gx: imu.gx || 0, gy: imu.gy || 0, gz: imu.gz || 0
+                            };
+                        }
+                    }
                 }
                 document.getElementById("imuCalibrateBtn").textContent = "Zeroed!";
                 setTimeout(() => document.getElementById("imuCalibrateBtn").textContent = "Zero", 1500);
@@ -952,6 +979,26 @@
                 const AXIS_LEN = 55;
                 const COLORS = {x: "#ef4444", y: "#22c55e", z: "#3b82f6"};
 
+                // Low-pass filter state
+                const ALPHA = 0.5;  // smoothing factor (lower = smoother)
+                const smoothed = {
+                    thigh: {ax:0,ay:0,az:0,gx:0,gy:0,gz:0,angle:0},
+                    shin:  {ax:0,ay:0,az:0,gx:0,gy:0,gz:0,angle:0},
+                    foot:  {ax:0,ay:0,az:0,gx:0,gy:0,gz:0,angle:0}
+                };
+                let smoothInited = false;
+                function lpf(part, vals) {
+                    const s = smoothed[part];
+                    if (!smoothInited) {
+                        Object.assign(s, vals);
+                        return s;
+                    }
+                    for (const k of ["ax","ay","az","gx","gy","gz","angle"]) {
+                        s[k] = s[k] + ALPHA * (vals[k] - s[k]);
+                    }
+                    return s;
+                }
+
                 function project(x, y, z, cx, cy) {
                     // Simple isometric-ish projection with perspective
                     const scale = 200 / (200 + z);
@@ -975,11 +1022,9 @@
                     ctx.clearRect(0, 0, w, h);
                     const cx = w / 2, cy = h / 2;
 
-                    // Compute pitch and roll from accelerometer
-                    const pitch = Math.atan2(ax, Math.sqrt(ay*ay + az*az));
-                    const roll = Math.atan2(ay, Math.sqrt(ax*ax + az*az));
-                    // Use gyro Z for yaw (accumulated roughly)
-                    const yaw = (gz || 0) * 0.02 * Math.PI / 180;
+                    // Full rotation from accelerometer (atan2 gives full ±180°)
+                    const pitch = Math.atan2(ax, az);
+                    const roll = Math.atan2(ay, az);
 
                     // Base viewing angle (slight tilt so we see 3D)
                     const viewPitch = -0.4;
@@ -1058,18 +1103,25 @@
                             const c = canvas.getContext("2d");
                             const imu = d[part];
                             if (imu) {
-                                const adj = imu.angle - (imuCalibOffsets[part] || 0);
+                                const off = imuCalibOffsets[part];
+                                // Use raw accel for 3D orientation (can't zero gravity)
+                                // Only zero the angle and gyro displays
+                                const raw = {
+                                    ax: imu.ax, ay: imu.ay, az: imu.az,
+                                    gx: imu.gx - off.gx, gy: imu.gy - off.gy, gz: imu.gz - off.gz,
+                                    angle: imu.angle - off.angle
+                                };
+                                const s = lpf(part, raw);
                                 drawAxis(c, canvas.width, canvas.height,
-                                    imu.ax, imu.ay, imu.az,
-                                    imu.gx, imu.gy, imu.gz,
-                                    adj);
-                                labels[part].textContent = adj.toFixed(1) + "°";
+                                    s.ax, s.ay, s.az, s.gx, s.gy, s.gz, s.angle);
+                                labels[part].textContent = s.angle.toFixed(1) + "°";
                                 rawLabels[part].textContent =
-                                    "a(" + imu.ax.toFixed(2) + ", " + imu.ay.toFixed(2) + ", " + imu.az.toFixed(2) + ") " +
-                                    "g(" + imu.gx.toFixed(0) + ", " + imu.gy.toFixed(0) + ", " + imu.gz.toFixed(0) + ")";
+                                    "a(" + s.ax.toFixed(2) + ", " + s.ay.toFixed(2) + ", " + s.az.toFixed(2) + ") " +
+                                    "g(" + s.gx.toFixed(0) + ", " + s.gy.toFixed(0) + ", " + s.gz.toFixed(0) + ")";
                             }
                         }
 
+                        smoothInited = true;
                         labels.knee.textContent = (d.knee || 0).toFixed(1) + "°";
                         labels.ankle.textContent = (d.ankle || 0).toFixed(1) + "°";
                     } catch(e) {}
@@ -1078,6 +1130,43 @@
                 setInterval(pollIMU, 100);
                 pollIMU();
             })();
+
+            async function pipelineStart(mode) {
+                const msg = document.getElementById("pipelineMsg");
+                msg.textContent = "Starting " + mode + " mode...";
+                msg.style.color = "var(--md-on-surface-variant)";
+                try {
+                    const res = await fetch("/api/pipeline/start", {
+                        method: "POST",
+                        headers: {"Content-Type": "application/json"},
+                        body: JSON.stringify({mode: mode})
+                    });
+                    const data = await res.json();
+                    if (data.ok) {
+                        msg.textContent = "Pipeline started in " + mode + " mode (pid " + data.pid + ")";
+                        msg.style.color = "var(--md-good)";
+                    } else {
+                        msg.textContent = data.error || "Failed to start";
+                        msg.style.color = "var(--md-bad)";
+                    }
+                } catch (e) {
+                    msg.textContent = "Error: " + e.message;
+                    msg.style.color = "var(--md-bad)";
+                }
+            }
+
+            async function pipelineStop() {
+                const msg = document.getElementById("pipelineMsg");
+                msg.textContent = "Stopping pipeline...";
+                try {
+                    await fetch("/api/pipeline/stop", {method: "POST"});
+                    msg.textContent = "Pipeline stopped.";
+                    msg.style.color = "var(--md-on-surface-variant)";
+                } catch (e) {
+                    msg.textContent = "Error: " + e.message;
+                    msg.style.color = "var(--md-bad)";
+                }
+            }
 
             async function sendHaptic(pattern) {
                 const el = document.getElementById("hapticStatus");

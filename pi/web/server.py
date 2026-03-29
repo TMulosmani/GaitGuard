@@ -14,6 +14,8 @@ import os
 import sys
 import socket
 import struct
+import signal
+import subprocess
 import argparse
 from http.server import HTTPServer, SimpleHTTPRequestHandler
 from pathlib import Path
@@ -47,6 +49,12 @@ DEFAULT_IMU = {
 }
 
 
+GAITGUARD_BIN = Path(__file__).resolve().parent.parent / "gaitguard"
+
+# Track the running pipeline process
+_pipeline_proc = None
+
+
 def read_json(path, default):
     """Read a JSON file, returning default on any error."""
     try:
@@ -54,6 +62,52 @@ def read_json(path, default):
             return json.load(f)
     except (FileNotFoundError, json.JSONDecodeError, PermissionError):
         return default
+
+
+def pipeline_start(mode):
+    """Start the gaitguard binary in record or test mode."""
+    global _pipeline_proc
+    pipeline_stop()
+    # Clear stale status
+    for p in [STATUS_PATH, STRIDES_PATH, IMU_PATH]:
+        try:
+            os.remove(p)
+        except FileNotFoundError:
+            pass
+    _pipeline_proc = subprocess.Popen(
+        [str(GAITGUARD_BIN), mode],
+        cwd=str(GAITGUARD_BIN.parent),
+        stdout=open("/tmp/gaitguard.log", "w"),
+        stderr=subprocess.STDOUT,
+    )
+    return _pipeline_proc.pid
+
+
+def pipeline_stop():
+    """Stop the running pipeline."""
+    global _pipeline_proc
+    # Kill any existing gaitguard processes
+    subprocess.run(["pkill", "-f", "gaitguard"], capture_output=True)
+    if _pipeline_proc:
+        try:
+            _pipeline_proc.terminate()
+            _pipeline_proc.wait(timeout=3)
+        except Exception:
+            try:
+                _pipeline_proc.kill()
+            except Exception:
+                pass
+        _pipeline_proc = None
+
+
+def pipeline_running():
+    """Check if the pipeline is running."""
+    global _pipeline_proc
+    if _pipeline_proc and _pipeline_proc.poll() is None:
+        return True
+    # Also check if any gaitguard process exists
+    r = subprocess.run(["pgrep", "-f", "gaitguard"], capture_output=True)
+    return r.returncode == 0
 
 
 class GaitGuardHandler(SimpleHTTPRequestHandler):
@@ -78,29 +132,31 @@ class GaitGuardHandler(SimpleHTTPRequestHandler):
     # --- API routing ---
     def do_GET(self):
         if self.path == "/api/status":
-            self._json_response(read_json(STATUS_PATH, DEFAULT_STATUS))
+            status = read_json(STATUS_PATH, DEFAULT_STATUS)
+            status["pipeline_running"] = pipeline_running()
+            self._json_response(status)
         elif self.path == "/api/strides":
             self._json_response(read_json(STRIDES_PATH, DEFAULT_STRIDES))
         elif self.path == "/api/imu":
             self._json_response(read_json(IMU_PATH, DEFAULT_IMU))
         elif self.path == "/":
-            # Serve index.html explicitly
             self.path = "/index.html"
             super().do_GET()
         else:
             super().do_GET()
 
+    def _read_body(self):
+        length = int(self.headers.get("Content-Length", 0))
+        body = self.rfile.read(length) if length else b"{}"
+        try:
+            return json.loads(body)
+        except json.JSONDecodeError:
+            return {}
+
     def do_POST(self):
         if self.path == "/api/haptic":
-            length = int(self.headers.get("Content-Length", 0))
-            body = self.rfile.read(length) if length else b"{}"
-            try:
-                data = json.loads(body)
-            except json.JSONDecodeError:
-                data = {}
-            pattern = data.get("pattern", 1)  # 1=TWO_SHORT, 2=ONE_LONG, 3=THREE_SHORT
-
-            # Read ESP#1 IP from status file
+            data = self._read_body()
+            pattern = data.get("pattern", 1)
             status = read_json(STATUS_PATH, DEFAULT_STATUS)
             esp1_ip = status.get("esp1_ip", "")
             if esp1_ip and status.get("esp1_connected"):
@@ -114,6 +170,20 @@ class GaitGuardHandler(SimpleHTTPRequestHandler):
                     self._json_response({"ok": False, "error": str(e)})
             else:
                 self._json_response({"ok": False, "error": "ESP#1 not connected"})
+
+        elif self.path == "/api/pipeline/start":
+            data = self._read_body()
+            mode = data.get("mode", "record")
+            if mode not in ("record", "test"):
+                self._json_response({"ok": False, "error": "mode must be 'record' or 'test'"})
+                return
+            pid = pipeline_start(mode)
+            self._json_response({"ok": True, "mode": mode, "pid": pid})
+
+        elif self.path == "/api/pipeline/stop":
+            pipeline_stop()
+            self._json_response({"ok": True})
+
         else:
             self.send_response(404)
             self.end_headers()
