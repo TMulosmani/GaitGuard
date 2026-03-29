@@ -101,7 +101,7 @@
                 align-items: center;
                 justify-content: space-between;
                 gap: 12px;
-                padding: 12px 24px;
+                padding: 6px 24px;
                 background: rgba(237,241,246,0.75);
                 backdrop-filter: blur(12px);
                 -webkit-backdrop-filter: blur(12px);
@@ -115,37 +115,12 @@
 
             .brand {
                 display: flex;
-                gap: 12px;
                 align-items: center;
                 min-width: 0;
             }
             .brand .logo {
-                width: 44px;
-                height: 44px;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                background: var(--md-primary);
-                color: var(--md-on-primary);
-                font-weight: 700;
-                font-size: 20px;
-                border-radius: 16px;
-                transition: transform 300ms var(--md-ease), box-shadow 300ms var(--md-ease);
-            }
-            .brand .logo:hover {
-                transform: scale(1.05);
-                box-shadow: 0 4px 12px rgba(74,159,212,0.3);
-            }
-            .brand .title {
-                font-size: 1.15rem;
-                font-weight: 500;
-                line-height: 1.2;
-                color: var(--md-on-bg);
-            }
-            .brand .subtitle {
-                font-size: 0.8rem;
-                color: var(--md-on-surface-variant);
-                margin-top: 1px;
+                height: 48px;
+                object-fit: contain;
             }
 
             /* Connection badges — pill-shaped */
@@ -462,10 +437,11 @@
             /* ---- RESPONSIVE: Phone ---- */
             @media (max-width: 420px) {
                 .container { padding: 8px; gap: 12px; }
-                header.app-header { padding: 10px 14px; border-radius: 16px; }
+                header.app-header { padding: 0; border-radius: 0; background: none; backdrop-filter: none; -webkit-backdrop-filter: none; border-bottom: none; position: static; flex-direction: column; gap: 8px; }
+                .brand { position: sticky; top: 8px; z-index: 10; background: rgba(237,241,246,0.85); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border-radius: 16px; padding: 6px 14px; border: 1px solid var(--md-outline-variant); }
                 .brand .title { font-size: 1rem; }
                 .brand .subtitle { font-size: 0.75rem; }
-                .brand .logo { width: 38px; height: 38px; font-size: 17px; border-radius: 12px; }
+                .brand .logo { height: 38px; }
                 .conn { flex-direction: column; gap: 6px; }
                 .conn .badge {
                     width: 100%;
@@ -519,11 +495,7 @@
         <div class="container" role="main">
             <header class="app-header" aria-label="GaitGuard header">
                 <div class="brand">
-                    <div class="logo" aria-hidden="true">G</div>
-                    <div style="min-width: 0">
-                        <div class="title">GaitGuard</div>
-                        <div class="subtitle">Real-time Gait Monitoring</div>
-                    </div>
+                    <img class="logo" src="logo_gaitguard.png" alt="GaitGuard" />
                 </div>
 
                 <div class="conn" aria-label="Device connections">
@@ -574,6 +546,40 @@
                         <button class="haptic-btn" onclick="sendHaptic(3)">Three Short</button>
                     </div>
                     <div id="hapticStatus" style="font-size: 0.82rem; color: var(--md-on-surface-variant); min-height: 1.2em;"></div>
+                </div>
+
+                <div id="imuCard" class="card" style="display: flex; flex-direction: column; gap: 12px; position: relative;">
+                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                        <h2>IMU Orientation</h2>
+                        <div style="display: flex; gap: 8px;">
+                            <button id="imuCalibrateBtn" onclick="calibrateIMU()" style="padding: 6px 14px; border-radius: 8px; border: 1.5px solid var(--border); background: var(--card); color: var(--text); font-weight: 600; font-size: 0.78rem; cursor: pointer;">Zero</button>
+                            <button id="imuFullscreenBtn" onclick="toggleIMUFullscreen()" style="padding: 6px 14px; border-radius: 8px; border: 1.5px solid var(--border); background: var(--card); color: var(--text); font-weight: 600; font-size: 0.78rem; cursor: pointer;">Fullscreen</button>
+                        </div>
+                    </div>
+                    <div id="imuCanvasRow" style="display: flex; gap: 12px; flex-wrap: wrap; justify-content: center;">
+                        <div style="text-align: center; flex: 1; min-width: 150px;">
+                            <canvas id="imu3d_thigh" width="180" height="180" style="border-radius: 10px; background: #1a1a2e; width: 100%; aspect-ratio: 1;"></canvas>
+                            <div style="font-size: 0.95rem; margin-top: 4px; font-weight: 600;">Thigh</div>
+                            <div id="thighAngleLabel" style="font-size: 0.85rem; color: var(--muted);">0.0°</div>
+                            <div id="thighRawLabel" style="font-size: 0.72rem; color: var(--muted); font-family: monospace;"></div>
+                        </div>
+                        <div style="text-align: center; flex: 1; min-width: 150px;">
+                            <canvas id="imu3d_shin" width="180" height="180" style="border-radius: 10px; background: #1a1a2e; width: 100%; aspect-ratio: 1;"></canvas>
+                            <div style="font-size: 0.95rem; margin-top: 4px; font-weight: 600;">Shin</div>
+                            <div id="shinAngleLabel" style="font-size: 0.85rem; color: var(--muted);">0.0°</div>
+                            <div id="shinRawLabel" style="font-size: 0.72rem; color: var(--muted); font-family: monospace;"></div>
+                        </div>
+                        <div style="text-align: center; flex: 1; min-width: 150px;">
+                            <canvas id="imu3d_foot" width="180" height="180" style="border-radius: 10px; background: #1a1a2e; width: 100%; aspect-ratio: 1;"></canvas>
+                            <div style="font-size: 0.95rem; margin-top: 4px; font-weight: 600;">Foot</div>
+                            <div id="footAngleLabel" style="font-size: 0.85rem; color: var(--muted);">0.0°</div>
+                            <div id="footRawLabel" style="font-size: 0.72rem; color: var(--muted); font-family: monospace;"></div>
+                        </div>
+                    </div>
+                    <div id="imuJointRow" style="display: flex; justify-content: center; gap: 40px; font-size: 1.1rem; font-weight: 600;">
+                        <span>Knee: <strong id="kneeAngleLabel" style="font-size: 1.3rem;">0.0°</strong></span>
+                        <span>Ankle: <strong id="ankleAngleLabel" style="font-size: 1.3rem;">0.0°</strong></span>
+                    </div>
                 </div>
 
                 <div class="card" style="display: flex; flex-direction: column; gap: 12px">
@@ -871,6 +877,206 @@
                 setInterval(pollOnce, 1000);
                 pollOnce();
                 requestAnimationFrame(resizeCanvas);
+            })();
+
+            /* ---- Fullscreen + Calibrate for IMU card ---- */
+            let imuFullscreen = false;
+            const imuCalibOffsets = {thigh: 0, shin: 0, foot: 0};
+            let lastIMUData = null;
+
+            function toggleIMUFullscreen() {
+                const card = document.getElementById("imuCard");
+                imuFullscreen = !imuFullscreen;
+                if (imuFullscreen) {
+                    card.style.position = "fixed";
+                    card.style.top = "0"; card.style.left = "0";
+                    card.style.width = "100vw"; card.style.height = "100vh";
+                    card.style.zIndex = "9999";
+                    card.style.borderRadius = "0";
+                    card.style.margin = "0";
+                    card.style.overflow = "auto";
+                    document.getElementById("imuFullscreenBtn").textContent = "Exit";
+                    // Resize canvases
+                    for (const c of document.querySelectorAll("#imuCanvasRow canvas")) {
+                        c.width = 300; c.height = 300;
+                    }
+                    document.getElementById("imuJointRow").style.fontSize = "1.6rem";
+                } else {
+                    card.style.position = ""; card.style.top = ""; card.style.left = "";
+                    card.style.width = ""; card.style.height = "";
+                    card.style.zIndex = ""; card.style.borderRadius = "";
+                    card.style.margin = ""; card.style.overflow = "";
+                    document.getElementById("imuFullscreenBtn").textContent = "Fullscreen";
+                    for (const c of document.querySelectorAll("#imuCanvasRow canvas")) {
+                        c.width = 180; c.height = 180;
+                    }
+                    document.getElementById("imuJointRow").style.fontSize = "1.1rem";
+                }
+            }
+
+            function calibrateIMU() {
+                if (lastIMUData) {
+                    imuCalibOffsets.thigh = lastIMUData.thigh ? lastIMUData.thigh.angle : 0;
+                    imuCalibOffsets.shin = lastIMUData.shin ? lastIMUData.shin.angle : 0;
+                    imuCalibOffsets.foot = lastIMUData.foot ? lastIMUData.foot.angle : 0;
+                }
+                document.getElementById("imuCalibrateBtn").textContent = "Zeroed!";
+                setTimeout(() => document.getElementById("imuCalibrateBtn").textContent = "Zero", 1500);
+            }
+
+            // ESC to exit fullscreen
+            document.addEventListener("keydown", function(e) {
+                if (e.key === "Escape" && imuFullscreen) toggleIMUFullscreen();
+            });
+
+            /* ---- 3D IMU Orientation Rendering ---- */
+            (function() {
+                const canvases = {
+                    thigh: document.getElementById("imu3d_thigh"),
+                    shin: document.getElementById("imu3d_shin"),
+                    foot: document.getElementById("imu3d_foot"),
+                };
+                const labels = {
+                    thigh: document.getElementById("thighAngleLabel"),
+                    shin: document.getElementById("shinAngleLabel"),
+                    foot: document.getElementById("footAngleLabel"),
+                    knee: document.getElementById("kneeAngleLabel"),
+                    ankle: document.getElementById("ankleAngleLabel"),
+                };
+                const rawLabels = {
+                    thigh: document.getElementById("thighRawLabel"),
+                    shin: document.getElementById("shinRawLabel"),
+                    foot: document.getElementById("footRawLabel"),
+                };
+
+                const AXIS_LEN = 55;
+                const COLORS = {x: "#ef4444", y: "#22c55e", z: "#3b82f6"};
+
+                function project(x, y, z, cx, cy) {
+                    // Simple isometric-ish projection with perspective
+                    const scale = 200 / (200 + z);
+                    return {x: cx + x * scale, y: cy - y * scale};
+                }
+
+                function rotateX(p, a) {
+                    const c = Math.cos(a), s = Math.sin(a);
+                    return {x: p.x, y: p.y * c - p.z * s, z: p.y * s + p.z * c};
+                }
+                function rotateY(p, a) {
+                    const c = Math.cos(a), s = Math.sin(a);
+                    return {x: p.x * c + p.z * s, y: p.y, z: -p.x * s + p.z * c};
+                }
+                function rotateZ(p, a) {
+                    const c = Math.cos(a), s = Math.sin(a);
+                    return {x: p.x * c - p.y * s, y: p.x * s + p.y * c, z: p.z};
+                }
+
+                function drawAxis(ctx, w, h, ax, ay, az, gx, gy, gz, angle) {
+                    ctx.clearRect(0, 0, w, h);
+                    const cx = w / 2, cy = h / 2;
+
+                    // Compute pitch and roll from accelerometer
+                    const pitch = Math.atan2(ax, Math.sqrt(ay*ay + az*az));
+                    const roll = Math.atan2(ay, Math.sqrt(ax*ax + az*az));
+                    // Use gyro Z for yaw (accumulated roughly)
+                    const yaw = (gz || 0) * 0.02 * Math.PI / 180;
+
+                    // Base viewing angle (slight tilt so we see 3D)
+                    const viewPitch = -0.4;
+                    const viewYaw = 0.6;
+
+                    const axes = [
+                        {dir: {x: AXIS_LEN, y: 0, z: 0}, color: COLORS.x, label: "X"},
+                        {dir: {x: 0, y: AXIS_LEN, z: 0}, color: COLORS.y, label: "Y"},
+                        {dir: {x: 0, y: 0, z: AXIS_LEN}, color: COLORS.z, label: "Z"},
+                    ];
+
+                    // Draw faded grid circle
+                    ctx.strokeStyle = "rgba(255,255,255,0.08)";
+                    ctx.lineWidth = 1;
+                    ctx.beginPath();
+                    ctx.arc(cx, cy, AXIS_LEN * 0.85, 0, Math.PI * 2);
+                    ctx.stroke();
+
+                    // Draw each axis
+                    for (const a of axes) {
+                        let p = {x: a.dir.x, y: a.dir.y, z: a.dir.z};
+
+                        // Apply sensor rotation
+                        p = rotateX(p, pitch);
+                        p = rotateZ(p, roll);
+
+                        // Apply view rotation
+                        p = rotateX(p, viewPitch);
+                        p = rotateY(p, viewYaw);
+
+                        const end = project(p.x, p.y, p.z, cx, cy);
+                        const origin = project(0, 0, 0, cx, cy);
+
+                        // Draw line
+                        ctx.strokeStyle = a.color;
+                        ctx.lineWidth = 2.5;
+                        ctx.beginPath();
+                        ctx.moveTo(origin.x, origin.y);
+                        ctx.lineTo(end.x, end.y);
+                        ctx.stroke();
+
+                        // Draw arrowhead
+                        ctx.fillStyle = a.color;
+                        ctx.beginPath();
+                        ctx.arc(end.x, end.y, 4, 0, Math.PI * 2);
+                        ctx.fill();
+
+                        // Label
+                        ctx.fillStyle = a.color;
+                        ctx.font = "bold 11px sans-serif";
+                        ctx.fillText(a.label, end.x + 6, end.y - 6);
+                    }
+
+                    // Draw origin dot
+                    ctx.fillStyle = "rgba(255,255,255,0.5)";
+                    ctx.beginPath();
+                    const o = project(0, 0, 0, cx, cy);
+                    ctx.arc(o.x, o.y, 3, 0, Math.PI * 2);
+                    ctx.fill();
+
+                    // Draw angle text
+                    ctx.fillStyle = "rgba(255,255,255,0.6)";
+                    ctx.font = "12px sans-serif";
+                    ctx.fillText(angle.toFixed(1) + "°", 8, h - 8);
+                }
+
+                async function pollIMU() {
+                    try {
+                        const res = await fetch("/api/imu");
+                        if (!res.ok) return;
+                        const d = await res.json();
+                        lastIMUData = d;
+
+                        for (const part of ["thigh", "shin", "foot"]) {
+                            const canvas = canvases[part];
+                            const c = canvas.getContext("2d");
+                            const imu = d[part];
+                            if (imu) {
+                                const adj = imu.angle - (imuCalibOffsets[part] || 0);
+                                drawAxis(c, canvas.width, canvas.height,
+                                    imu.ax, imu.ay, imu.az,
+                                    imu.gx, imu.gy, imu.gz,
+                                    adj);
+                                labels[part].textContent = adj.toFixed(1) + "°";
+                                rawLabels[part].textContent =
+                                    "a(" + imu.ax.toFixed(2) + ", " + imu.ay.toFixed(2) + ", " + imu.az.toFixed(2) + ") " +
+                                    "g(" + imu.gx.toFixed(0) + ", " + imu.gy.toFixed(0) + ", " + imu.gz.toFixed(0) + ")";
+                            }
+                        }
+
+                        labels.knee.textContent = (d.knee || 0).toFixed(1) + "°";
+                        labels.ankle.textContent = (d.ankle || 0).toFixed(1) + "°";
+                    } catch(e) {}
+                }
+
+                setInterval(pollIMU, 100);
+                pollIMU();
             })();
 
             async function sendHaptic(pattern) {

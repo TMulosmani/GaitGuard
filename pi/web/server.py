@@ -20,6 +20,7 @@ from pathlib import Path
 
 STATUS_PATH = "/tmp/gaitguard_status.json"
 STRIDES_PATH = "/tmp/gaitguard_strides.json"
+IMU_PATH = "/tmp/gaitguard_imu.json"
 WEB_DIR = Path(__file__).resolve().parent
 
 DEFAULT_STATUS = {
@@ -38,6 +39,12 @@ DEFAULT_STATUS = {
 }
 
 DEFAULT_STRIDES = {"strides": []}
+DEFAULT_IMU = {
+    "thigh": {"angle": 0, "ax": 0, "ay": 0, "az": 1, "gx": 0, "gy": 0, "gz": 0},
+    "shin":  {"angle": 0, "ax": 0, "ay": 0, "az": 1, "gx": 0, "gy": 0, "gz": 0},
+    "foot":  {"angle": 0, "ax": 0, "ay": 0, "az": 1, "gx": 0, "gy": 0, "gz": 0},
+    "knee": 0, "ankle": 0
+}
 
 
 def read_json(path, default):
@@ -74,6 +81,8 @@ class GaitGuardHandler(SimpleHTTPRequestHandler):
             self._json_response(read_json(STATUS_PATH, DEFAULT_STATUS))
         elif self.path == "/api/strides":
             self._json_response(read_json(STRIDES_PATH, DEFAULT_STRIDES))
+        elif self.path == "/api/imu":
+            self._json_response(read_json(IMU_PATH, DEFAULT_IMU))
         elif self.path == "/":
             # Serve index.html explicitly
             self.path = "/index.html"

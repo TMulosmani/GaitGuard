@@ -63,11 +63,39 @@ static volatile int foot_pkt_counter = 0;
 /* ------------------------------------------------------------------ */
 #define STATUS_PATH  "/tmp/gaitguard_status.json"
 #define STRIDES_PATH "/tmp/gaitguard_strides.json"
+#define IMU_PATH     "/tmp/gaitguard_imu.json"
 
 #define MAX_STRIDE_HISTORY 200
 
 static StrideResult stride_history[MAX_STRIDE_HISTORY];
 static int stride_history_count = 0;
+
+/* Live IMU data for 3D visualization */
+static float live_thigh_angle = 0, live_shin_angle = 0, live_foot_angle = 0;
+static float live_knee_angle = 0, live_ankle_angle = 0;
+static IMURaw live_thigh_raw, live_shin_raw, live_foot_raw;
+
+static void write_imu_json(void) {
+    FILE *f = fopen(IMU_PATH, "w");
+    if (!f) return;
+    fprintf(f,
+        "{\n"
+        "  \"thigh\":{\"angle\":%.2f,\"ax\":%.3f,\"ay\":%.3f,\"az\":%.3f,\"gx\":%.1f,\"gy\":%.1f,\"gz\":%.1f},\n"
+        "  \"shin\":{\"angle\":%.2f,\"ax\":%.3f,\"ay\":%.3f,\"az\":%.3f,\"gx\":%.1f,\"gy\":%.1f,\"gz\":%.1f},\n"
+        "  \"foot\":{\"angle\":%.2f,\"ax\":%.3f,\"ay\":%.3f,\"az\":%.3f,\"gx\":%.1f,\"gy\":%.1f,\"gz\":%.1f},\n"
+        "  \"knee\":%.2f,\n"
+        "  \"ankle\":%.2f\n"
+        "}\n",
+        live_thigh_angle, live_thigh_raw.ax, live_thigh_raw.ay, live_thigh_raw.az,
+        live_thigh_raw.gx, live_thigh_raw.gy, live_thigh_raw.gz,
+        live_shin_angle, live_shin_raw.ax, live_shin_raw.ay, live_shin_raw.az,
+        live_shin_raw.gx, live_shin_raw.gy, live_shin_raw.gz,
+        live_foot_angle, live_foot_raw.ax, live_foot_raw.ay, live_foot_raw.az,
+        live_foot_raw.gx, live_foot_raw.gy, live_foot_raw.gz,
+        live_knee_angle, live_ankle_angle
+    );
+    fclose(f);
+}
 
 static void write_status_json(const Pipeline *p, const char *state_str) {
     FILE *f = fopen(STATUS_PATH, "w");
@@ -384,7 +412,7 @@ int main(int argc, char **argv) {
     int esp1_miss_count = 0;
     int esp2_miss_count = 0;
     int last_foot_counter = 0;
-    #define DISCONNECT_MISSES 50  /* 50 * 200ms timeout = 10 seconds */
+    #define DISCONNECT_MISSES 150  /* 150 * 200ms timeout = 30 seconds */
 
     /* Main loop */
     while (running) {
@@ -433,6 +461,15 @@ int main(int argc, char **argv) {
             else if (pipeline.state == STATE_MONITORING) st = "MONITORING";
             else if (esp1_known) st = "ACTIVE";
             write_status_json(&pipeline, st);
+
+            /* Write foot IMU data even without ESP#1 */
+            if (esp2_known) {
+                pthread_mutex_lock(&foot_lock);
+                live_foot_raw = latest_foot;
+                pthread_mutex_unlock(&foot_lock);
+                live_foot_angle = accel_to_angle(live_foot_raw.ax, live_foot_raw.az);
+                write_imu_json();
+            }
             continue;
         }
         if (buf[0] != DEVICE_ID_THIGH_SHIN) continue;
@@ -455,6 +492,25 @@ int main(int argc, char **argv) {
         pthread_mutex_lock(&foot_lock);
         pkt.foot = latest_foot;
         pthread_mutex_unlock(&foot_lock);
+
+        /* Store raw IMU data for 3D visualization */
+        live_thigh_raw = pkt.thigh;
+        live_shin_raw = pkt.shin;
+        live_foot_raw = pkt.foot;
+        live_thigh_angle = pipeline.angles.cf_thigh.angle;
+        live_shin_angle = pipeline.angles.cf_shin.angle;
+        live_foot_angle = pipeline.angles.cf_foot.angle;
+
+        /* Write IMU JSON at ~10Hz (every 5th packet at 50Hz) */
+        status_counter++;
+        if (status_counter % 5 == 0) {
+            if (pipeline.state != STATE_CALIBRATION) {
+                AngleComputer *ac = &pipeline.angles;
+                live_knee_angle = (ac->cf_thigh.angle - ac->cf_shin.angle) - ac->baseline_knee;
+                live_ankle_angle = (ac->cf_shin.angle - ac->cf_foot.angle) - ac->baseline_ankle;
+            }
+            write_imu_json();
+        }
 
         if (!calibration_display_sent && esp2_known) {
             send_display(0, 0, 1);

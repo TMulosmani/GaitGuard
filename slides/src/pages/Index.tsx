@@ -6,7 +6,7 @@ import PaperBackground from '@/components/PaperBackground';
 import { LinesPatternCard, LinesPatternCardBody } from '@/components/ui/card-with-lines-pattern';
 import { LanguageSwitcher } from '@/components/LanguageSwitcher';
 import { useLanguage } from '@/contexts/LanguageContext';
-const gaitguardLogo = '/logo_gaitguard2.svg';
+const gaitguardLogo = '/logo_gaitguard_trimmed.png';
 
 const problemCards = [
   {
