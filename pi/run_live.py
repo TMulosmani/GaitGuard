@@ -103,7 +103,7 @@ def main():
         try:
             with open("/tmp/gaitguard_imu.json", "w") as _f:
                 json.dump({"thigh": _imu_dict(packet.thigh), "shin": _imu_dict(packet.shin),
-                           "foot": _imu_dict(packet.foot), "knee": 0, "ankle": 0}, _f)
+                           "foot": _imu_dict(packet.foot), "knee": 0, "ankle": 0, "live": True}, _f)
         except Exception:
             pass
 

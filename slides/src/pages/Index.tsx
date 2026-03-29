@@ -487,37 +487,42 @@ const MAIN_NAV_ITEMS = [
   { label: 'Problem', id: 'problem' },
   { label: 'GaitGuard', id: 'how-it-works' },
   { label: 'Demo', id: 'demo' },
-  { label: 'Output', id: 'pdf-output' },
   { label: 'Market', id: 'market-size' },
   { label: 'Competition', id: 'competition' },
   { label: 'Conclusion', id: 'conclusion' },
 ];
 
 const APPENDIX_NAV_ITEMS = [
-  { label: 'Five Forces', id: 'five-forces' },
   { label: 'Summary', id: 'summary' },
   { label: 'Business', id: 'business-model' },
   { label: 'Timeline', id: 'timeline' },
-  { label: 'EVA', id: 'eva' },
   { label: 'Calibration', id: 'clinical' },
   { label: 'Architecture', id: 'solution' },
   { label: 'Outputs', id: 'dashboard' },
   { label: 'Feedback Loop', id: 'muscle' },
 ];
 
-const SECTION_IDS = [...MAIN_NAV_ITEMS.map((item) => item.id), ...APPENDIX_NAV_ITEMS.map((item) => item.id)];
-
 const Index = () => {
   const { t } = useLanguage();
   const [activeSection, setActiveSection] = useState('home');
   const [appendixOpen, setAppendixOpen] = useState(false);
+  const [lastMainSection, setLastMainSection] = useState('home');
+  const [lastAppendixSection, setLastAppendixSection] = useState('summary');
   const scrollContainerRef = useRef<HTMLDivElement>(null);
 
+  const visibleNavItems = appendixOpen ? APPENDIX_NAV_ITEMS : MAIN_NAV_ITEMS;
+  const sectionIds = appendixOpen
+    ? [...MAIN_NAV_ITEMS.map((i) => i.id), ...APPENDIX_NAV_ITEMS.map((i) => i.id)]
+    : MAIN_NAV_ITEMS.map((i) => i.id);
+
+  const mainSectionIds = new Set(MAIN_NAV_ITEMS.map((i) => i.id));
+  const appendixSectionIds = new Set(APPENDIX_NAV_ITEMS.map((i) => i.id));
+
   const teamMembers = [
-    { name: 'Arsh Singh', role: 'Computer Science', initials: 'A', image: '/arsh.jpeg' },
-    { name: 'Paul Trusov', role: 'Computer Science, Cornell University', initials: 'P', image: '/paultrusov.jpeg' },
-    { name: 'Sam Rosen', role: 'Mechanical Engineering, University of New Haven', initials: 'S', image: '/samrosen.jpeg' },
-    { name: 'Jimmy Mulosmani', role: 'Computer Science', initials: 'J', image: '/Jimmy_Headshot.jpeg' },
+    { name: 'Arsh Singh', role: 'Computer Science', initials: 'A', image: '/arsh.jpeg', university: 'Cornell University' },
+    { name: 'Paul Trusov', role: 'Computer Science', initials: 'P', image: '/paultrusov.jpeg', university: 'Cornell University' },
+    { name: 'Sam Rosen', role: 'Mechanical Engineering', initials: 'S', image: '/samrosen.jpeg', university: 'University of New Haven' },
+    { name: 'Jimmy Mulosmani', role: 'Computer Science', initials: 'J', image: '/Jimmy_Headshot.jpeg', university: 'Cornell University' },
   ];
 
   useEffect(() => {
@@ -529,12 +534,14 @@ const Index = () => {
       const viewportH = container.clientHeight;
       const scrollMid = scrollTop + viewportH / 2;
 
-      for (const sectionId of SECTION_IDS) {
+      for (const sectionId of sectionIds) {
         const el = document.getElementById(sectionId);
         if (el) {
           const top = el.offsetTop;
           if (scrollMid >= top && scrollMid < top + el.offsetHeight) {
             setActiveSection(sectionId);
+            if (mainSectionIds.has(sectionId)) setLastMainSection(sectionId);
+            if (appendixSectionIds.has(sectionId)) setLastAppendixSection(sectionId);
             break;
           }
         }
@@ -544,7 +551,7 @@ const Index = () => {
     container.addEventListener('scroll', handleScroll, { passive: true });
     handleScroll();
     return () => container.removeEventListener('scroll', handleScroll);
-  }, []);
+  }, [appendixOpen, sectionIds]);
 
   const scrollToSection = (sectionId: string) => {
     const element = document.getElementById(sectionId);
@@ -558,70 +565,55 @@ const Index = () => {
       <PaperBackground />
 
       <div className="fixed top-8 left-1/2 z-50 -translate-x-1/2">
-        <PillBase activeSection={activeSection} navItems={MAIN_NAV_ITEMS} onSectionClick={scrollToSection} />
+        <PillBase
+          activeSection={activeSection}
+          navItems={visibleNavItems}
+          onSectionClick={scrollToSection}
+          leadingElement={
+            appendixOpen ? (
+              <button
+                type="button"
+                onClick={() => {
+                  setAppendixOpen(false);
+                  setTimeout(() => scrollToSection(lastMainSection), 50);
+                }}
+                className="relative flex-shrink-0 mr-1 flex items-center justify-center w-8 h-8 rounded-full transition-colors duration-200"
+                title="Back to main"
+                style={{ background: 'rgba(255,255,255,0.08)' }}
+                onMouseEnter={(e) => { e.currentTarget.style.background = 'rgba(255,255,255,0.15)' }}
+                onMouseLeave={(e) => { e.currentTarget.style.background = 'rgba(255,255,255,0.08)' }}
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="#9eadbb" strokeWidth={2}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
+                </svg>
+              </button>
+            ) : undefined
+          }
+          trailingElement={
+            !appendixOpen ? (
+              <button
+                type="button"
+                onClick={() => {
+                  setAppendixOpen(true);
+                  setTimeout(() => scrollToSection(lastAppendixSection), 50);
+                }}
+                className="relative flex-shrink-0 ml-1 flex items-center justify-center w-8 h-8 rounded-full transition-colors duration-200"
+                title="Show appendix"
+                style={{ background: 'rgba(255,255,255,0.08)' }}
+                onMouseEnter={(e) => { e.currentTarget.style.background = 'rgba(255,255,255,0.15)' }}
+                onMouseLeave={(e) => { e.currentTarget.style.background = 'rgba(255,255,255,0.08)' }}
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="#9eadbb" strokeWidth={2}>
+                  <circle cx="12" cy="12" r="10" strokeWidth={1.5} />
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M12 8v8M8 12h8" />
+                </svg>
+              </button>
+            ) : undefined
+          }
+        />
       </div>
 
-      <div className="fixed bottom-6 right-6 z-[70]">
-        {appendixOpen ? (
-          <LinesPatternCard className="w-52 rounded-2xl border border-primary/35 bg-card/95 shadow-[0_28px_80px_rgba(0,0,0,0.38)] backdrop-blur-md">
-            <LinesPatternCardBody className="p-3">
-              <div className="flex items-center justify-between">
-                <p className="text-xs font-semibold tracking-[0.18em] uppercase text-primary">Appendix</p>
-                <button
-                  type="button"
-                  onClick={() => setAppendixOpen(false)}
-                  className="text-muted-foreground hover:text-foreground transition text-lg leading-none"
-                >
-                  ×
-                </button>
-              </div>
-              <div className="mt-2 flex flex-col gap-1.5">
-                {APPENDIX_NAV_ITEMS.map((item) => {
-                  const isActive = activeSection === item.id;
-                  return (
-                    <button
-                      key={item.id}
-                      type="button"
-                      onClick={() => scrollToSection(item.id)}
-                      className={`rounded-md px-2 py-1 text-left text-sm transition ${
-                        isActive
-                          ? 'bg-primary/25 text-primary'
-                          : 'text-muted-foreground hover:bg-primary/15 hover:text-foreground'
-                      }`}
-                    >
-                      {item.label}
-                    </button>
-                  );
-                })}
-              </div>
-            </LinesPatternCardBody>
-          </LinesPatternCard>
-        ) : (
-          <button
-            type="button"
-            onClick={() => setAppendixOpen(true)}
-            className="flex h-10 w-10 items-center justify-center rounded-full border border-primary/35 bg-card/95 text-primary shadow-[0_12px_30px_rgba(0,0,0,0.3)] backdrop-blur-md transition hover:bg-primary/15 hover:scale-105"
-            title="Appendix"
-          >
-            <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-              <path strokeLinecap="round" strokeLinejoin="round" d="M4 6h16M4 12h16M4 18h16" />
-            </svg>
-          </button>
-        )}
-      </div>
 
-      {activeSection === 'conclusion' && (
-        <div className="fixed bottom-6 left-6 z-[70] flex flex-col items-center gap-2">
-          <div className="rounded-2xl bg-white p-3 shadow-lg">
-            <img
-              src="https://api.qrserver.com/v1/create-qr-code/?size=160x160&data=https://github.com/TMulosmani/GaitGuard&bgcolor=ffffff&color=000000"
-              alt="GitHub QR Code"
-              className="h-36 w-36"
-            />
-          </div>
-          <p className="text-sm text-muted-foreground font-semibold">GitHub</p>
-        </div>
-      )}
 
       <div ref={scrollContainerRef} className="snap-y snap-mandatory h-screen overflow-y-scroll scrollbar-hide relative">
         <Section id="home" className="bg-transparent" contentClassName="max-w-7xl py-16 lg:py-20">
@@ -675,7 +667,7 @@ const Index = () => {
                           <p className="text-xl leading-tight text-foreground font-semibold">{member.name}</p>
                           <p className="mt-3 w-full text-[0.95rem] leading-tight text-muted-foreground">{member.role}</p>
                           <p className="mt-2 text-sm font-bold tracking-wide text-foreground">
-                            Cornell University
+                            {member.university}
                           </p>
                         </div>
                       </div>
@@ -853,25 +845,6 @@ const Index = () => {
           </div>
         </Section>
 
-        <Section id="pdf-output" className="bg-transparent" contentClassName="max-w-6xl py-10">
-          <div className="space-y-6">
-            <div className="text-center">
-              <h1 className="text-4xl md:text-6xl font-bold text-foreground">
-                <span className="text-primary">GaitGuard</span> Session Report
-              </h1>
-              <p className="mt-3 text-lg md:text-xl text-muted-foreground">
-                Auto-generated per-session PDF with Gait Health Score trend, observed vs. digital twin overlay, deviation heatmap, and haptic trigger log.
-              </p>
-            </div>
-            <div className="rounded-2xl overflow-hidden border border-primary/30 bg-white shadow-[0_30px_90px_rgba(0,0,0,0.4)]" style={{ height: '70vh' }}>
-              <iframe
-                src="/dispatch-output.pdf"
-                className="w-full h-full"
-                title="GaitGuard Session Report"
-              />
-            </div>
-          </div>
-        </Section>
 
         <Section id="market-size" className="bg-transparent">
           <div className="space-y-8">
@@ -1054,7 +1027,7 @@ const Index = () => {
                           <p className="text-xl leading-tight text-foreground font-semibold">{member.name}</p>
                           <p className="mt-3 w-full text-[0.95rem] leading-tight text-muted-foreground">{member.role}</p>
                           <p className="mt-2 text-sm font-bold tracking-wide text-foreground">
-                            Cornell University
+                            {member.university}
                           </p>
                         </div>
                       </div>
@@ -1078,61 +1051,7 @@ const Index = () => {
           </div>
         </Section>
 
-        <Section id="five-forces" className="bg-transparent" contentClassName="max-w-7xl py-6">
-          <div className="space-y-4">
-            <div className="text-center space-y-1">
-              <h1 className="text-4xl md:text-6xl font-bold text-foreground">Porter's Five Forces</h1>
-              <p className="max-w-5xl mx-auto text-lg md:text-xl text-muted-foreground">
-                Market dynamics shaping the wearable gait rehabilitation space.
-              </p>
-            </div>
-
-            <div className="grid gap-4 lg:grid-cols-2">
-              {forceCards.filter((card) => !card.fullWidth).map((card) => (
-                <LinesPatternCard key={card.title} className="rounded-[1.5rem] shadow-xl border-white/10">
-                  <LinesPatternCardBody className="p-5">
-                    <div className="flex items-start justify-between gap-3">
-                      <h3 className="text-xl md:text-2xl font-bold text-foreground">{card.title}</h3>
-                      <span className={`rounded-full px-4 py-1 text-sm md:text-base font-semibold ${card.levelClassName}`}>
-                        {card.level}
-                      </span>
-                    </div>
-                    <div className="mt-4 h-3 rounded-full bg-white/12">
-                      <div className={`h-3 rounded-full ${card.barClassName} ${card.widthClassName}`} />
-                    </div>
-                    <p className="mt-4 text-lg leading-relaxed text-muted-foreground">{card.text}</p>
-                  </LinesPatternCardBody>
-                </LinesPatternCard>
-              ))}
-            </div>
-
-            {forceCards.filter((card) => card.fullWidth).map((card) => (
-              <LinesPatternCard key={card.title} className="rounded-[1.5rem] shadow-2xl border-white/10">
-                <LinesPatternCardBody className="p-5">
-                  <div className="flex items-start justify-between gap-3">
-                    <h3 className="text-2xl md:text-3xl font-bold text-foreground">{card.title}</h3>
-                    <span className={`rounded-full px-4 py-1 text-sm md:text-base font-semibold ${card.levelClassName}`}>
-                      {card.level}
-                    </span>
-                  </div>
-                  <div className="mt-4 h-3 rounded-full bg-white/12">
-                    <div className={`h-3 rounded-full ${card.barClassName} ${card.widthClassName}`} />
-                  </div>
-                  <p className="mt-4 text-xl leading-relaxed text-muted-foreground">
-                    {card.text}
-                  </p>
-                  <div className="mt-5 flex flex-wrap gap-3">
-                    <span className="rounded-full bg-[#1d3658] px-4 py-2 text-base font-semibold text-[#83b3ff]">Snyk: $25-$40/dev/mo</span>
-                    <span className="rounded-full bg-[#1d3658] px-4 py-2 text-base font-semibold text-[#83b3ff]">Semgrep: freemium OSS</span>
-                    <span className="rounded-full bg-[#1d3658] px-4 py-2 text-base font-semibold text-[#83b3ff]">GitHub Adv. Security: bundled</span>
-                  </div>
-                </LinesPatternCardBody>
-              </LinesPatternCard>
-            ))}
-          </div>
-        </Section>
-
-        <Section id="summary" className="bg-transparent" contentClassName="max-w-6xl py-12">
+        {appendixOpen && <><Section id="summary" className="bg-transparent" contentClassName="max-w-6xl py-12">
           <div className="space-y-6">
             <div className="text-center space-y-3">
               <h1 className="text-5xl md:text-6xl font-bold text-foreground">Why GaitGuard Stands Out</h1>
@@ -1338,107 +1257,6 @@ const Index = () => {
           </div>
         </Section>
 
-        <Section id="eva" className="bg-transparent" contentClassName="max-w-7xl py-6">
-          <div className="space-y-5">
-            <div className="text-center space-y-2">
-              <p className="text-sm font-semibold tracking-[0.24em] uppercase text-primary">EVA — Economic Value Added</p>
-              <h1 className="text-4xl md:text-5xl font-bold text-foreground">Unit Economics per Clinic Customer</h1>
-            </div>
-
-            <div className="grid gap-4 md:grid-cols-4">
-              <div className="rounded-xl border border-primary/25 bg-card/90 p-4 text-center">
-                <p className="text-sm text-muted-foreground">Avg. Revenue / Clinic (blended)</p>
-                <p className="text-3xl md:text-4xl font-black text-primary mt-1">$2,400</p>
-                <p className="text-xs text-muted-foreground mt-1">/year — weighted Clinic/Pro mix</p>
-              </div>
-              <div className="rounded-xl border border-[#e4b24d]/25 bg-card/90 p-4 text-center">
-                <p className="text-sm text-muted-foreground">Est. Gross Margin (SaaS)</p>
-                <p className="text-3xl md:text-4xl font-black text-[#e4b24d] mt-1">78%</p>
-                <p className="text-xs text-muted-foreground mt-1">ML inference + cloud infra deducted</p>
-              </div>
-              <div className="rounded-xl border border-[#7fb0ff]/25 bg-card/90 p-4 text-center">
-                <p className="text-sm text-muted-foreground">CAC (direct clinic outreach)</p>
-                <p className="text-3xl md:text-4xl font-black text-[#7fb0ff] mt-1">$1,800</p>
-                <p className="text-xs text-muted-foreground mt-1">6–12 month sales cycle, inbound-assisted</p>
-              </div>
-              <div className="rounded-xl border border-foreground/15 bg-card/90 p-4 text-center">
-                <p className="text-sm text-muted-foreground">Target LTV:CAC</p>
-                <p className="text-3xl md:text-4xl font-black text-foreground mt-1">4×</p>
-                <p className="text-xs text-muted-foreground mt-1">B2B healthtech benchmark: {'>'}3×</p>
-              </div>
-            </div>
-
-            <div className="grid gap-4 lg:grid-cols-2">
-              <LinesPatternCard className="rounded-[1.5rem] shadow-xl border-white/10">
-                <LinesPatternCardBody className="p-5">
-                  <h3 className="text-xl font-bold text-foreground mb-4">EVA per Clinic (3-year horizon)</h3>
-                  <div className="space-y-3">
-                    <div className="flex justify-between items-center border-b border-border/40 pb-2">
-                      <span className="text-muted-foreground">Annual SaaS revenue (blended)</span>
-                      <span className="font-semibold text-foreground">$2,400</span>
-                    </div>
-                    <div className="flex justify-between items-center border-b border-border/40 pb-2">
-                      <span className="text-muted-foreground">Gross profit (78%)</span>
-                      <span className="font-semibold text-foreground">$1,872</span>
-                    </div>
-                    <div className="flex justify-between items-center border-b border-border/40 pb-2">
-                      <span className="text-muted-foreground">3-year LTV (10% annual churn)</span>
-                      <span className="font-semibold text-foreground">$5,040</span>
-                    </div>
-                    <div className="flex justify-between items-center border-b border-border/40 pb-2">
-                      <span className="text-muted-foreground">CAC (direct outreach)</span>
-                      <span className="font-semibold text-destructive">-$1,800</span>
-                    </div>
-                    <div className="flex justify-between items-center border-b border-border/40 pb-2">
-                      <span className="text-muted-foreground">Hardware margin per kit</span>
-                      <span className="font-semibold text-primary">+$150</span>
-                    </div>
-                    <div className="flex justify-between items-center pt-1">
-                      <span className="font-bold text-foreground">Net EVA / Clinic (3yr)</span>
-                      <span className="font-black text-xl text-primary">$3,240</span>
-                    </div>
-                  </div>
-                </LinesPatternCardBody>
-              </LinesPatternCard>
-
-              <LinesPatternCard className="rounded-[1.5rem] shadow-xl border-white/10">
-                <LinesPatternCardBody className="p-5">
-                  <h3 className="text-xl font-bold text-foreground mb-4">Value created vs. traditional gait lab</h3>
-                  <div className="space-y-3">
-                    <div className="flex justify-between items-center border-b border-border/40 pb-2">
-                      <span className="text-muted-foreground">Vicon system (one-time)</span>
-                      <span className="font-semibold text-destructive">$12,500+</span>
-                    </div>
-                    <div className="flex justify-between items-center border-b border-border/40 pb-2">
-                      <span className="text-muted-foreground">GaitGuard Pro (annual)</span>
-                      <span className="font-semibold text-foreground">$3,588</span>
-                    </div>
-                    <div className="flex justify-between items-center border-b border-border/40 pb-2">
-                      <span className="text-muted-foreground">Clinical sessions replaced (2×/mo × $350)</span>
-                      <span className="font-semibold text-primary">$8,400/yr/patient</span>
-                    </div>
-                    <div className="flex justify-between items-center border-b border-border/40 pb-2">
-                      <span className="text-muted-foreground">ACL re-reconstruction cost avoided</span>
-                      <span className="font-semibold text-primary">~$30–50K/event</span>
-                    </div>
-                    <div className="flex justify-between items-center pt-1">
-                      <span className="font-bold text-foreground">Customer ROI multiplier</span>
-                      <span className="font-black text-xl text-primary">~10–15×</span>
-                    </div>
-                  </div>
-                </LinesPatternCardBody>
-              </LinesPatternCard>
-            </div>
-
-            <LinesPatternCard className="max-w-6xl mx-auto rounded-2xl shadow-xl border-[#e4b24d]/25">
-              <LinesPatternCardBody className="p-5">
-                <p className="text-foreground leading-relaxed">
-                  <span className="font-bold text-[#e4b24d]">Key risk to EVA:</span> B2B clinic sales cycles are 6–12 months, making early CAC recovery slow. Partnering with orthopedic surgery groups and PT schools as distribution channels can compress CAC and accelerate adoption beyond cold outreach.
-                </p>
-              </LinesPatternCardBody>
-            </LinesPatternCard>
-          </div>
-        </Section>
 
         <Section id="clinical" className="bg-transparent">
           <div className="space-y-8">
@@ -1610,7 +1428,7 @@ const Index = () => {
               </LinesPatternCardBody>
             </LinesPatternCard>
           </div>
-        </Section>
+        </Section></>}
       </div>
 
     </div>

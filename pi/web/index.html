@@ -1,1198 +1,1252 @@
 <!doctype html>
 <html lang="en">
-    <head>
-        <meta charset="utf-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1" />
-        <title>GaitGuard Dashboard</title>
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-        <link
-            href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap"
-            rel="stylesheet"
-        />
-        <style>
-            *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-            html, body { height: 100%; }
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>GaitGuard Dashboard</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet" />
+    <style>
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+        html, body { height: 100%; }
 
-            /* Material You — Blue seed #4A9FD4 */
-            :root {
-                --md-bg: #FAFCFF;
-                --md-on-bg: #1A1C1E;
-                --md-surface: #FAFCFF;
-                --md-surface-container: #EDF1F6;
-                --md-surface-container-low: #E1E7ED;
-                --md-surface-container-high: #E7ECF2;
-                --md-primary: #4A9FD4;
-                --md-primary-dark: #3A7FAA;
-                --md-on-primary: #FFFFFF;
-                --md-primary-container: #D0E8F8;
-                --md-on-primary-container: #0A1E2D;
-                --md-secondary-container: #D6E4EE;
-                --md-on-secondary-container: #1A2A34;
-                --md-tertiary: #7D5260;
-                --md-outline: #72787E;
-                --md-outline-variant: #C2C7CE;
-                --md-on-surface-variant: #42484E;
-                --md-good: #2E7D5B;
-                --md-warn: #8B6914;
-                --md-bad: #BA1A1A;
-                --md-good-container: #B8F0D3;
-                --md-warn-container: #FFDEA6;
-                --md-bad-container: #FFDAD6;
-                --md-gap: 16px;
-                --md-ease: cubic-bezier(0.2, 0, 0, 1);
-            }
+        :root {
+            --md-bg: #fafcff; --md-on-bg: #1a1c1e;
+            --md-surface: #fafcff; --md-surface-container: #edf1f6;
+            --md-surface-container-low: #e1e7ed; --md-surface-container-high: #e7ecf2;
+            --md-primary: #4a9fd4; --md-primary-dark: #3a7faa; --md-on-primary: #fff;
+            --md-primary-container: #d0e8f8; --md-on-primary-container: #0a1e2d;
+            --md-secondary-container: #d6e4ee; --md-on-secondary-container: #1a2a34;
+            --md-outline: #72787e; --md-outline-variant: #c2c7ce;
+            --md-on-surface-variant: #42484e;
+            --md-good: #2e7d5b; --md-warn: #8b6914; --md-bad: #ba1a1a;
+            --md-good-container: #b8f0d3; --md-warn-container: #ffdea6; --md-bad-container: #ffdad6;
+            --md-gap: 16px; --md-ease: cubic-bezier(0.2, 0, 0, 1);
+        }
 
-            body {
-                font-family: "Roboto", system-ui, -apple-system, sans-serif;
-                background: var(--md-bg);
-                color: var(--md-on-bg);
-                line-height: 1.5;
-                min-height: 100vh;
-                display: flex;
-                flex-direction: column;
-                -webkit-font-smoothing: antialiased;
-                position: relative;
-                overflow-x: hidden;
-            }
+        body {
+            font-family: "Roboto", system-ui, sans-serif;
+            background: var(--md-bg); color: var(--md-on-bg);
+            line-height: 1.5; min-height: 100vh;
+            display: flex; flex-direction: column;
+            -webkit-font-smoothing: antialiased;
+            overflow-x: hidden;
+        }
+        body::before, body::after {
+            content: ""; position: fixed; border-radius: 50%; z-index: 0; pointer-events: none;
+        }
+        body::before {
+            width: 500px; height: 500px; top: -100px; right: -150px; filter: blur(60px);
+            background: radial-gradient(circle, rgba(74,159,212,0.1) 0%, transparent 70%);
+        }
+        body::after {
+            width: 400px; height: 400px; bottom: -80px; left: -120px; filter: blur(60px);
+            background: radial-gradient(circle, rgba(125,82,96,0.08) 0%, transparent 70%);
+        }
 
-            /* Organic blur shapes (Material You signature) */
-            body::before, body::after {
-                content: "";
-                position: fixed;
-                border-radius: 50%;
-                z-index: 0;
-                pointer-events: none;
-            }
-            body::before {
-                width: 500px;
-                height: 500px;
-                background: radial-gradient(circle, rgba(74,159,212,0.10) 0%, transparent 70%);
-                top: -100px;
-                right: -150px;
-                filter: blur(60px);
-            }
-            body::after {
-                width: 400px;
-                height: 400px;
-                background: radial-gradient(circle, rgba(125,82,96,0.08) 0%, transparent 70%);
-                bottom: -80px;
-                left: -120px;
-                filter: blur(60px);
-            }
+        .container {
+            width: 100%; max-width: 100%; margin: 0 auto; padding: 16px 24px;
+            display: flex; flex-direction: column; gap: var(--md-gap);
+            position: relative; z-index: 1;
+        }
 
-            .container {
-                width: 100%;
-                max-width: 100%;
-                margin: 0 auto;
-                padding: 16px 24px;
-                display: grid;
-                grid-template-columns: 1fr 340px;
-                gap: var(--md-gap);
-                align-items: start;
-                position: relative;
-                z-index: 1;
-            }
+        header.app-header {
+            display: flex; align-items: center; justify-content: space-between; gap: 12px;
+            padding: 6px 24px; background: rgba(237,241,246,0.75);
+            backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+            border-bottom: 1px solid var(--md-outline-variant); border-radius: 28px;
+            position: sticky; top: 8px; z-index: 10;
+        }
+        .brand { display: flex; align-items: center; }
+        .brand .logo { height: 48px; object-fit: contain; }
+        .conn { display: flex; gap: 8px; align-items: center; }
+        .conn .badge {
+            display: flex; align-items: center; gap: 8px; padding: 8px 16px;
+            background: var(--md-secondary-container); border: none; border-radius: 9999px;
+            font-size: 0.85rem; font-weight: 500; color: var(--md-on-secondary-container);
+        }
+        .conn .dot {
+            width: 10px; height: 10px; border-radius: 50%; background: var(--md-outline); flex-shrink: 0;
+        }
+        .conn .dot.connected { background: var(--md-good); box-shadow: 0 0 0 3px rgba(46,125,91,0.2); }
+        .conn .dot.disconnected { background: var(--md-bad); box-shadow: 0 0 0 3px rgba(186,26,26,0.15); }
 
-            /* ---- HEADER ---- */
+        /* Tabs */
+        .tabs {
+            display: flex; gap: 4px; padding: 4px; background: var(--md-surface-container);
+            border-radius: 16px; width: fit-content;
+        }
+        .tab-btn {
+            padding: 10px 24px; border: none; border-radius: 12px; font-family: inherit;
+            font-size: 0.9rem; font-weight: 500; cursor: pointer; background: transparent;
+            color: var(--md-on-surface-variant); transition: all 200ms var(--md-ease);
+        }
+        .tab-btn.active {
+            background: var(--md-primary); color: var(--md-on-primary);
+            box-shadow: 0 2px 8px rgba(74,159,212,0.3);
+        }
+        .tab-content { display: none; }
+        .tab-content.active { display: block; }
+
+        /* Cards */
+        .card {
+            background: var(--md-surface-container); border: none; border-radius: 24px;
+            padding: 24px; box-shadow: 0 1px 3px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.04);
+            transition: all 300ms var(--md-ease);
+        }
+        .card h2 {
+            font-size: 0.75rem; font-weight: 500; letter-spacing: 0.5px;
+            color: var(--md-on-surface-variant); text-transform: uppercase; margin-bottom: 14px;
+        }
+
+        /* Setup grid */
+        .setup-grid {
+            display: grid; grid-template-columns: 1fr 1fr; gap: var(--md-gap);
+        }
+        .setup-grid .leg-card { grid-row: 1 / 3; }
+
+        /* Axis bars */
+        .axis-bars { display: flex; flex-direction: column; gap: 6px; }
+        .axis-bar-row {
+            display: flex; align-items: center; gap: 8px; font-size: 0.82rem; font-family: monospace;
+        }
+        .axis-bar-label { width: 24px; font-weight: 600; text-align: right; flex-shrink: 0; }
+        .axis-bar-track {
+            flex: 1; height: 18px; background: rgba(0,0,0,0.06); border-radius: 4px;
+            position: relative; overflow: hidden;
+        }
+        .axis-bar-fill {
+            position: absolute; top: 0; height: 100%; border-radius: 4px;
+            transition: width 100ms, left 100ms;
+        }
+        .axis-bar-val { width: 60px; text-align: right; font-size: 0.78rem; color: var(--md-on-surface-variant); }
+
+        .sensor-section { margin-bottom: 16px; }
+        .sensor-section h3 {
+            font-size: 0.82rem; font-weight: 600; margin-bottom: 8px;
+            color: var(--md-primary-dark); text-transform: uppercase; letter-spacing: 0.5px;
+        }
+
+        /* Config dropdowns */
+        .config-row {
+            display: flex; align-items: center; gap: 10px; margin-bottom: 8px; font-size: 0.85rem;
+        }
+        .config-row label { width: 90px; font-weight: 500; color: var(--md-on-surface-variant); flex-shrink: 0; }
+        .config-row select {
+            flex: 1; padding: 6px 10px; border-radius: 8px;
+            border: 1.5px solid var(--md-outline-variant); background: var(--md-surface);
+            font-family: inherit; font-size: 0.85rem; color: var(--md-on-bg);
+        }
+
+        /* Pill buttons */
+        .pill-btn {
+            padding: 10px 20px; background: var(--md-primary); color: var(--md-on-primary);
+            border: none; border-radius: 9999px; font-family: inherit;
+            font-size: 0.88rem; font-weight: 500; cursor: pointer;
+            transition: all 200ms var(--md-ease); box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+        .pill-btn:hover { box-shadow: 0 4px 12px rgba(74,159,212,0.25); }
+        .pill-btn:active { transform: scale(0.96); }
+        .pill-btn.secondary { background: var(--md-surface-container-high); color: var(--md-on-bg); }
+        .pill-btn.danger { background: var(--md-bad); }
+        .pill-btn.success { background: var(--md-good); }
+
+        /* 3D Leg canvas */
+        .leg-canvas-wrap {
+            width: 100%; display: flex; justify-content: center; align-items: center;
+            background: #0f172a; border-radius: 16px; overflow: hidden; position: relative;
+        }
+        .leg-canvas-wrap canvas { display: block; }
+        .leg-angle-readout {
+            position: absolute; bottom: 16px; left: 50%; transform: translateX(-50%);
+            display: flex; gap: 32px; background: rgba(0,0,0,0.5); backdrop-filter: blur(8px);
+            border-radius: 12px; padding: 10px 24px;
+        }
+        .leg-angle-readout .joint {
+            text-align: center; color: rgba(255,255,255,0.9); font-size: 0.85rem;
+        }
+        .leg-angle-readout .joint .val { font-size: 1.4rem; font-weight: 700; }
+
+        /* Monitor section */
+        .monitor-grid { display: grid; grid-template-columns: 1fr 340px; gap: var(--md-gap); }
+        .monitor-main { display: flex; flex-direction: column; gap: var(--md-gap); }
+        .monitor-side { display: flex; flex-direction: column; gap: var(--md-gap); }
+
+        .score-card {
+            background: var(--md-primary-container); border-radius: 32px; padding: 28px;
+            box-shadow: 0 2px 6px rgba(74,159,212,0.12);
+        }
+        .score-card h2 { color: var(--md-on-primary-container); opacity: 0.7; }
+        .score { display: flex; gap: 16px; align-items: center; justify-content: space-between; }
+        .score .value {
+            font-size: 4rem; font-weight: 700; line-height: 1; letter-spacing: -0.02em;
+            color: var(--md-on-primary-container);
+        }
+        .score .meta { text-align: right; }
+        .score .meta .label { font-size: 0.82rem; font-weight: 500; color: var(--md-on-primary-container); opacity: 0.6; }
+        .score .meta .tag {
+            display: inline-block; margin-top: 8px; padding: 6px 16px; font-size: 0.8rem;
+            font-weight: 500; color: var(--md-on-primary-container);
+            background: rgba(255,255,255,0.45); border: none; border-radius: 9999px;
+        }
+
+        .chart-well {
+            width: 100%; height: 220px; background: var(--md-surface-container-high);
+            border-radius: 16px; overflow: hidden; box-shadow: inset 0 2px 4px rgba(0,0,0,0.04);
+        }
+
+        .state-row { display: flex; justify-content: space-between; align-items: center; padding: 8px 0; font-size: 0.92rem; }
+        .state-row .label { color: var(--md-on-surface-variant); }
+        .state-row .value {
+            font-weight: 500; padding: 6px 16px; background: var(--md-surface-container-high);
+            border: none; border-radius: 9999px; font-size: 0.88rem;
+        }
+        .progress { margin-top: 12px; }
+        .progress .bar { background: var(--md-surface-container-low); height: 8px; border-radius: 9999px; overflow: hidden; }
+        .progress .fill { height: 100%; background: var(--md-primary); border-radius: 9999px; transition: width 300ms; }
+        .progress .pmeta { display: flex; justify-content: space-between; font-size: 0.82rem; font-weight: 500; color: var(--md-on-surface-variant); margin-bottom: 6px; }
+
+        .stride-list { max-height: 320px; overflow: auto; }
+        .stride-list::-webkit-scrollbar { width: 4px; }
+        .stride-list::-webkit-scrollbar-thumb { background: var(--md-outline-variant); border-radius: 9999px; }
+        .stride {
+            display: flex; gap: 12px; align-items: center; padding: 12px 14px; margin-bottom: 6px;
+            background: var(--md-surface-container-high); border-radius: 16px; font-size: 0.9rem;
+        }
+        .stride .num { color: var(--md-on-surface-variant); min-width: 48px; text-align: right; font-size: 0.82rem; }
+        .stride .color-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
+        .stride .ghs { font-weight: 500; min-width: 54px; text-align: right; }
+        .stride .meta { color: var(--md-on-surface-variant); font-size: 0.78rem; margin-left: auto; text-align: right; }
+
+        .haptic-btn {
+            flex: 1; padding: 12px 20px; background: var(--md-surface-container); border: none;
+            border-radius: 9999px; color: var(--md-primary-dark); font-family: inherit;
+            font-size: 0.88rem; font-weight: 500; cursor: pointer; box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+        }
+        .haptic-btn:hover { background: rgba(74,159,212,0.12); }
+        .haptic-btn:active { transform: scale(0.95); }
+
+        footer.app-footer {
+            margin: 20px 0 12px; text-align: center; font-size: 0.8rem;
+            color: var(--md-on-surface-variant);
+        }
+
+        /* Fullscreen leg */
+        .leg-fullscreen .leg-canvas-wrap {
+            position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+            z-index: 9999; border-radius: 0;
+        }
+
+        .cam-btn {
+            padding: 5px 10px; border: none; border-radius: 6px; font-family: inherit;
+            font-size: 0.72rem; font-weight: 500; cursor: pointer;
+            background: rgba(255,255,255,0.1); color: rgba(255,255,255,0.7);
+            backdrop-filter: blur(4px); transition: all 150ms;
+        }
+        .cam-btn:hover { background: rgba(255,255,255,0.2); color: #fff; }
+        .cam-btn.active { background: rgba(74,159,212,0.4); color: #fff; }
+
+        @media (max-width: 900px) {
+            .setup-grid { grid-template-columns: 1fr; }
+            .setup-grid .leg-card { grid-row: auto; }
+            .monitor-grid { grid-template-columns: 1fr; }
+            .monitor-side { order: -1; }
+        }
+        @media (max-width: 600px) {
+            .container { padding: 8px; gap: 10px; }
             header.app-header {
-                grid-column: 1 / -1;
-                display: flex;
-                align-items: center;
-                justify-content: space-between;
-                gap: 12px;
-                padding: 6px 24px;
-                background: rgba(237,241,246,0.75);
-                backdrop-filter: blur(12px);
-                -webkit-backdrop-filter: blur(12px);
-                border-bottom: 1px solid var(--md-outline-variant);
-                border-radius: 28px;
-                position: sticky;
-                top: 8px;
-                z-index: 10;
-                transition: box-shadow 300ms var(--md-ease);
+                flex-direction: column; padding: 10px 14px; border-radius: 18px;
+                gap: 8px; position: relative; top: 0;
             }
+            .brand .logo { height: 36px; }
+            .conn { flex-direction: column; gap: 6px; width: 100%; }
+            .conn .badge { width: 100%; justify-content: center; padding: 6px 12px; font-size: 0.8rem; }
+            .tabs { width: 100%; }
+            .tab-btn { flex: 1; text-align: center; padding: 8px 12px; font-size: 0.85rem; }
+            .card { padding: 16px; border-radius: 18px; }
+            .card h2 { font-size: 0.7rem; margin-bottom: 10px; }
+            .score-card { padding: 18px; border-radius: 22px; }
+            .score { flex-direction: column; align-items: flex-start; gap: 10px; }
+            .score .value { font-size: 2.6rem; }
+            .score .meta { text-align: left; }
+            .chart-well { height: 160px; }
+            .pill-btn { padding: 8px 14px; font-size: 0.82rem; }
+            .haptic-btn { padding: 10px 14px; font-size: 0.82rem; }
+            /* Leg canvas — fit to screen width */
+            .leg-canvas-wrap canvas { width: 100% !important; height: auto !important; max-height: 350px; }
+            .leg-angle-readout { display: none; }
+            /* Pipeline control — stack vertically */
+            #activitySelect { width: 100%; }
+            /* Axis discovery bars */
+            .sensor-section h3 { font-size: 0.75rem; }
+            .axis-bar-row { font-size: 0.75rem; }
+            .axis-bar-val { width: 50px; font-size: 0.7rem; }
+            /* Config dropdowns */
+            .config-row { flex-direction: column; gap: 4px; }
+            .config-row label { width: auto; }
+            /* Stride list */
+            .stride { padding: 10px; gap: 8px; border-radius: 12px; }
+            .stride .num { min-width: 36px; font-size: 0.78rem; }
+            .stride .meta { display: none; }
+            /* State rows */
+            .state-row { font-size: 0.85rem; }
+            .state-row .value { padding: 5px 12px; font-size: 0.82rem; }
+            footer.app-footer { font-size: 0.72rem; margin: 12px 0 8px; }
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <header class="app-header">
+        <div class="brand">
+            <img class="logo" src="logo_gaitguard.png" alt="GaitGuard" />
+        </div>
+        <div class="conn">
+            <div class="badge">
+                <div id="esp1Dot" class="dot disconnected"></div>
+                <div><span id="esp1Label">ESP #1 (Thigh/Shin)</span> <span id="esp1Ip" style="color:var(--md-on-surface-variant);font-size:0.78rem"></span></div>
+            </div>
+            <div class="badge">
+                <div id="esp2Dot" class="dot disconnected"></div>
+                <div><span id="esp2Label">ESP #2 (Foot)</span> <span id="esp2Ip" style="color:var(--md-on-surface-variant);font-size:0.78rem"></span></div>
+            </div>
+        </div>
+    </header>
 
-            .brand {
-                display: flex;
-                align-items: center;
-                min-width: 0;
-            }
-            .brand .logo {
-                height: 48px;
-                object-fit: contain;
-            }
+    <div class="tabs">
+        <button class="tab-btn active" onclick="switchTab('setup')">Setup</button>
+        <button class="tab-btn" onclick="switchTab('monitor')">Monitor</button>
+    </div>
 
-            /* Connection badges — pill-shaped */
-            .conn {
-                display: flex;
-                gap: 8px;
-                align-items: center;
-            }
-            .conn .badge {
-                display: flex;
-                align-items: center;
-                gap: 8px;
-                padding: 8px 16px;
-                background: var(--md-secondary-container);
-                border: none;
-                border-radius: 9999px;
-                font-size: 0.85rem;
-                font-weight: 500;
-                color: var(--md-on-secondary-container);
-                transition: all 300ms var(--md-ease);
-                cursor: default;
-            }
-            .conn .badge:hover {
-                background: rgba(74,159,212,0.12);
-                box-shadow: 0 2px 8px rgba(0,0,0,0.08);
-            }
-            .conn .dot {
-                width: 10px;
-                height: 10px;
-                border-radius: 50%;
-                background: var(--md-outline);
-                flex-shrink: 0;
-                transition: all 300ms var(--md-ease);
-            }
-            .conn .dot.connected {
-                background: var(--md-good);
-                box-shadow: 0 0 0 3px rgba(46,125,91,0.2);
-            }
-            .conn .dot.disconnected {
-                background: var(--md-bad);
-                box-shadow: 0 0 0 3px rgba(186,26,26,0.15);
-            }
-
-            /* ---- CARDS — Tonal surface, no borders ---- */
-            .card {
-                background: var(--md-surface-container);
-                border: none;
-                border-radius: 24px;
-                padding: 24px;
-                box-shadow: 0 1px 3px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.04);
-                transition: all 300ms var(--md-ease);
-                position: relative;
-                overflow: hidden;
-            }
-            .card:hover {
-                box-shadow: 0 4px 12px rgba(0,0,0,0.08), 0 2px 4px rgba(0,0,0,0.04);
-                transform: translateY(-1px);
-            }
-            .card h2 {
-                font-size: 0.75rem;
-                font-weight: 500;
-                letter-spacing: 0.5px;
-                color: var(--md-on-surface-variant);
-                text-transform: uppercase;
-                margin-bottom: 14px;
-            }
-
-            /* ---- SCORE ---- */
-            .main {
-                display: grid;
-                grid-template-rows: auto auto auto 1fr;
-                gap: 16px;
-            }
-
-            .score-card {
-                background: var(--md-primary-container);
-                border-radius: 32px;
-                padding: 28px;
-                box-shadow: 0 2px 6px rgba(74,159,212,0.12);
-            }
-            .score-card:hover {
-                box-shadow: 0 6px 20px rgba(74,159,212,0.18);
-            }
-            .score-card h2 {
-                color: var(--md-on-primary-container);
-                opacity: 0.7;
-            }
-
-            .score {
-                display: flex;
-                gap: 16px;
-                align-items: center;
-                justify-content: space-between;
-            }
-            .score .value {
-                font-size: 4rem;
-                font-weight: 700;
-                line-height: 1;
-                letter-spacing: -0.02em;
-                color: var(--md-on-primary-container);
-            }
-            .score .meta {
-                text-align: right;
-                min-width: 110px;
-            }
-            .score .meta .label {
-                font-size: 0.82rem;
-                font-weight: 500;
-                color: var(--md-on-primary-container);
-                opacity: 0.6;
-            }
-            .score .meta .tag {
-                display: inline-block;
-                margin-top: 8px;
-                padding: 6px 16px;
-                font-size: 0.8rem;
-                font-weight: 500;
-                color: var(--md-on-primary-container);
-                background: rgba(255,255,255,0.45);
-                border: none;
-                border-radius: 9999px;
-                backdrop-filter: blur(4px);
-            }
-
-            /* ---- PIPELINE SIDEBAR ---- */
-            .side { display: grid; gap: 16px; }
-
-            .state-row {
-                display: flex;
-                justify-content: space-between;
-                align-items: center;
-                padding: 8px 0;
-                font-size: 0.92rem;
-            }
-            .state-row .label {
-                color: var(--md-on-surface-variant);
-                font-weight: 400;
-            }
-            .state-row .value {
-                font-weight: 500;
-                padding: 6px 16px;
-                background: var(--md-surface-container-high);
-                border: none;
-                border-radius: 9999px;
-                color: var(--md-on-bg);
-                font-size: 0.88rem;
-            }
-
-            /* Progress */
-            .progress { margin-top: 12px; }
-            .progress .bar {
-                background: var(--md-surface-container-low);
-                height: 8px;
-                border-radius: 9999px;
-                overflow: hidden;
-            }
-            .progress .fill {
-                height: 100%;
-                background: var(--md-primary);
-                border-radius: 9999px;
-                transition: width 300ms var(--md-ease);
-            }
-            .progress .pmeta {
-                display: flex;
-                justify-content: space-between;
-                font-size: 0.82rem;
-                font-weight: 500;
-                color: var(--md-on-surface-variant);
-                margin-bottom: 6px;
-            }
-
-            /* ---- CHART ---- */
-            .chart-well {
-                width: 100%;
-                height: 220px;
-                background: var(--md-surface-container-high);
-                border-radius: 16px;
-                overflow: hidden;
-                box-shadow: inset 0 2px 4px rgba(0,0,0,0.04);
-            }
-
-            /* ---- HAPTIC BUTTONS — Pill shaped ---- */
-            .haptic-btn {
-                flex: 1;
-                padding: 12px 20px;
-                background: var(--md-surface-container);
-                border: none;
-                border-radius: 9999px;
-                color: var(--md-primary-dark);
-                font-family: "Roboto", sans-serif;
-                font-size: 0.88rem;
-                font-weight: 500;
-                cursor: pointer;
-                transition: all 300ms var(--md-ease);
-                box-shadow: 0 1px 3px rgba(0,0,0,0.06);
-                min-height: 44px;
-            }
-            .haptic-btn:hover {
-                background: rgba(74,159,212,0.12);
-                box-shadow: 0 4px 12px rgba(0,0,0,0.08);
-            }
-            .haptic-btn:active {
-                transform: scale(0.95);
-                box-shadow: 0 1px 2px rgba(0,0,0,0.06);
-            }
-
-            /* ---- STRIDE LIST ---- */
-            .stride-list {
-                max-height: 320px;
-                overflow: auto;
-                padding-right: 4px;
-            }
-            .stride-list::-webkit-scrollbar { width: 4px; }
-            .stride-list::-webkit-scrollbar-track { background: transparent; }
-            .stride-list::-webkit-scrollbar-thumb {
-                background: var(--md-outline-variant);
-                border-radius: 9999px;
-            }
-
-            .stride {
-                display: flex;
-                gap: 12px;
-                align-items: center;
-                padding: 12px 14px;
-                margin-bottom: 6px;
-                background: var(--md-surface-container-high);
-                border: none;
-                border-radius: 16px;
-                font-size: 0.9rem;
-                color: var(--md-on-bg);
-                transition: all 300ms var(--md-ease);
-            }
-            .stride:hover {
-                background: rgba(74,159,212,0.08);
-                box-shadow: 0 2px 8px rgba(0,0,0,0.06);
-                transform: scale(1.01);
-            }
-            .stride .num {
-                color: var(--md-on-surface-variant);
-                min-width: 48px;
-                text-align: right;
-                font-weight: 400;
-                font-size: 0.82rem;
-            }
-            .stride .color-dot {
-                width: 10px;
-                height: 10px;
-                border-radius: 50%;
-                flex-shrink: 0;
-            }
-            .stride .ghs {
-                font-weight: 500;
-                min-width: 54px;
-                text-align: right;
-            }
-            .stride .meta {
-                color: var(--md-on-surface-variant);
-                font-size: 0.78rem;
-                margin-left: auto;
-                text-align: right;
-                min-width: 120px;
-            }
-
-            /* ---- FOOTER ---- */
-            footer.app-footer {
-                grid-column: 1 / -1;
-                margin: 20px 0 12px;
-                text-align: center;
-                font-size: 0.8rem;
-                font-weight: 400;
-                color: var(--md-on-surface-variant);
-            }
-
-            /* Focus — MD3 ring */
-            *:focus-visible {
-                outline: none;
-                box-shadow: 0 0 0 2px var(--md-bg), 0 0 0 4px var(--md-primary);
-            }
-
-            /* Touch targets */
-            .conn .badge, .state-row .value, .score .meta .tag {
-                touch-action: manipulation;
-                min-height: 44px;
-                display: flex;
-                align-items: center;
-            }
-
-            /* ---- RESPONSIVE: Tablet ---- */
-            @media (max-width: 820px) {
-                .container {
-                    grid-template-columns: 1fr;
-                    padding: 10px;
-                    gap: 14px;
-                }
-                header.app-header {
-                    flex-direction: column;
-                    align-items: stretch;
-                    gap: 10px;
-                    padding: 12px 16px;
-                    border-radius: 20px;
-                    position: relative;
-                    top: 0;
-                }
-                .conn { justify-content: center; }
-                .card { padding: 18px; border-radius: 20px; }
-                .score-card { padding: 20px; border-radius: 24px; }
-                .score .value { font-size: 3.2rem; }
-                .chart-well { height: 180px; }
-                .stride .meta { min-width: 0; font-size: 0.72rem; }
-                .stride .num { min-width: 36px; font-size: 0.8rem; }
-                .stride .ghs { min-width: 44px; font-size: 0.85rem; }
-            }
-
-            /* ---- RESPONSIVE: Phone ---- */
-            @media (max-width: 420px) {
-                .container { padding: 8px; gap: 12px; }
-                header.app-header { padding: 0; border-radius: 0; background: none; backdrop-filter: none; -webkit-backdrop-filter: none; border-bottom: none; position: static; flex-direction: column; gap: 8px; }
-                .brand { position: sticky; top: 8px; z-index: 10; background: rgba(237,241,246,0.85); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border-radius: 16px; padding: 6px 14px; border: 1px solid var(--md-outline-variant); }
-                .brand .title { font-size: 1rem; }
-                .brand .subtitle { font-size: 0.75rem; }
-                .brand .logo { height: 38px; }
-                .conn { flex-direction: column; gap: 6px; }
-                .conn .badge {
-                    width: 100%;
-                    justify-content: center;
-                    padding: 8px 14px;
-                    font-size: 0.82rem;
-                }
-                .card { padding: 16px; border-radius: 18px; }
-                .score-card { padding: 18px; border-radius: 22px; }
-                .score {
-                    flex-direction: column;
-                    align-items: flex-start;
-                    gap: 10px;
-                }
-                .score .value { font-size: 2.8rem; }
-                .score .meta {
-                    text-align: left;
-                    min-width: 0;
-                    display: flex;
-                    align-items: center;
-                    gap: 10px;
-                }
-                .chart-well { height: 160px; border-radius: 12px; }
-                .stride { padding: 10px; gap: 8px; border-radius: 12px; }
-                .stride .num { min-width: 32px; font-size: 0.78rem; }
-                .stride .ghs { min-width: 40px; font-size: 0.82rem; }
-                .stride .meta { min-width: 0; font-size: 0.7rem; }
-                .state-row { font-size: 0.88rem; }
-                .state-row .value { padding: 5px 12px; font-size: 0.82rem; }
-                .card h2 { font-size: 0.7rem; }
-                footer.app-footer { font-size: 0.75rem; margin: 14px 0 8px; }
-                .haptic-btn { padding: 10px 14px; font-size: 0.82rem; }
-            }
-
-            /* ---- RESPONSIVE: Tiny ---- */
-            @media (max-width: 340px) {
-                .score .value { font-size: 2.2rem; }
-                .chart-well { height: 140px; }
-                .stride .meta { display: none; }
-            }
-
-            @media (prefers-reduced-motion: reduce) {
-                *, *::before, *::after {
-                    transition-duration: 0.01ms !important;
-                    animation-duration: 0.01ms !important;
-                }
-            }
-        </style>
-    </head>
-    <body>
-        <div class="container" role="main">
-            <header class="app-header" aria-label="GaitGuard header">
-                <div class="brand">
-                    <img class="logo" src="logo_gaitguard.png" alt="GaitGuard" />
-                </div>
-
-                <div class="conn" aria-label="Device connections">
-                    <div class="badge" title="ESP device 1" tabindex="0">
-                        <div id="esp1Dot" class="dot disconnected" aria-hidden="true"></div>
-                        <div>
-                            <span id="esp1Label">ESP #1</span>
-                            <span id="esp1Ip" style="color: var(--md-on-surface-variant); font-size: 0.78rem"></span>
-                        </div>
+    <!-- ============ SETUP TAB ============ -->
+    <div id="tab-setup" class="tab-content active">
+        <div id="setupWaiting" class="card" style="text-align:center;padding:60px 24px">
+            <div style="font-size:1.2rem;font-weight:500;color:var(--md-on-surface-variant);margin-bottom:8px">Waiting for sensor data...</div>
+            <div style="font-size:0.88rem;color:var(--md-outline)">Start <code>run_live.py</code> on the Pi and power on the ESPs.</div>
+            <div style="font-size:0.88rem;color:var(--md-outline);margin-top:4px">The setup tools will appear once sensors are streaming.</div>
+        </div>
+        <div class="setup-grid" id="setupContent" style="display:none">
+            <!-- 3D Leg Visualization -->
+            <div class="card leg-card" id="legCard">
+                <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;flex-wrap:wrap;gap:8px">
+                    <h2 style="margin-bottom:0">3D Leg Visualization</h2>
+                    <div style="display:flex;gap:8px;flex-wrap:wrap">
+                        <button class="pill-btn" id="calibrateBtn" onclick="calibrateLeg()">Calibrate Standing</button>
+                        <button class="pill-btn secondary" onclick="toggleLegFullscreen()">Fullscreen</button>
                     </div>
-                    <div class="badge" title="ESP device 2" tabindex="0">
-                        <div id="esp2Dot" class="dot disconnected" aria-hidden="true"></div>
-                        <div>
-                            <span id="esp2Label">ESP #2</span>
-                            <span id="esp2Ip" style="color: var(--md-on-surface-variant); font-size: 0.78rem"></span>
+                </div>
+                <div class="leg-canvas-wrap" id="legCanvasWrap" style="position:relative">
+                    <canvas id="legCanvas" width="500" height="500" style="cursor:grab"></canvas>
+                    <!-- Camera orbit presets -->
+                    <div id="camPresets" style="position:absolute;top:10px;right:10px;display:flex;flex-direction:column;gap:4px;z-index:2">
+                        <button class="cam-btn" onclick="setCam(0,0)" title="Front">Front</button>
+                        <button class="cam-btn active" onclick="setCam(25,8)" title="Default">3/4</button>
+                        <button class="cam-btn" onclick="setCam(90,8)" title="Side">Side</button>
+                        <button class="cam-btn" onclick="setCam(180,8)" title="Back">Back</button>
+                        <button class="cam-btn" onclick="setCam(25,60)" title="Top">Top</button>
+                    </div>
+                    <div style="position:absolute;bottom:56px;left:12px;font-size:0.7rem;color:rgba(255,255,255,0.3);pointer-events:none">Drag to orbit</div>
+                    <div class="leg-angle-readout">
+                        <div class="joint">
+                            <div style="font-size:0.72rem;opacity:0.7">KNEE</div>
+                            <div class="val" id="legKneeAngle">0.0°</div>
+                        </div>
+                        <div class="joint">
+                            <div style="font-size:0.72rem;opacity:0.7">ANKLE</div>
+                            <div class="val" id="legAnkleAngle">0.0°</div>
+                        </div>
+                        <div class="joint">
+                            <div style="font-size:0.72rem;opacity:0.7">THIGH</div>
+                            <div class="val" id="legThighAngle">0.0°</div>
+                        </div>
+                        <div class="joint">
+                            <div style="font-size:0.72rem;opacity:0.7">SHIN</div>
+                            <div class="val" id="legShinAngle">0.0°</div>
+                        </div>
+                        <div class="joint">
+                            <div style="font-size:0.72rem;opacity:0.7">FOOT</div>
+                            <div class="val" id="legFootAngle">0.0°</div>
                         </div>
                     </div>
                 </div>
-            </header>
+                <div id="calibStatus" style="font-size:0.82rem;color:var(--md-on-surface-variant);margin-top:8px;min-height:1.4em"></div>
+            </div>
 
-            <section class="main">
-                <div class="card" style="display: flex; flex-direction: column; gap: 14px;">
+            <!-- Axis Discovery -->
+            <div class="card">
+                <h2>Axis Discovery (Live)</h2>
+                <p style="font-size:0.82rem;color:var(--md-on-surface-variant);margin-bottom:14px">
+                    Move each sensor and watch which axes respond. Bend knee = look for gyro spike. Stand still = look for ~1.0g on accel.
+                </p>
+                <div id="axisDiscovery">
+                    <!-- Thigh -->
+                    <div class="sensor-section">
+                        <h3>Thigh</h3>
+                        <div class="axis-bars" id="bars-thigh"></div>
+                    </div>
+                    <!-- Shin -->
+                    <div class="sensor-section">
+                        <h3>Shin</h3>
+                        <div class="axis-bars" id="bars-shin"></div>
+                    </div>
+                    <!-- Foot -->
+                    <div class="sensor-section">
+                        <h3>Foot</h3>
+                        <div class="axis-bars" id="bars-foot"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Axis Configuration -->
+            <div class="card">
+                <h2>Axis Configuration</h2>
+                <p style="font-size:0.82rem;color:var(--md-on-surface-variant);margin-bottom:14px">
+                    For each sensor, select which axis points <strong>forward</strong> (walking direction when standing),
+                    which points <strong>down</strong> (gravity), and which <strong>gyro axis</strong> measures knee/ankle bending.
+                    Use "-" prefix to flip direction.
+                </p>
+                <div id="axisConfig">
+                    <!-- Generated by JS -->
+                </div>
+                <div style="display:flex;gap:8px;margin-top:16px">
+                    <button class="pill-btn" onclick="saveAxisConfig()">Save Config</button>
+                    <button class="pill-btn secondary" onclick="resetAxisConfig()">Reset Defaults</button>
+                    <button class="pill-btn secondary" onclick="autoDetectAxes()">Auto-Detect (stand still)</button>
+                </div>
+                <div id="configStatus" style="font-size:0.82rem;color:var(--md-on-surface-variant);margin-top:8px;min-height:1.4em"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ============ MONITOR TAB ============ -->
+    <div id="tab-monitor" class="tab-content">
+        <div class="monitor-grid">
+            <div class="monitor-main">
+                <!-- 3D Leg (smaller, in monitor mode) -->
+                <div class="card">
+                    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
+                        <h2 style="margin-bottom:0">Live Leg</h2>
+                        <div style="display:flex;gap:16px;font-size:1.1rem;font-weight:600">
+                            <span>Knee: <strong id="monKneeAngle" style="font-size:1.3rem">0.0°</strong></span>
+                            <span>Ankle: <strong id="monAnkleAngle" style="font-size:1.3rem">0.0°</strong></span>
+                        </div>
+                    </div>
+                    <div class="leg-canvas-wrap" style="height:300px">
+                        <canvas id="legCanvasMon" width="400" height="300"></canvas>
+                    </div>
+                </div>
+
+                <!-- Pipeline Control -->
+                <div class="card" style="display:flex;flex-direction:column;gap:14px">
                     <h2>Pipeline Control</h2>
-                    <div style="display: flex; gap: 10px; align-items: center; flex-wrap: wrap;">
-                        <button class="haptic-btn" onclick="pipelineStart('record')" style="background: var(--md-good); color: #fff; border-color: var(--md-good);">
-                            Record Healthy Gait
-                        </button>
-                        <button class="haptic-btn" onclick="pipelineStart('test')" style="background: var(--md-primary); color: #fff; border-color: var(--md-primary);">
-                            Test Patient Gait
-                        </button>
-                        <button class="haptic-btn" onclick="pipelineStop()" style="background: var(--md-bad); color: #fff; border-color: var(--md-bad);">
-                            Stop
-                        </button>
+                    <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap">
+                        <select id="activitySelect" style="padding:10px 16px;border-radius:9999px;border:1.5px solid var(--md-outline-variant);background:var(--md-surface);font-family:inherit;font-size:0.88rem;font-weight:500;color:var(--md-on-bg);min-width:130px">
+                            <option value="walking">Walking</option>
+                            <option value="running">Running</option>
+                            <option value="jumping">Jumping</option>
+                            <option value="stairs">Stairs</option>
+                        </select>
+                        <button class="pill-btn success" onclick="pipelineStart('record')">Record Healthy</button>
+                        <button class="pill-btn" onclick="pipelineStart('test')">Test Patient</button>
+                        <button class="pill-btn danger" onclick="pipelineStop()">Stop</button>
                     </div>
-                    <div id="pipelineMsg" style="font-size: 0.82rem; color: var(--md-on-surface-variant); min-height: 1.2em;"></div>
+                    <div id="pipelineMsg" style="font-size:0.82rem;color:var(--md-on-surface-variant);min-height:1.2em"></div>
                 </div>
 
-                <div id="imuCard" class="card" style="display: flex; flex-direction: column; gap: 12px; position: relative;">
-                    <div style="display: flex; justify-content: space-between; align-items: center;">
-                        <h2>IMU Orientation</h2>
-                        <div style="display: flex; gap: 8px;">
-                            <button id="imuCalibrateBtn" onclick="calibrateIMU()" style="padding: 6px 14px; border-radius: 8px; border: 1.5px solid var(--border); background: var(--card); color: var(--text); font-weight: 600; font-size: 0.78rem; cursor: pointer;">Zero</button>
-                            <button id="imuFullscreenBtn" onclick="toggleIMUFullscreen()" style="padding: 6px 14px; border-radius: 8px; border: 1.5px solid var(--border); background: var(--card); color: var(--text); font-weight: 600; font-size: 0.78rem; cursor: pointer;">Fullscreen</button>
-                        </div>
-                    </div>
-                    <div id="imuCanvasRow" style="display: flex; gap: 12px; flex-wrap: wrap; justify-content: center;">
-                        <div style="text-align: center; flex: 1; min-width: 150px;">
-                            <canvas id="imu3d_thigh" width="180" height="180" style="border-radius: 10px; background: #1a1a2e; width: 100%; aspect-ratio: 1;"></canvas>
-                            <div style="font-size: 0.95rem; margin-top: 4px; font-weight: 600;">Thigh</div>
-                            <div id="thighAngleLabel" style="font-size: 0.85rem; color: var(--muted);">0.0°</div>
-                            <div id="thighRawLabel" style="font-size: 0.72rem; color: var(--muted); font-family: monospace;"></div>
-                        </div>
-                        <div style="text-align: center; flex: 1; min-width: 150px;">
-                            <canvas id="imu3d_shin" width="180" height="180" style="border-radius: 10px; background: #1a1a2e; width: 100%; aspect-ratio: 1;"></canvas>
-                            <div style="font-size: 0.95rem; margin-top: 4px; font-weight: 600;">Shin</div>
-                            <div id="shinAngleLabel" style="font-size: 0.85rem; color: var(--muted);">0.0°</div>
-                            <div id="shinRawLabel" style="font-size: 0.72rem; color: var(--muted); font-family: monospace;"></div>
-                        </div>
-                        <div style="text-align: center; flex: 1; min-width: 150px;">
-                            <canvas id="imu3d_foot" width="180" height="180" style="border-radius: 10px; background: #1a1a2e; width: 100%; aspect-ratio: 1;"></canvas>
-                            <div style="font-size: 0.95rem; margin-top: 4px; font-weight: 600;">Foot</div>
-                            <div id="footAngleLabel" style="font-size: 0.85rem; color: var(--muted);">0.0°</div>
-                            <div id="footRawLabel" style="font-size: 0.72rem; color: var(--muted); font-family: monospace;"></div>
-                        </div>
-                    </div>
-                    <div id="imuJointRow" style="display: flex; justify-content: center; gap: 40px; font-size: 1.1rem; font-weight: 600;">
-                        <span>Knee: <strong id="kneeAngleLabel" style="font-size: 1.3rem;">0.0°</strong></span>
-                        <span>Ankle: <strong id="ankleAngleLabel" style="font-size: 1.3rem;">0.0°</strong></span>
-                    </div>
-                </div>
-
-                <div class="card score-card" aria-live="polite" aria-atomic="true">
+                <!-- GHS Score -->
+                <div class="card score-card">
                     <h2>Gait Health Score</h2>
                     <div class="score">
                         <div>
-                            <div id="ghsNum" class="value" aria-label="Gait health score">—</div>
-                            <div style="color: var(--md-on-primary-container); opacity: 0.5; margin-top: 4px; font-size: 0.85rem; font-weight: 500">out of 100</div>
+                            <div id="ghsNum" class="value">—</div>
+                            <div style="color:var(--md-on-primary-container);opacity:0.5;margin-top:4px;font-size:0.85rem;font-weight:500">out of 100</div>
                         </div>
-                        <div class="meta" style="align-self: center">
+                        <div class="meta">
                             <div class="label">Haptic</div>
-                            <div id="hapticTag" class="tag" role="status" aria-live="polite">—</div>
+                            <div id="hapticTag" class="tag">—</div>
                         </div>
                     </div>
                 </div>
 
-                <div class="card" style="display: flex; flex-direction: column; gap: 12px">
+                <!-- GHS Chart -->
+                <div class="card" style="display:flex;flex-direction:column;gap:12px">
                     <h2>GHS Over Time</h2>
                     <div class="chart-well">
-                        <canvas id="ghsChart" style="width: 100%; height: 100%; display: block"></canvas>
+                        <canvas id="ghsChart" style="width:100%;height:100%;display:block"></canvas>
                     </div>
                 </div>
 
-                <div class="card" style="display: flex; flex-direction: column; gap: 12px">
+                <!-- Haptic Test -->
+                <div class="card" style="display:flex;flex-direction:column;gap:12px">
                     <h2>Haptic Test</h2>
-                    <div style="display: flex; gap: 8px; flex-wrap: wrap">
+                    <div style="display:flex;gap:8px;flex-wrap:wrap">
                         <button class="haptic-btn" onclick="sendHaptic(1)">Two Short</button>
                         <button class="haptic-btn" onclick="sendHaptic(2)">One Long</button>
                         <button class="haptic-btn" onclick="sendHaptic(3)">Three Short</button>
                     </div>
-                    <div id="hapticStatus" style="font-size: 0.82rem; color: var(--md-on-surface-variant); min-height: 1.2em;"></div>
+                    <div id="hapticStatus" style="font-size:0.82rem;color:var(--md-on-surface-variant);min-height:1.2em"></div>
                 </div>
 
-                <div class="card" style="display: flex; flex-direction: column; gap: 12px">
+                <!-- Strides -->
+                <div class="card" style="display:flex;flex-direction:column;gap:12px">
                     <h2>Recent Strides</h2>
-                    <div id="strideList" class="stride-list" aria-live="polite">
-                        <div style="color: var(--md-on-surface-variant); padding: 18px 0; text-align: center; font-size: 0.88rem;">
-                            Waiting for stride data…
+                    <div id="strideList" class="stride-list">
+                        <div style="color:var(--md-on-surface-variant);padding:18px 0;text-align:center;font-size:0.88rem">
+                            Waiting for stride data...
                         </div>
                     </div>
                 </div>
-            </section>
+            </div>
 
-            <aside class="side">
+            <aside class="monitor-side">
                 <div class="card">
                     <h2>Pipeline</h2>
-                    <div class="state-row">
-                        <div class="label">State</div>
-                        <div id="pipeState" class="value">—</div>
-                    </div>
-                    <div class="state-row">
-                        <div class="label">Mode</div>
-                        <div id="pipeMode" class="value">—</div>
-                    </div>
-                    <div class="state-row">
-                        <div class="label">Strides</div>
-                        <div id="strideCount" class="value">0</div>
-                    </div>
-
-                    <div style="margin-top: 14px">
+                    <div class="state-row"><div class="label">State</div><div id="pipeState" class="value">—</div></div>
+                    <div class="state-row"><div class="label">Mode</div><div id="pipeMode" class="value">—</div></div>
+                    <div class="state-row"><div class="label">Strides</div><div id="strideCount" class="value">0</div></div>
+                    <div style="margin-top:14px">
                         <div class="progress">
-                            <div class="pmeta">
-                                <div>Calibration</div>
-                                <div id="calPct">0%</div>
-                            </div>
-                            <div class="bar" aria-hidden="true">
-                                <div id="calFill" class="fill" style="width: 0%"></div>
-                            </div>
+                            <div class="pmeta"><div>Calibration</div><div id="calPct">0%</div></div>
+                            <div class="bar"><div id="calFill" class="fill" style="width:0%"></div></div>
                         </div>
-                        <div class="progress" style="margin-top: 12px">
-                            <div class="pmeta">
-                                <div>Profile Collection</div>
-                                <div id="profPct">0 / 20</div>
-                            </div>
-                            <div class="bar" aria-hidden="true">
-                                <div id="profFill" class="fill" style="width: 0%"></div>
-                            </div>
+                        <div class="progress" style="margin-top:12px">
+                            <div class="pmeta"><div>Profile Collection</div><div id="profPct">0 / 20</div></div>
+                            <div class="bar"><div id="profFill" class="fill" style="width:0%"></div></div>
                         </div>
                     </div>
                 </div>
-
-                <div class="card" style="background: var(--md-secondary-container)">
-                    <h2 style="color: var(--md-on-secondary-container); opacity: 0.6">Device Status</h2>
-                    <div style="font-size: 0.88rem; color: var(--md-on-secondary-container); line-height: 1.6; font-weight: 400">
+                <div class="card" style="background:var(--md-secondary-container)">
+                    <h2 style="color:var(--md-on-secondary-container);opacity:0.6">Device Status</h2>
+                    <div style="font-size:0.88rem;color:var(--md-on-secondary-container);line-height:1.6">
                         Connection states and metadata for connected ESP devices.
                     </div>
                 </div>
             </aside>
-
-            <footer class="app-footer">
-                GaitGuard — © Monitoring & Insights
-            </footer>
         </div>
+    </div>
 
-        <script>
-            (function () {
-                "use strict";
+    <footer class="app-footer">GaitGuard — &copy; Monitoring & Insights</footer>
+</div>
 
-                const $ = (id) => document.getElementById(id);
+<script>
+(function() {
+"use strict";
 
-                const ghsNum = $("ghsNum");
-                const hapticTag = $("hapticTag");
-                const pipeState = $("pipeState");
-                const pipeMode = $("pipeMode");
-                const strideCount = $("strideCount");
-                const calPct = $("calPct");
-                const calFill = $("calFill");
-                const profPct = $("profPct");
-                const profFill = $("profFill");
-                const esp1Dot = $("esp1Dot");
-                const esp2Dot = $("esp2Dot");
-                const esp1Ip = $("esp1Ip");
-                const esp2Ip = $("esp2Ip");
-                const strideListEl = $("strideList");
-                const chartCanvas = $("ghsChart");
-                const ctx = chartCanvas.getContext("2d");
+const $ = id => document.getElementById(id);
 
-                const HAPTIC_LABELS = {
-                    none: "No Haptic",
-                    two_short: "Two Short Pulses",
-                    three_short: "Three Short Pulses",
-                    long_buzz: "Long Buzz",
-                    sos: "SOS Pattern",
-                };
+// ============================================================
+// TAB SWITCHING
+// ============================================================
+window.switchTab = function(name) {
+    document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+    document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
+    $('tab-' + name).classList.add('active');
+    document.querySelector(`.tab-btn[onclick="switchTab('${name}')"]`).classList.add('active');
+};
 
-                function colorFor(name) {
-                    if (name === "red") return getComputedStyle(document.documentElement).getPropertyValue("--md-bad").trim();
-                    if (name === "yellow") return getComputedStyle(document.documentElement).getPropertyValue("--md-warn").trim();
-                    return getComputedStyle(document.documentElement).getPropertyValue("--md-good").trim();
-                }
+// ============================================================
+// AXIS CONFIG
+// ============================================================
+const AXIS_OPTIONS = ['ax', '-ax', 'ay', '-ay', 'az', '-az'];
+const GYRO_OPTIONS = ['gx', '-gx', 'gy', '-gy', 'gz', '-gz'];
+const SENSORS = ['thigh', 'shin', 'foot'];
 
-                const MAX_POINTS = 60;
-                let ghsHistory = [];
+let axisConfig = {
+    thigh: { accel_fwd: 'ax', accel_down: 'az', gyro_bend: 'gx' },
+    shin:  { accel_fwd: 'ax', accel_down: 'az', gyro_bend: 'gx' },
+    foot:  { accel_fwd: 'ax', accel_down: 'az', gyro_bend: 'gx' },
+};
 
-                function resizeCanvas() {
-                    const dpr = Math.max(window.devicePixelRatio || 1, 1);
-                    const rect = chartCanvas.getBoundingClientRect();
-                    chartCanvas.width = Math.round(rect.width * dpr);
-                    chartCanvas.height = Math.round(rect.height * dpr);
-                    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-                    drawChart();
-                }
-                window.addEventListener("resize", resizeCanvas);
-                requestAnimationFrame(resizeCanvas);
+// Build config UI
+function buildConfigUI() {
+    const container = $('axisConfig');
+    container.innerHTML = '';
+    for (const sensor of SENSORS) {
+        const section = document.createElement('div');
+        section.className = 'sensor-section';
+        section.innerHTML = `<h3>${sensor}</h3>`;
 
-                function drawChart() {
-                    const rect = chartCanvas.getBoundingClientRect();
-                    const W = rect.width;
-                    const H = rect.height;
-                    ctx.clearRect(0, 0, W, H);
-
-                    if (!ghsHistory.length) {
-                        ctx.fillStyle = "#72787E";
-                        ctx.font = '14px "Roboto", system-ui, sans-serif';
-                        ctx.textAlign = "center";
-                        ctx.fillText("No data yet", W / 2, H / 2);
-                        return;
-                    }
-
-                    const padding = { left: 36, right: 14, top: 14, bottom: 24 };
-                    const cw = W - padding.left - padding.right;
-                    const ch = H - padding.top - padding.bottom;
-
-                    // Grid lines
-                    ctx.strokeStyle = "rgba(194,199,206,0.5)";
-                    ctx.lineWidth = 1;
-                    ctx.font = '11px "Roboto", sans-serif';
-                    ctx.fillStyle = "#72787E";
-                    ctx.textAlign = "right";
-                    for (let v = 0; v <= 100; v += 25) {
-                        const y = padding.top + ch - (v / 100) * ch;
-                        ctx.beginPath();
-                        ctx.moveTo(padding.left, y);
-                        ctx.lineTo(W - padding.right, y);
-                        ctx.stroke();
-                        ctx.fillText(String(v), padding.left - 6, y + 4);
-                    }
-
-                    const n = ghsHistory.length;
-                    const step = cw / Math.max(n - 1, 1);
-
-                    // Area fill
-                    const grad = ctx.createLinearGradient(0, padding.top, 0, padding.top + ch);
-                    grad.addColorStop(0, "rgba(74,159,212,0.18)");
-                    grad.addColorStop(1, "rgba(74,159,212,0.00)");
-
-                    ctx.beginPath();
-                    ctx.moveTo(padding.left, padding.top + ch);
-                    for (let i = 0; i < n; i++) {
-                        const x = padding.left + i * step;
-                        const val = Math.min(100, Math.max(0, ghsHistory[i].ghs));
-                        ctx.lineTo(x, padding.top + ch - (val / 100) * ch);
-                    }
-                    ctx.lineTo(padding.left + (n - 1) * step, padding.top + ch);
-                    ctx.closePath();
-                    ctx.fillStyle = grad;
-                    ctx.fill();
-
-                    // Line
-                    ctx.beginPath();
-                    ctx.strokeStyle = "#4A9FD4";
-                    ctx.lineWidth = 2.5;
-                    ctx.lineJoin = "round";
-                    ctx.lineCap = "round";
-                    for (let i = 0; i < n; i++) {
-                        const x = padding.left + i * step;
-                        const y = padding.top + ch - (Math.min(100, Math.max(0, ghsHistory[i].ghs)) / 100) * ch;
-                        if (i === 0) ctx.moveTo(x, y);
-                        else ctx.lineTo(x, y);
-                    }
-                    ctx.stroke();
-
-                    // Dots
-                    for (let i = 0; i < n; i++) {
-                        const x = padding.left + i * step;
-                        const y = padding.top + ch - (Math.min(100, Math.max(0, ghsHistory[i].ghs)) / 100) * ch;
-                        // White fill behind
-                        ctx.beginPath();
-                        ctx.arc(x, y, 4.5, 0, Math.PI * 2);
-                        ctx.fillStyle = "#FAFCFF";
-                        ctx.fill();
-                        // Colored fill
-                        ctx.beginPath();
-                        ctx.arc(x, y, 3.5, 0, Math.PI * 2);
-                        ctx.fillStyle = colorFor(ghsHistory[i].color);
-                        ctx.fill();
-                    }
-                }
-
-                function applyStatus(s) {
-                    const ghs = typeof s.current_ghs === "number" ? s.current_ghs : 0;
-                    ghsNum.textContent = Number.isFinite(ghs) ? ghs.toFixed(1) : "—";
-                    ghsNum.style.color = colorFor(s.current_color || "green");
-
-                    hapticTag.textContent = HAPTIC_LABELS[s.last_haptic || "none"] || s.last_haptic || "—";
-
-                    pipeState.textContent = s.state || "—";
-                    pipeMode.textContent =
-                        s.mode === "record" ? "Record Healthy"
-                        : s.mode === "test" ? "Test Patient"
-                        : s.mode || "—";
-                    strideCount.textContent = s.stride_count ?? 0;
-
-                    const cp = Math.max(0, Math.min(1, s.calibration_progress || 0));
-                    calPct.textContent = Math.round(cp * 100) + "%";
-                    calFill.style.width = cp * 100 + "%";
-
-                    const sc = s.stride_count || 0;
-                    const ps = s.profile_strides || 20;
-                    profPct.textContent = sc + " / " + ps;
-                    profFill.style.width = Math.min(sc / ps, 1) * 100 + "%";
-
-                    if (s.esp1_connected) {
-                        esp1Dot.classList.replace("disconnected", "connected");
-                        esp1Ip.textContent = s.esp1_ip ? " (" + s.esp1_ip + ")" : "";
-                    } else {
-                        esp1Dot.classList.replace("connected", "disconnected");
-                        esp1Ip.textContent = "";
-                    }
-                    if (s.esp2_connected) {
-                        esp2Dot.classList.replace("disconnected", "connected");
-                        esp2Ip.textContent = s.esp2_ip ? " (" + s.esp2_ip + ")" : "";
-                    } else {
-                        esp2Dot.classList.replace("connected", "disconnected");
-                        esp2Ip.textContent = "";
-                    }
-                }
-
-                let prevStrideLen = -1;
-                function applyStrides(data) {
-                    const strides = Array.isArray(data.strides) ? data.strides : [];
-                    ghsHistory = strides.slice(-MAX_POINTS).map((s) => ({ ghs: s.ghs ?? 0, color: s.color ?? "green" }));
-                    drawChart();
-
-                    if (strides.length === prevStrideLen) return;
-                    prevStrideLen = strides.length;
-
-                    if (strides.length === 0) {
-                        strideListEl.innerHTML = '<div style="color:var(--md-on-surface-variant); padding:18px 0; text-align:center; font-size:0.88rem;">Waiting for stride data…</div>';
-                        return;
-                    }
-
-                    const frag = document.createDocumentFragment();
-                    for (let i = strides.length - 1; i >= 0; i--) {
-                        const s = strides[i];
-                        const row = document.createElement("div");
-                        row.className = "stride";
-                        const num = document.createElement("div");
-                        num.className = "num";
-                        num.textContent = "#" + (s.num ?? i + 1);
-                        const dot = document.createElement("div");
-                        dot.className = "color-dot";
-                        dot.style.background = colorFor(s.color || "green");
-                        dot.setAttribute("aria-hidden", "true");
-                        const ghs = document.createElement("div");
-                        ghs.className = "ghs";
-                        ghs.textContent = typeof s.ghs === "number" ? s.ghs.toFixed(1) : "—";
-                        const meta = document.createElement("div");
-                        meta.className = "meta";
-                        const zk = s.z_knee != null ? Number(s.z_knee).toFixed(2) : "—";
-                        const za = s.z_ankle != null ? Number(s.z_ankle).toFixed(2) : "—";
-                        const hap = HAPTIC_LABELS[s.haptic] || s.haptic || "—";
-                        meta.innerHTML = "Zk " + zk + " / Za " + za + '<br><span style="color:var(--md-on-surface-variant);font-size:0.72rem;">' + hap + "</span>";
-
-                        row.appendChild(num);
-                        row.appendChild(dot);
-                        row.appendChild(ghs);
-                        row.appendChild(meta);
-                        frag.appendChild(row);
-                    }
-                    strideListEl.innerHTML = "";
-                    strideListEl.appendChild(frag);
-                }
-
-                async function pollOnce() {
-                    try {
-                        const [statusRes, stridesRes] = await Promise.allSettled([
-                            fetch("/api/status"),
-                            fetch("/api/strides"),
-                        ]);
-                        if (statusRes.status === "fulfilled" && statusRes.value.ok) applyStatus(await statusRes.value.json());
-                        if (stridesRes.status === "fulfilled" && stridesRes.value.ok) applyStrides(await stridesRes.value.json());
-                    } catch (e) {}
-                }
-
-                setInterval(pollOnce, 1000);
-                pollOnce();
-                requestAnimationFrame(resizeCanvas);
-            })();
-
-            /* ---- Fullscreen + Calibrate for IMU card ---- */
-            let imuFullscreen = false;
-            const imuCalibOffsets = {
-                thigh: {angle: 0, ax: 0, ay: 0, az: 0, gx: 0, gy: 0, gz: 0},
-                shin:  {angle: 0, ax: 0, ay: 0, az: 0, gx: 0, gy: 0, gz: 0},
-                foot:  {angle: 0, ax: 0, ay: 0, az: 0, gx: 0, gy: 0, gz: 0}
-            };
-            let lastIMUData = null;
-
-            function toggleIMUFullscreen() {
-                const card = document.getElementById("imuCard");
-                imuFullscreen = !imuFullscreen;
-                if (imuFullscreen) {
-                    card.style.position = "fixed";
-                    card.style.top = "0"; card.style.left = "0";
-                    card.style.width = "100vw"; card.style.height = "100vh";
-                    card.style.zIndex = "9999";
-                    card.style.borderRadius = "0";
-                    card.style.margin = "0";
-                    card.style.overflow = "auto";
-                    document.getElementById("imuFullscreenBtn").textContent = "Exit";
-                    // Resize canvases
-                    for (const c of document.querySelectorAll("#imuCanvasRow canvas")) {
-                        c.width = 300; c.height = 300;
-                    }
-                    document.getElementById("imuJointRow").style.fontSize = "1.6rem";
-                } else {
-                    card.style.position = ""; card.style.top = ""; card.style.left = "";
-                    card.style.width = ""; card.style.height = "";
-                    card.style.zIndex = ""; card.style.borderRadius = "";
-                    card.style.margin = ""; card.style.overflow = "";
-                    document.getElementById("imuFullscreenBtn").textContent = "Fullscreen";
-                    for (const c of document.querySelectorAll("#imuCanvasRow canvas")) {
-                        c.width = 180; c.height = 180;
-                    }
-                    document.getElementById("imuJointRow").style.fontSize = "1.1rem";
-                }
+        const fields = [
+            { key: 'accel_fwd', label: 'Forward accel', options: AXIS_OPTIONS },
+            { key: 'accel_down', label: 'Gravity accel', options: AXIS_OPTIONS },
+            { key: 'gyro_bend', label: 'Bend gyro', options: GYRO_OPTIONS },
+        ];
+        for (const f of fields) {
+            const row = document.createElement('div');
+            row.className = 'config-row';
+            row.innerHTML = `<label>${f.label}</label>`;
+            const sel = document.createElement('select');
+            sel.id = `cfg-${sensor}-${f.key}`;
+            for (const opt of f.options) {
+                const o = document.createElement('option');
+                o.value = opt; o.textContent = opt;
+                if (axisConfig[sensor][f.key] === opt) o.selected = true;
+                sel.appendChild(o);
             }
-
-            function calibrateIMU() {
-                if (lastIMUData) {
-                    for (const part of ["thigh", "shin", "foot"]) {
-                        const imu = lastIMUData[part];
-                        if (imu) {
-                            imuCalibOffsets[part] = {
-                                angle: imu.angle || 0,
-                                ax: imu.ax || 0, ay: imu.ay || 0, az: imu.az || 0,
-                                gx: imu.gx || 0, gy: imu.gy || 0, gz: imu.gz || 0
-                            };
-                        }
-                    }
-                }
-                document.getElementById("imuCalibrateBtn").textContent = "Zeroed!";
-                setTimeout(() => document.getElementById("imuCalibrateBtn").textContent = "Zero", 1500);
-            }
-
-            // ESC to exit fullscreen
-            document.addEventListener("keydown", function(e) {
-                if (e.key === "Escape" && imuFullscreen) toggleIMUFullscreen();
+            sel.addEventListener('change', () => {
+                axisConfig[sensor][f.key] = sel.value;
             });
+            row.appendChild(sel);
+            section.appendChild(row);
+        }
+        container.appendChild(section);
+    }
+}
 
-            /* ---- 3D IMU Orientation Rendering ---- */
-            (function() {
-                const canvases = {
-                    thigh: document.getElementById("imu3d_thigh"),
-                    shin: document.getElementById("imu3d_shin"),
-                    foot: document.getElementById("imu3d_foot"),
-                };
-                const labels = {
-                    thigh: document.getElementById("thighAngleLabel"),
-                    shin: document.getElementById("shinAngleLabel"),
-                    foot: document.getElementById("footAngleLabel"),
-                    knee: document.getElementById("kneeAngleLabel"),
-                    ankle: document.getElementById("ankleAngleLabel"),
-                };
-                const rawLabels = {
-                    thigh: document.getElementById("thighRawLabel"),
-                    shin: document.getElementById("shinRawLabel"),
-                    foot: document.getElementById("footRawLabel"),
-                };
+function updateConfigUI() {
+    for (const sensor of SENSORS) {
+        for (const key of ['accel_fwd', 'accel_down', 'gyro_bend']) {
+            const el = $(`cfg-${sensor}-${key}`);
+            if (el) el.value = axisConfig[sensor][key];
+        }
+    }
+}
 
-                const AXIS_LEN = 55;
-                const COLORS = {x: "#ef4444", y: "#22c55e", z: "#3b82f6"};
+// Load config from server
+async function loadAxisConfig() {
+    try {
+        const res = await fetch('/api/axis-config');
+        if (res.ok) {
+            const data = await res.json();
+            if (data.thigh) axisConfig = data;
+            updateConfigUI();
+        }
+    } catch(e) {}
+}
 
-                // Low-pass filter state
-                const ALPHA = 0.5;  // smoothing factor (lower = smoother)
-                const smoothed = {
-                    thigh: {ax:0,ay:0,az:0,gx:0,gy:0,gz:0,angle:0},
-                    shin:  {ax:0,ay:0,az:0,gx:0,gy:0,gz:0,angle:0},
-                    foot:  {ax:0,ay:0,az:0,gx:0,gy:0,gz:0,angle:0}
-                };
-                let smoothInited = false;
-                function lpf(part, vals) {
-                    const s = smoothed[part];
-                    if (!smoothInited) {
-                        Object.assign(s, vals);
-                        return s;
-                    }
-                    for (const k of ["ax","ay","az","gx","gy","gz","angle"]) {
-                        s[k] = s[k] + ALPHA * (vals[k] - s[k]);
-                    }
-                    return s;
-                }
+window.saveAxisConfig = async function() {
+    try {
+        const res = await fetch('/api/axis-config', {
+            method: 'POST', headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify(axisConfig)
+        });
+        const data = await res.json();
+        $('configStatus').textContent = data.ok ? 'Config saved!' : 'Error: ' + data.error;
+        $('configStatus').style.color = data.ok ? 'var(--md-good)' : 'var(--md-bad)';
+    } catch(e) {
+        $('configStatus').textContent = 'Error: ' + e.message;
+        $('configStatus').style.color = 'var(--md-bad)';
+    }
+    setTimeout(() => $('configStatus').textContent = '', 3000);
+};
 
-                function project(x, y, z, cx, cy) {
-                    // Simple isometric-ish projection with perspective
-                    const scale = 200 / (200 + z);
-                    return {x: cx + x * scale, y: cy - y * scale};
-                }
+window.resetAxisConfig = function() {
+    axisConfig = {
+        thigh: { accel_fwd: 'ax', accel_down: 'az', gyro_bend: 'gx' },
+        shin:  { accel_fwd: 'ax', accel_down: 'az', gyro_bend: 'gx' },
+        foot:  { accel_fwd: 'ax', accel_down: 'az', gyro_bend: 'gx' },
+    };
+    updateConfigUI();
+    $('configStatus').textContent = 'Reset to defaults (not saved yet)';
+    setTimeout(() => $('configStatus').textContent = '', 3000);
+};
 
-                function rotateX(p, a) {
-                    const c = Math.cos(a), s = Math.sin(a);
-                    return {x: p.x, y: p.y * c - p.z * s, z: p.y * s + p.z * c};
-                }
-                function rotateY(p, a) {
-                    const c = Math.cos(a), s = Math.sin(a);
-                    return {x: p.x * c + p.z * s, y: p.y, z: -p.x * s + p.z * c};
-                }
-                function rotateZ(p, a) {
-                    const c = Math.cos(a), s = Math.sin(a);
-                    return {x: p.x * c - p.y * s, y: p.x * s + p.y * c, z: p.z};
-                }
+window.autoDetectAxes = function() {
+    if (!lastIMU) {
+        $('configStatus').textContent = 'No IMU data yet — wait for sensors to connect.';
+        $('configStatus').style.color = 'var(--md-warn)';
+        setTimeout(() => $('configStatus').textContent = '', 3000);
+        return;
+    }
+    // Auto-detect: the accel axis closest to ±1g is gravity (down),
+    // the next largest is forward, smallest is lateral (ignored)
+    for (const sensor of SENSORS) {
+        const imu = lastIMU[sensor];
+        if (!imu) continue;
+        const axes = [
+            { name: 'ax', val: imu.ax },
+            { name: 'ay', val: imu.ay },
+            { name: 'az', val: imu.az },
+        ];
+        // Sort by absolute value descending
+        axes.sort((a, b) => Math.abs(b.val) - Math.abs(a.val));
+        // Largest = gravity direction
+        const gravAxis = axes[0];
+        const fwdAxis = axes[1];
+        axisConfig[sensor].accel_down = (gravAxis.val < 0 ? '-' : '') + gravAxis.name;
+        axisConfig[sensor].accel_fwd = fwdAxis.name;
+        // Gyro: pick the one with smallest absolute value when standing still (least noise)
+        // Actually, we can't auto-detect gyro from standing. Leave it as-is.
+    }
+    updateConfigUI();
+    $('configStatus').textContent = 'Auto-detected gravity axes. Gyro axes unchanged — set manually after bending knee.';
+    $('configStatus').style.color = 'var(--md-primary)';
+    setTimeout(() => $('configStatus').textContent = '', 5000);
+};
 
-                function drawAxis(ctx, w, h, ax, ay, az, gx, gy, gz, angle) {
-                    ctx.clearRect(0, 0, w, h);
-                    const cx = w / 2, cy = h / 2;
+buildConfigUI();
 
-                    // Full rotation from accelerometer (atan2 gives full ±180°)
-                    const pitch = Math.atan2(ax, az);
-                    const roll = Math.atan2(ay, az);
+// ============================================================
+// AXIS DISCOVERY BARS
+// ============================================================
+const BAR_DEFS = [
+    { key: 'ax', label: 'aX', color: '#ef4444', maxVal: 2.0 },
+    { key: 'ay', label: 'aY', color: '#f97316', maxVal: 2.0 },
+    { key: 'az', label: 'aZ', color: '#eab308', maxVal: 2.0 },
+    { key: 'gx', label: 'gX', color: '#22c55e', maxVal: 300 },
+    { key: 'gy', label: 'gY', color: '#3b82f6', maxVal: 300 },
+    { key: 'gz', label: 'gZ', color: '#8b5cf6', maxVal: 300 },
+];
 
-                    // Base viewing angle (slight tilt so we see 3D)
-                    const viewPitch = -0.4;
-                    const viewYaw = 0.6;
+// Build bar elements
+for (const sensor of SENSORS) {
+    const container = $('bars-' + sensor);
+    for (const bar of BAR_DEFS) {
+        const row = document.createElement('div');
+        row.className = 'axis-bar-row';
+        row.innerHTML = `
+            <div class="axis-bar-label" style="color:${bar.color}">${bar.label}</div>
+            <div class="axis-bar-track">
+                <div class="axis-bar-fill" id="bar-${sensor}-${bar.key}" style="background:${bar.color}"></div>
+            </div>
+            <div class="axis-bar-val" id="barval-${sensor}-${bar.key}">0</div>
+        `;
+        container.appendChild(row);
+    }
+}
 
-                    const axes = [
-                        {dir: {x: AXIS_LEN, y: 0, z: 0}, color: COLORS.x, label: "X"},
-                        {dir: {x: 0, y: AXIS_LEN, z: 0}, color: COLORS.y, label: "Y"},
-                        {dir: {x: 0, y: 0, z: AXIS_LEN}, color: COLORS.z, label: "Z"},
-                    ];
-
-                    // Draw faded grid circle
-                    ctx.strokeStyle = "rgba(255,255,255,0.08)";
-                    ctx.lineWidth = 1;
-                    ctx.beginPath();
-                    ctx.arc(cx, cy, AXIS_LEN * 0.85, 0, Math.PI * 2);
-                    ctx.stroke();
-
-                    // Draw each axis
-                    for (const a of axes) {
-                        let p = {x: a.dir.x, y: a.dir.y, z: a.dir.z};
-
-                        // Apply sensor rotation
-                        p = rotateX(p, pitch);
-                        p = rotateZ(p, roll);
-
-                        // Apply view rotation
-                        p = rotateX(p, viewPitch);
-                        p = rotateY(p, viewYaw);
-
-                        const end = project(p.x, p.y, p.z, cx, cy);
-                        const origin = project(0, 0, 0, cx, cy);
-
-                        // Draw line
-                        ctx.strokeStyle = a.color;
-                        ctx.lineWidth = 2.5;
-                        ctx.beginPath();
-                        ctx.moveTo(origin.x, origin.y);
-                        ctx.lineTo(end.x, end.y);
-                        ctx.stroke();
-
-                        // Draw arrowhead
-                        ctx.fillStyle = a.color;
-                        ctx.beginPath();
-                        ctx.arc(end.x, end.y, 4, 0, Math.PI * 2);
-                        ctx.fill();
-
-                        // Label
-                        ctx.fillStyle = a.color;
-                        ctx.font = "bold 11px sans-serif";
-                        ctx.fillText(a.label, end.x + 6, end.y - 6);
-                    }
-
-                    // Draw origin dot
-                    ctx.fillStyle = "rgba(255,255,255,0.5)";
-                    ctx.beginPath();
-                    const o = project(0, 0, 0, cx, cy);
-                    ctx.arc(o.x, o.y, 3, 0, Math.PI * 2);
-                    ctx.fill();
-
-                    // Draw angle text
-                    ctx.fillStyle = "rgba(255,255,255,0.6)";
-                    ctx.font = "12px sans-serif";
-                    ctx.fillText(angle.toFixed(1) + "°", 8, h - 8);
-                }
-
-                async function pollIMU() {
-                    try {
-                        const res = await fetch("/api/imu");
-                        if (!res.ok) return;
-                        const d = await res.json();
-                        lastIMUData = d;
-
-                        for (const part of ["thigh", "shin", "foot"]) {
-                            const canvas = canvases[part];
-                            const c = canvas.getContext("2d");
-                            const imu = d[part];
-                            if (imu) {
-                                const off = imuCalibOffsets[part];
-                                // Use raw accel for 3D orientation (can't zero gravity)
-                                // Only zero the angle and gyro displays
-                                const raw = {
-                                    ax: imu.ax, ay: imu.ay, az: imu.az,
-                                    gx: imu.gx - off.gx, gy: imu.gy - off.gy, gz: imu.gz - off.gz,
-                                    angle: imu.angle - off.angle
-                                };
-                                const s = lpf(part, raw);
-                                drawAxis(c, canvas.width, canvas.height,
-                                    s.ax, s.ay, s.az, s.gx, s.gy, s.gz, s.angle);
-                                labels[part].textContent = s.angle.toFixed(1) + "°";
-                                rawLabels[part].textContent =
-                                    "a(" + s.ax.toFixed(2) + ", " + s.ay.toFixed(2) + ", " + s.az.toFixed(2) + ") " +
-                                    "g(" + s.gx.toFixed(0) + ", " + s.gy.toFixed(0) + ", " + s.gz.toFixed(0) + ")";
-                            }
-                        }
-
-                        smoothInited = true;
-                        labels.knee.textContent = (d.knee || 0).toFixed(1) + "°";
-                        labels.ankle.textContent = (d.ankle || 0).toFixed(1) + "°";
-                    } catch(e) {}
-                }
-
-                setInterval(pollIMU, 100);
-                pollIMU();
-            })();
-
-            async function pipelineStart(mode) {
-                const msg = document.getElementById("pipelineMsg");
-                msg.textContent = "Starting " + mode + " mode...";
-                msg.style.color = "var(--md-on-surface-variant)";
-                try {
-                    const res = await fetch("/api/pipeline/start", {
-                        method: "POST",
-                        headers: {"Content-Type": "application/json"},
-                        body: JSON.stringify({mode: mode})
-                    });
-                    const data = await res.json();
-                    if (data.ok) {
-                        msg.textContent = "Pipeline started in " + mode + " mode (pid " + data.pid + ")";
-                        msg.style.color = "var(--md-good)";
-                    } else {
-                        msg.textContent = data.error || "Failed to start";
-                        msg.style.color = "var(--md-bad)";
-                    }
-                } catch (e) {
-                    msg.textContent = "Error: " + e.message;
-                    msg.style.color = "var(--md-bad)";
+function updateBars(imuData) {
+    for (const sensor of SENSORS) {
+        const imu = imuData[sensor];
+        if (!imu) continue;
+        for (const bar of BAR_DEFS) {
+            const val = imu[bar.key] || 0;
+            const pct = Math.min(Math.abs(val) / bar.maxVal, 1.0);
+            const fillEl = $(`bar-${sensor}-${bar.key}`);
+            const valEl = $(`barval-${sensor}-${bar.key}`);
+            if (fillEl) {
+                // Centered bar: 50% is zero, left is negative, right is positive
+                if (val >= 0) {
+                    fillEl.style.left = '50%';
+                    fillEl.style.width = (pct * 50) + '%';
+                } else {
+                    fillEl.style.left = (50 - pct * 50) + '%';
+                    fillEl.style.width = (pct * 50) + '%';
                 }
             }
-
-            async function pipelineStop() {
-                const msg = document.getElementById("pipelineMsg");
-                msg.textContent = "Stopping pipeline...";
-                try {
-                    await fetch("/api/pipeline/stop", {method: "POST"});
-                    msg.textContent = "Pipeline stopped.";
-                    msg.style.color = "var(--md-on-surface-variant)";
-                } catch (e) {
-                    msg.textContent = "Error: " + e.message;
-                    msg.style.color = "var(--md-bad)";
-                }
+            if (valEl) {
+                valEl.textContent = bar.maxVal <= 10 ? val.toFixed(3) : val.toFixed(1);
             }
+        }
+    }
+}
 
-            async function sendHaptic(pattern) {
-                const el = document.getElementById("hapticStatus");
-                const names = {1: "Two Short", 2: "One Long", 3: "Three Short"};
-                el.textContent = "Sending " + (names[pattern] || pattern) + "...";
-                el.style.color = "var(--md-on-surface-variant)";
-                try {
-                    const res = await fetch("/api/haptic", {
-                        method: "POST",
-                        headers: {"Content-Type": "application/json"},
-                        body: JSON.stringify({pattern: pattern})
-                    });
-                    const data = await res.json();
-                    if (data.ok) {
-                        el.textContent = "Sent " + (names[pattern] || pattern) + " to " + data.sent_to;
-                        el.style.color = "var(--md-good)";
-                    } else {
-                        el.textContent = data.error || "Failed";
-                        el.style.color = "var(--md-bad)";
-                    }
-                } catch (e) {
-                    el.textContent = "Error: " + e.message;
-                    el.style.color = "var(--md-bad)";
-                }
-                setTimeout(() => { el.textContent = ""; el.style.color = "var(--md-on-surface-variant)"; }, 3000);
-            }
-        </script>
-    </body>
+// ============================================================
+// 3D LEG VISUALIZATION — Rectangular prisms with perspective
+// ============================================================
+const DEG = Math.PI / 180;
+let camYaw = 25 * DEG;      // view angle around vertical
+let camPitch = 8 * DEG;     // slight look-down
+const FOV = 600;             // perspective strength
+
+// Camera presets — force immediate redraw with current leg angles
+window.setCam = function(yawDeg, pitchDeg) {
+    camYaw = yawDeg * DEG;
+    camPitch = pitchDeg * DEG;
+    document.querySelectorAll('.cam-btn').forEach(b => b.classList.remove('active'));
+    if (event && event.target) event.target.classList.add('active');
+    // Immediate redraw with last known angles
+    const la = typeof legAngles !== 'undefined' ? legAngles : {knee:0,ankle:0};
+    const c1 = document.getElementById('legCanvas');
+    const c2 = document.getElementById('legCanvasMon');
+    if (c1) drawLeg(c1, 0, 0, 0, la.knee||0, la.ankle||0);
+    if (c2) drawLeg(c2, 0, 0, 0, la.knee||0, la.ankle||0);
+};
+
+// Drag-to-orbit on leg canvases
+function initOrbit(canvasId) {
+    const c = document.getElementById(canvasId);
+    if (!c) return;
+    let dragging = false, lastX = 0, lastY = 0;
+    c.addEventListener('pointerdown', e => {
+        dragging = true; lastX = e.clientX; lastY = e.clientY;
+        c.setPointerCapture(e.pointerId);
+        c.style.cursor = 'grabbing';
+    });
+    c.addEventListener('pointermove', e => {
+        if (!dragging) return;
+        const dx = e.clientX - lastX, dy = e.clientY - lastY;
+        camYaw += dx * 0.5 * DEG;
+        camPitch = Math.max(-80*DEG, Math.min(80*DEG, camPitch + dy * 0.5 * DEG));
+        lastX = e.clientX; lastY = e.clientY;
+        // Clear active preset button
+        document.querySelectorAll('.cam-btn').forEach(b => b.classList.remove('active'));
+    });
+    c.addEventListener('pointerup', () => { dragging = false; c.style.cursor = 'grab'; });
+    c.addEventListener('pointercancel', () => { dragging = false; c.style.cursor = 'grab'; });
+}
+
+let isCalibrated = false;
+
+// EMA smoothing for display (0.6 = smooth, stable)
+const SMOOTH = 0.6;
+const smoothed = { knee: null, ankle: null, thigh: null, shin: null, foot: null };
+function ema(key, raw) {
+    if (smoothed[key] === null) { smoothed[key] = raw; return raw; }
+    smoothed[key] = smoothed[key] * SMOOTH + raw * (1 - SMOOTH);
+    return smoothed[key];
+}
+
+// Axis config helper (for discovery bars only)
+function getAxisVal(imu, axisStr) {
+    const neg = axisStr.startsWith('-');
+    const key = neg ? axisStr.slice(1) : axisStr;
+    return neg ? -(imu[key]||0) : (imu[key]||0);
+}
+
+let hasLiveData = false;
+
+// ---- 3D Math ----
+function camTransform(p) {
+    const cy = Math.cos(camYaw), sy = Math.sin(camYaw);
+    const x1 = p[0]*cy + p[2]*sy, z1 = -p[0]*sy + p[2]*cy;
+    const cp = Math.cos(camPitch), sp = Math.sin(camPitch);
+    return [x1, p[1]*cp - z1*sp, p[1]*sp + z1*cp];
+}
+function project(p, cx, cy) {
+    const c = camTransform(p);
+    const s = FOV / (FOV + c[2]);
+    return [cx + c[0]*s, cy + c[1]*s, c[2]];
+}
+function shade(hex, t) {
+    const r = parseInt(hex.slice(1,3),16), g = parseInt(hex.slice(3,5),16), b = parseInt(hex.slice(5,7),16);
+    return `rgb(${Math.round(r*t)},${Math.round(g*t)},${Math.round(b*t)})`;
+}
+
+// Create box vertices between two 3D points
+function boxVerts(p1, p2, w, d) {
+    const dx=p2[0]-p1[0], dy=p2[1]-p1[1], dz=p2[2]-p1[2];
+    const len=Math.sqrt(dx*dx+dy*dy+dz*dz);
+    if(len<0.01) return [];
+    const ax=dx/len, ay=dy/len, az=dz/len;
+    // perpendicular axes
+    let ux=0,uy=0,uz=1; if(Math.abs(az)>0.9){ux=1;uy=0;uz=0;}
+    let rx=ay*uz-az*uy, ry=az*ux-ax*uz, rz=ax*uy-ay*ux;
+    const rl=Math.sqrt(rx*rx+ry*ry+rz*rz); rx/=rl;ry/=rl;rz/=rl;
+    const fx=ry*az-rz*ay, fy=rz*ax-rx*az, fz=rx*ay-ry*ax;
+    const hw=w/2,hd=d/2, v=[];
+    for(const p of [p1,p2]) {
+        v.push([p[0]+rx*hw+fx*hd, p[1]+ry*hw+fy*hd, p[2]+rz*hw+fz*hd]);
+        v.push([p[0]-rx*hw+fx*hd, p[1]-ry*hw+fy*hd, p[2]-rz*hw+fz*hd]);
+        v.push([p[0]-rx*hw-fx*hd, p[1]-ry*hw-fy*hd, p[2]-rz*hw-fz*hd]);
+        v.push([p[0]+rx*hw-fx*hd, p[1]+ry*hw-fy*hd, p[2]+rz*hw-fz*hd]);
+    }
+    return v;
+}
+
+// Draw a 3D box with face sorting and shading
+function drawBox(ctx, verts, color, cx, cy) {
+    if(verts.length<8) return;
+    const p = verts.map(v => project(v, cx, cy));
+    const faces = [[0,1,2,3],[4,5,6,7],[0,1,5,4],[2,3,7,6],[0,3,7,4],[1,2,6,5]];
+    const sorted = faces.map(fi => {
+        const avgZ = (p[fi[0]][2]+p[fi[1]][2]+p[fi[2]][2]+p[fi[3]][2])/4;
+        const ax=p[fi[1]][0]-p[fi[0]][0], ay2=p[fi[1]][1]-p[fi[0]][1];
+        const bx=p[fi[2]][0]-p[fi[0]][0], by=p[fi[2]][1]-p[fi[0]][1];
+        return { fi, depth: avgZ, cross: ax*by - ay2*bx };
+    }).sort((a,b) => b.depth - a.depth);
+
+    for(const f of sorted) {
+        const t = f.cross > 0 ? 0.95 : 0.55;
+        ctx.beginPath();
+        ctx.moveTo(p[f.fi[0]][0], p[f.fi[0]][1]);
+        for(let i=1;i<4;i++) ctx.lineTo(p[f.fi[i]][0], p[f.fi[i]][1]);
+        ctx.closePath();
+        ctx.fillStyle = shade(color, t);
+        ctx.fill();
+        ctx.strokeStyle = 'rgba(255,255,255,0.12)';
+        ctx.lineWidth = 1;
+        ctx.stroke();
+    }
+}
+
+// Draw a joint sphere
+function drawJoint3D(ctx, pos, radius, cx, cy) {
+    const p = project(pos, cx, cy);
+    const s = FOV / (FOV + camTransform(pos)[2]);
+    const r = radius * s;
+    ctx.beginPath(); ctx.arc(p[0], p[1], r+2, 0, Math.PI*2);
+    ctx.fillStyle = 'rgba(255,255,255,0.08)'; ctx.fill();
+    ctx.beginPath(); ctx.arc(p[0], p[1], r, 0, Math.PI*2);
+    ctx.fillStyle = '#1e293b'; ctx.fill();
+    ctx.strokeStyle = 'rgba(255,255,255,0.7)'; ctx.lineWidth = 1.5; ctx.stroke();
+}
+
+function drawNoData(canvas) {
+    const ctx = canvas.getContext('2d');
+    const w = canvas.width, h = canvas.height;
+    ctx.clearRect(0, 0, w, h);
+    ctx.strokeStyle = 'rgba(255,255,255,0.06)'; ctx.lineWidth = 1;
+    for(let y=0;y<h;y+=40){ctx.beginPath();ctx.moveTo(0,y);ctx.lineTo(w,y);ctx.stroke();}
+    for(let x=0;x<w;x+=40){ctx.beginPath();ctx.moveTo(x,0);ctx.lineTo(x,h);ctx.stroke();}
+    ctx.fillStyle = 'rgba(255,255,255,0.4)';
+    ctx.font = '500 16px Roboto, sans-serif'; ctx.textAlign = 'center';
+    ctx.fillText('Waiting for sensor data...', w/2, h/2 - 12);
+    ctx.font = '13px Roboto, sans-serif'; ctx.fillStyle = 'rgba(255,255,255,0.25)';
+    ctx.fillText('Start the pipeline on the Pi and power on ESPs', w/2, h/2 + 14);
+}
+
+function drawLeg(canvas, thighAng, _sa, _fa, kneeAng, ankleAng) {
+    if (!hasLiveData) { drawNoData(canvas); return; }
+    const ctx = canvas.getContext('2d');
+    const W = canvas.width, H = canvas.height;
+    ctx.clearRect(0, 0, W, H);
+
+    // Background grid
+    ctx.strokeStyle = 'rgba(255,255,255,0.06)'; ctx.lineWidth = 1;
+    for(let y=0;y<H;y+=40){ctx.beginPath();ctx.moveTo(0,y);ctx.lineTo(W,y);ctx.stroke();}
+    for(let x=0;x<W;x+=40){ctx.beginPath();ctx.moveTo(x,0);ctx.lineTo(x,H);ctx.stroke();}
+
+    const CX = W/2, CY = H*0.12;
+
+    // Segment sizes
+    const TH_L=150, TH_W=30, TH_D=24;
+    const SH_L=140, SH_W=26, SH_D=20;
+    const FT_L=70,  FT_W=30, FT_D=24;
+
+    // Forward kinematics (Y = down, X = right/forward in sagittal plane)
+    const hip = [0, 0, 0];
+
+    // Thigh: rotated by thigh angle from vertical (positive = forward tilt)
+    const tRad = thighAng * DEG;
+    const knee = [
+        Math.sin(tRad) * TH_L,
+        Math.cos(tRad) * TH_L,
+        0
+    ];
+
+    // Shin: rotated by knee angle relative to thigh (positive = flexion = shin goes backward)
+    const kRad = (thighAng + kneeAng) * DEG;
+    const ankle = [
+        knee[0] - Math.sin(kRad) * SH_L,
+        knee[1] + Math.cos(kRad) * SH_L,
+        knee[2]
+    ];
+
+    // Foot: extends from ankle, perpendicular to shin direction, then rotated by ankle angle
+    // Shin direction: (-sin(kRad), cos(kRad))
+    // Foot neutral (perpendicular forward): (cos(kRad), sin(kRad))
+    // Then rotate by ankle angle
+    const aRad = ankleAng * DEG;
+    const footDirX = -Math.cos(kRad + aRad);
+    const footDirY = -Math.sin(kRad + aRad);
+    const toe = [
+        ankle[0] + footDirX * FT_L,
+        ankle[1] + footDirY * FT_L,
+        ankle[2]
+    ];
+
+    // Build boxes
+    const thighBox = boxVerts(hip, knee, TH_W, TH_D);
+    const shinBox = boxVerts(knee, ankle, SH_W, SH_D);
+    const footBox = boxVerts(ankle, toe, FT_W, FT_D);
+
+    // Depth-sort segments
+    const segs = [
+        { box: thighBox, color: '#4a9fd4', pos: hip },
+        { box: shinBox,  color: '#22c55e', pos: knee },
+        { box: footBox,  color: '#f59e0b', pos: ankle },
+    ];
+    segs.forEach(s => { s.z = camTransform(s.pos)[2]; });
+    segs.sort((a,b) => b.z - a.z);
+
+    // Draw segments (back to front)
+    for (const s of segs) drawBox(ctx, s.box, s.color, CX, CY);
+
+    // Draw joints on top
+    drawJoint3D(ctx, hip, 7, CX, CY);
+    drawJoint3D(ctx, knee, 7, CX, CY);
+    drawJoint3D(ctx, ankle, 6, CX, CY);
+
+    // Angle labels at joints
+    const kp = project(knee, CX, CY);
+    const ap = project(ankle, CX, CY);
+    ctx.font = 'bold 12px Roboto, sans-serif'; ctx.textAlign = 'left';
+    ctx.fillStyle = '#22c55e';
+    ctx.fillText('Knee: ' + kneeAng.toFixed(1) + '°', kp[0] + 16, kp[1] - 4);
+    ctx.fillStyle = '#f59e0b';
+    ctx.fillText('Ankle: ' + ankleAng.toFixed(1) + '°', ap[0] + 16, ap[1] - 4);
+
+    // Segment labels
+    ctx.fillStyle = 'rgba(255,255,255,0.5)'; ctx.font = '11px Roboto, sans-serif';
+    const thMid = project([0, TH_L/2, 0], CX, CY);
+    ctx.fillText('Thigh', thMid[0] + 22, thMid[1]);
+    const shMid = project([(knee[0]+ankle[0])/2, (knee[1]+ankle[1])/2, 0], CX, CY);
+    ctx.fillText('Shin', shMid[0] + 20, shMid[1]);
+    const ftMid = project([(ankle[0]+toe[0])/2, (ankle[1]+toe[1])/2, 0], CX, CY);
+    ctx.fillText('Foot', ftMid[0] + 20, ftMid[1]);
+}
+
+// Calibrate — snapshot current angles as zero (standing straight)
+let calibKneeOffset = 0, calibAnkleOffset = 0, calibThighOffset = 0;
+window.calibrateLeg = function() {
+    if (!lastIMU) { $('calibStatus').textContent = 'No IMU data — wait for sensors.'; return; }
+    // Capture current knee/ankle as the "standing straight" baseline
+    calibKneeOffset = lastIMU.knee || 0;
+    calibAnkleOffset = lastIMU.ankle || 0;
+    calibThighOffset = (lastIMU.thigh && lastIMU.thigh.angle) || 0;
+    for (const k of ['knee','ankle','thigh','shin','foot']) smoothed[k] = null;
+    isCalibrated = true;
+    $('calibrateBtn').textContent = 'Calibrated!';
+    $('calibStatus').textContent = 'Standing position zeroed — leg will show relative movement.';
+    $('calibStatus').style.color = 'var(--md-good)';
+    setTimeout(() => { $('calibrateBtn').textContent = 'Calibrate Standing'; $('calibStatus').textContent = ''; }, 3000);
+};
+
+// Fullscreen
+let legFullscreen = false;
+window.toggleLegFullscreen = function() {
+    legFullscreen = !legFullscreen;
+    const card = $('legCard');
+    if (legFullscreen) {
+        card.classList.add('leg-fullscreen');
+    } else {
+        card.classList.remove('leg-fullscreen');
+    }
+};
+document.addEventListener('keydown', e => { if (e.key === 'Escape' && legFullscreen) window.toggleLegFullscreen(); });
+
+// ============================================================
+// IMU POLLING & RENDERING
+// ============================================================
+let lastIMU = null;
+let legAngles = { thigh: 0, shin: 0, foot: 0, knee: 0, ankle: 0 };
+
+let imuPolling = false;
+async function pollIMU() {
+    if (imuPolling) return; // skip if previous request still pending
+    imuPolling = true;
+    try {
+        const controller = new AbortController();
+        const timeout = setTimeout(() => controller.abort(), 500);
+        const res = await fetch('/api/imu', { signal: controller.signal });
+        clearTimeout(timeout);
+        if (!res.ok) return;
+        lastIMU = await res.json();
+
+        // Only show leg/setup when run_live.py is actually writing real sensor data
+        hasLiveData = !!lastIMU.live;
+        $('setupWaiting').style.display = hasLiveData ? 'none' : 'block';
+        $('setupContent').style.display = hasLiveData ? 'grid' : 'none';
+
+        if (!hasLiveData) return;
+
+        // Update axis discovery bars
+        updateBars(lastIMU);
+
+        // Use C pipeline's pre-computed angles, subtract calibration offset
+        // Knee goes negative when bending forward, so negate to get positive = flexion
+        legAngles.knee = ema('knee', -(((lastIMU.knee || 0) - calibKneeOffset)));
+        legAngles.ankle = ema('ankle', ((lastIMU.ankle || 0) - calibAnkleOffset));
+        legAngles.thigh = ema('thigh', ((lastIMU.thigh && lastIMU.thigh.angle) || 0) - calibThighOffset);
+        legAngles.shin = ema('shin', (lastIMU.shin && lastIMU.shin.angle) || 0);
+        legAngles.foot = ema('foot', (lastIMU.foot && lastIMU.foot.angle) || 0);
+
+        // Draw 3D leg — thigh moves from data, shin relative to knee, foot relative to ankle
+        const setupCanvas = $('legCanvas');
+        if (setupCanvas) drawLeg(setupCanvas, legAngles.thigh, 0, 0, legAngles.knee, legAngles.ankle);
+
+        const monCanvas = $('legCanvasMon');
+        if (monCanvas) drawLeg(monCanvas, legAngles.thigh, 0, 0, legAngles.knee, legAngles.ankle);
+
+        // Update readouts
+        $('legKneeAngle').textContent = legAngles.knee.toFixed(1) + '°';
+        $('legAnkleAngle').textContent = legAngles.ankle.toFixed(1) + '°';
+        $('legThighAngle').textContent = legAngles.thigh.toFixed(1) + '°';
+        $('legShinAngle').textContent = legAngles.shin.toFixed(1) + '°';
+        $('legFootAngle').textContent = legAngles.foot.toFixed(1) + '°';
+        if ($('monKneeAngle')) $('monKneeAngle').textContent = legAngles.knee.toFixed(1) + '°';
+        if ($('monAnkleAngle')) $('monAnkleAngle').textContent = legAngles.ankle.toFixed(1) + '°';
+    } catch(e) {}
+    finally { imuPolling = false; }
+}
+
+setInterval(pollIMU, 200);
+pollIMU();
+
+// ============================================================
+// MONITOR TAB - Status, Strides, Chart (same as before)
+// ============================================================
+const ghsNum = $('ghsNum');
+const hapticTag = $('hapticTag');
+const pipeState = $('pipeState');
+const pipeMode = $('pipeMode');
+const strideCount = $('strideCount');
+const calPct = $('calPct');
+const calFill = $('calFill');
+const profPct = $('profPct');
+const profFill = $('profFill');
+const esp1Dot = $('esp1Dot');
+const esp2Dot = $('esp2Dot');
+const esp1Ip = $('esp1Ip');
+const esp2Ip = $('esp2Ip');
+const strideListEl = $('strideList');
+const chartCanvas = $('ghsChart');
+const chartCtx = chartCanvas.getContext('2d');
+
+const HAPTIC_LABELS = { none: "No Haptic", two_short: "Two Short", three_short: "Three Short", long_buzz: "Long Buzz", sos: "SOS" };
+
+function colorFor(name) {
+    if (name === 'red') return getComputedStyle(document.documentElement).getPropertyValue('--md-bad').trim();
+    if (name === 'yellow') return getComputedStyle(document.documentElement).getPropertyValue('--md-warn').trim();
+    return getComputedStyle(document.documentElement).getPropertyValue('--md-good').trim();
+}
+
+const MAX_POINTS = 60;
+let ghsHistory = [];
+
+function resizeChart() {
+    const dpr = Math.max(window.devicePixelRatio || 1, 1);
+    const rect = chartCanvas.getBoundingClientRect();
+    chartCanvas.width = Math.round(rect.width * dpr);
+    chartCanvas.height = Math.round(rect.height * dpr);
+    chartCtx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    drawChart();
+}
+window.addEventListener('resize', resizeChart);
+requestAnimationFrame(resizeChart);
+
+function drawChart() {
+    const rect = chartCanvas.getBoundingClientRect();
+    const W = rect.width, H = rect.height;
+    chartCtx.clearRect(0, 0, W, H);
+    if (!ghsHistory.length) {
+        chartCtx.fillStyle = '#72787E'; chartCtx.font = '14px "Roboto", sans-serif';
+        chartCtx.textAlign = 'center'; chartCtx.fillText('No data yet', W/2, H/2);
+        return;
+    }
+    const pad = { left: 36, right: 14, top: 14, bottom: 24 };
+    const cw = W - pad.left - pad.right, ch = H - pad.top - pad.bottom;
+    chartCtx.strokeStyle = 'rgba(194,199,206,0.5)'; chartCtx.lineWidth = 1;
+    chartCtx.font = '11px "Roboto", sans-serif'; chartCtx.fillStyle = '#72787E'; chartCtx.textAlign = 'right';
+    for (let v = 0; v <= 100; v += 25) {
+        const y = pad.top + ch - (v/100)*ch;
+        chartCtx.beginPath(); chartCtx.moveTo(pad.left, y); chartCtx.lineTo(W - pad.right, y); chartCtx.stroke();
+        chartCtx.fillText(String(v), pad.left - 6, y + 4);
+    }
+    const n = ghsHistory.length, step = cw / Math.max(n-1, 1);
+    const grad = chartCtx.createLinearGradient(0, pad.top, 0, pad.top + ch);
+    grad.addColorStop(0, 'rgba(74,159,212,0.18)'); grad.addColorStop(1, 'rgba(74,159,212,0.00)');
+    chartCtx.beginPath(); chartCtx.moveTo(pad.left, pad.top + ch);
+    for (let i = 0; i < n; i++) chartCtx.lineTo(pad.left + i*step, pad.top + ch - (Math.min(100, Math.max(0, ghsHistory[i].ghs))/100)*ch);
+    chartCtx.lineTo(pad.left + (n-1)*step, pad.top + ch); chartCtx.closePath(); chartCtx.fillStyle = grad; chartCtx.fill();
+    chartCtx.beginPath(); chartCtx.strokeStyle = '#4A9FD4'; chartCtx.lineWidth = 2.5; chartCtx.lineJoin = 'round'; chartCtx.lineCap = 'round';
+    for (let i = 0; i < n; i++) {
+        const x = pad.left + i*step, y = pad.top + ch - (Math.min(100, Math.max(0, ghsHistory[i].ghs))/100)*ch;
+        if (i === 0) chartCtx.moveTo(x, y); else chartCtx.lineTo(x, y);
+    }
+    chartCtx.stroke();
+    for (let i = 0; i < n; i++) {
+        const x = pad.left + i*step, y = pad.top + ch - (Math.min(100, Math.max(0, ghsHistory[i].ghs))/100)*ch;
+        chartCtx.beginPath(); chartCtx.arc(x, y, 4.5, 0, Math.PI*2); chartCtx.fillStyle = '#FAFCFF'; chartCtx.fill();
+        chartCtx.beginPath(); chartCtx.arc(x, y, 3.5, 0, Math.PI*2); chartCtx.fillStyle = colorFor(ghsHistory[i].color); chartCtx.fill();
+    }
+}
+
+function applyStatus(s) {
+    const ghs = typeof s.current_ghs === 'number' ? s.current_ghs : 0;
+    ghsNum.textContent = Number.isFinite(ghs) ? ghs.toFixed(1) : '—';
+    ghsNum.style.color = colorFor(s.current_color || 'green');
+    hapticTag.textContent = HAPTIC_LABELS[s.last_haptic || 'none'] || s.last_haptic || '—';
+    pipeState.textContent = s.state || '—';
+    pipeMode.textContent = s.mode === 'record' ? 'Record Healthy' : s.mode === 'test' ? 'Test Patient' : s.mode || '—';
+    strideCount.textContent = s.stride_count ?? 0;
+    const cp = Math.max(0, Math.min(1, s.calibration_progress || 0));
+    calPct.textContent = Math.round(cp * 100) + '%'; calFill.style.width = cp * 100 + '%';
+    const sc = s.stride_count || 0, ps = s.profile_strides || 20;
+    profPct.textContent = sc + ' / ' + ps; profFill.style.width = Math.min(sc/ps, 1) * 100 + '%';
+    if (s.esp1_connected) { esp1Dot.classList.replace('disconnected','connected'); esp1Ip.textContent = s.esp1_ip ? ' ('+s.esp1_ip+')' : ''; }
+    else { esp1Dot.classList.replace('connected','disconnected'); esp1Ip.textContent = ''; }
+    if (s.esp2_connected) { esp2Dot.classList.replace('disconnected','connected'); esp2Ip.textContent = s.esp2_ip ? ' ('+s.esp2_ip+')' : ''; }
+    else { esp2Dot.classList.replace('connected','disconnected'); esp2Ip.textContent = ''; }
+}
+
+let prevStrideLen = -1;
+function applyStrides(data) {
+    const strides = Array.isArray(data.strides) ? data.strides : [];
+    ghsHistory = strides.slice(-MAX_POINTS).map(s => ({ ghs: s.ghs ?? 0, color: s.color ?? 'green' }));
+    drawChart();
+    if (strides.length === prevStrideLen) return;
+    prevStrideLen = strides.length;
+    if (strides.length === 0) {
+        strideListEl.innerHTML = '<div style="color:var(--md-on-surface-variant);padding:18px 0;text-align:center;font-size:0.88rem">Waiting for stride data...</div>';
+        return;
+    }
+    const frag = document.createDocumentFragment();
+    for (let i = strides.length - 1; i >= 0; i--) {
+        const s = strides[i], row = document.createElement('div'); row.className = 'stride';
+        const num = document.createElement('div'); num.className = 'num'; num.textContent = '#' + (s.num ?? i+1);
+        const dot = document.createElement('div'); dot.className = 'color-dot'; dot.style.background = colorFor(s.color || 'green');
+        const ghs = document.createElement('div'); ghs.className = 'ghs'; ghs.textContent = typeof s.ghs === 'number' ? s.ghs.toFixed(1) : '—';
+        const meta = document.createElement('div'); meta.className = 'meta';
+        meta.innerHTML = 'Zk ' + (s.z_knee != null ? Number(s.z_knee).toFixed(2) : '—') + ' / Za ' + (s.z_ankle != null ? Number(s.z_ankle).toFixed(2) : '—') +
+            '<br><span style="color:var(--md-on-surface-variant);font-size:0.72rem">' + (HAPTIC_LABELS[s.haptic] || s.haptic || '—') + '</span>';
+        row.appendChild(num); row.appendChild(dot); row.appendChild(ghs); row.appendChild(meta);
+        frag.appendChild(row);
+    }
+    strideListEl.innerHTML = ''; strideListEl.appendChild(frag);
+}
+
+async function pollStatus() {
+    try {
+        const [statusRes, stridesRes] = await Promise.allSettled([fetch('/api/status'), fetch('/api/strides')]);
+        if (statusRes.status === 'fulfilled' && statusRes.value.ok) applyStatus(await statusRes.value.json());
+        if (stridesRes.status === 'fulfilled' && stridesRes.value.ok) applyStrides(await stridesRes.value.json());
+    } catch(e) {}
+}
+setInterval(pollStatus, 1000);
+pollStatus();
+
+// Load axis config on startup
+loadAxisConfig();
+
+// Draw initial "waiting" state
+const initCanvas = $('legCanvas');
+if (initCanvas) drawNoData(initCanvas);
+const initMonCanvas = $('legCanvasMon');
+if (initMonCanvas) drawNoData(initMonCanvas);
+
+// Init drag-to-orbit on both canvases
+initOrbit('legCanvas');
+initOrbit('legCanvasMon');
+
+})();
+
+// ============================================================
+// GLOBAL FUNCTIONS (pipeline, haptic)
+// ============================================================
+async function pipelineStart(mode) {
+    const msg = document.getElementById('pipelineMsg');
+    const activity = document.getElementById('activitySelect').value;
+    msg.textContent = 'Starting ' + mode + ' (' + activity + ')...';
+    try {
+        const res = await fetch('/api/pipeline/start', { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify({mode, activity}) });
+        const data = await res.json();
+        if (data.ok) { msg.textContent = 'Pipeline: ' + mode + ' / ' + activity + ' (pid ' + data.pid + ')'; msg.style.color = 'var(--md-good)'; }
+        else { msg.textContent = data.error || 'Failed'; msg.style.color = 'var(--md-bad)'; }
+    } catch(e) { msg.textContent = 'Error: ' + e.message; msg.style.color = 'var(--md-bad)'; }
+}
+
+async function pipelineStop() {
+    const msg = document.getElementById('pipelineMsg');
+    msg.textContent = 'Stopping...';
+    try { await fetch('/api/pipeline/stop', {method:'POST'}); msg.textContent = 'Stopped.'; msg.style.color = 'var(--md-on-surface-variant)'; }
+    catch(e) { msg.textContent = 'Error: ' + e.message; msg.style.color = 'var(--md-bad)'; }
+}
+
+async function sendHaptic(pattern) {
+    const el = document.getElementById('hapticStatus');
+    const names = {1:'Two Short',2:'One Long',3:'Three Short'};
+    el.textContent = 'Sending ' + (names[pattern]||pattern) + '...';
+    try {
+        const res = await fetch('/api/haptic', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({pattern}) });
+        const data = await res.json();
+        if (data.ok) { el.textContent = 'Sent to ' + data.sent_to; el.style.color = 'var(--md-good)'; }
+        else { el.textContent = data.error || 'Failed'; el.style.color = 'var(--md-bad)'; }
+    } catch(e) { el.textContent = 'Error: ' + e.message; el.style.color = 'var(--md-bad)'; }
+    setTimeout(() => { el.textContent = ''; }, 3000);
+}
+</script>
+</body>
 </html>

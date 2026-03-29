@@ -6,10 +6,12 @@ interface NavItem {
   id: string
 }
 
-export const PillBase: React.FC<{ activeSection: string; navItems: NavItem[]; onSectionClick: (id: string) => void }> = ({ 
-  activeSection, 
+export const PillBase: React.FC<{ activeSection: string; navItems: NavItem[]; onSectionClick: (id: string) => void; leadingElement?: React.ReactNode; trailingElement?: React.ReactNode }> = ({
+  activeSection,
   navItems,
-  onSectionClick 
+  onSectionClick,
+  leadingElement,
+  trailingElement,
 }) => {
   const targetWidth = Math.min(1200, Math.max(760, navItems.length * 140))
   const pillWidth = useSpring(targetWidth, { stiffness: 220, damping: 25, mass: 1 })
@@ -22,15 +24,15 @@ export const PillBase: React.FC<{ activeSection: string; navItems: NavItem[]; on
         width: pillWidth,
         height: '56px',
         background: `
-          linear-gradient(135deg, 
-            #08110d 0%, 
-            #0d1712 15%, 
-            #122019 30%, 
-            #162922 45%, 
-            #19322a 60%, 
-            #1d3a31 75%, 
-            #214339 90%, 
-            #183026 100%
+          linear-gradient(135deg,
+            #080d14 0%,
+            #0d1320 15%,
+            #111a2b 30%,
+            #152236 45%,
+            #182a40 60%,
+            #1c324a 75%,
+            #1f3a55 90%,
+            #172d42 100%
           )
         `,
         boxShadow: `
@@ -145,7 +147,7 @@ export const PillBase: React.FC<{ activeSection: string; navItems: NavItem[]; on
       <div 
         className="absolute inset-0 rounded-full pointer-events-none"
         style={{
-          boxShadow: 'inset 0 0 40px rgba(62, 207, 142, 0.05)',
+          boxShadow: 'inset 0 0 40px rgba(62, 142, 207, 0.05)',
           opacity: 0.7,
         }}
       />
@@ -166,7 +168,8 @@ export const PillBase: React.FC<{ activeSection: string; navItems: NavItem[]; on
         }}
       >
         {/* Always show all sections */}
-        <div className="flex items-center justify-evenly w-full">
+        <div className="flex items-center justify-evenly w-full gap-0">
+          {leadingElement}
           {navItems.map((item) => {
             const isActive = item.id === activeSection
             
@@ -184,7 +187,7 @@ export const PillBase: React.FC<{ activeSection: string; navItems: NavItem[]; on
                 style={{
                   fontSize: isActive ? '14.5px' : '14px',
                   fontWeight: isActive ? 680 : 510,
-                  color: isActive ? '#eefcf4' : '#9ebbad',
+                  color: isActive ? '#eef4fc' : '#9eadbb',
                   textDecoration: 'none',
                   letterSpacing: '0.45px',
                   background: 'transparent',
@@ -212,7 +215,7 @@ export const PillBase: React.FC<{ activeSection: string; navItems: NavItem[]; on
                 }}
                 onMouseEnter={(e) => {
                   if (!isActive) {
-                    e.currentTarget.style.color = '#d7efe1'
+                    e.currentTarget.style.color = '#d7e1ef'
                     e.currentTarget.style.transform = 'translateY(-0.5px)'
                     e.currentTarget.style.textShadow = `
                       0 1px 0 rgba(255, 255, 255, 0.12),
@@ -224,7 +227,7 @@ export const PillBase: React.FC<{ activeSection: string; navItems: NavItem[]; on
                 }}
                 onMouseLeave={(e) => {
                   if (!isActive) {
-                    e.currentTarget.style.color = '#9ebbad'
+                    e.currentTarget.style.color = '#9eadbb'
                     e.currentTarget.style.transform = 'translateY(0)'
                     e.currentTarget.style.textShadow = `
                       0 1px 0 rgba(255, 255, 255, 0.08),
@@ -239,6 +242,7 @@ export const PillBase: React.FC<{ activeSection: string; navItems: NavItem[]; on
               </motion.button>
             )
           })}
+          {trailingElement}
         </div>
       </div>
     </motion.nav>

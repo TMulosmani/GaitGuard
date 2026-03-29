@@ -23,6 +23,7 @@ from pathlib import Path
 STATUS_PATH = "/tmp/gaitguard_status.json"
 STRIDES_PATH = "/tmp/gaitguard_strides.json"
 IMU_PATH = "/tmp/gaitguard_imu.json"
+AXIS_CONFIG_PATH = "/tmp/gaitguard_axis_config.json"
 WEB_DIR = Path(__file__).resolve().parent
 
 DEFAULT_STATUS = {
@@ -42,10 +43,16 @@ DEFAULT_STATUS = {
 
 DEFAULT_STRIDES = {"strides": []}
 DEFAULT_IMU = {
-    "thigh": {"angle": 0, "ax": 0, "ay": 0, "az": 1, "gx": 0, "gy": 0, "gz": 0},
-    "shin":  {"angle": 0, "ax": 0, "ay": 0, "az": 1, "gx": 0, "gy": 0, "gz": 0},
-    "foot":  {"angle": 0, "ax": 0, "ay": 0, "az": 1, "gx": 0, "gy": 0, "gz": 0},
-    "knee": 0, "ankle": 0
+    "thigh": {"angle": 0, "ax": 0, "ay": 0, "az": 0, "gx": 0, "gy": 0, "gz": 0},
+    "shin":  {"angle": 0, "ax": 0, "ay": 0, "az": 0, "gx": 0, "gy": 0, "gz": 0},
+    "foot":  {"angle": 0, "ax": 0, "ay": 0, "az": 0, "gx": 0, "gy": 0, "gz": 0},
+    "knee": 0, "ankle": 0, "live": False
+}
+
+DEFAULT_AXIS_CONFIG = {
+    "thigh": {"accel_fwd": "ax", "accel_down": "az", "gyro_bend": "gx"},
+    "shin":  {"accel_fwd": "ax", "accel_down": "az", "gyro_bend": "gx"},
+    "foot":  {"accel_fwd": "ax", "accel_down": "az", "gyro_bend": "gx"},
 }
 
 
@@ -64,8 +71,8 @@ def read_json(path, default):
         return default
 
 
-def pipeline_start(mode):
-    """Start the gaitguard binary in record or test mode."""
+def pipeline_start(mode, activity="walking"):
+    """Start the gaitguard binary in record or test mode with activity type."""
     global _pipeline_proc
     pipeline_stop()
     # Clear stale status
@@ -75,7 +82,7 @@ def pipeline_start(mode):
         except FileNotFoundError:
             pass
     _pipeline_proc = subprocess.Popen(
-        [str(GAITGUARD_BIN), mode],
+        [str(GAITGUARD_BIN), mode, activity],
         cwd=str(GAITGUARD_BIN.parent),
         stdout=open("/tmp/gaitguard.log", "w"),
         stderr=subprocess.STDOUT,
@@ -86,8 +93,8 @@ def pipeline_start(mode):
 def pipeline_stop():
     """Stop the running pipeline."""
     global _pipeline_proc
-    # Kill any existing gaitguard processes
-    subprocess.run(["pkill", "-f", "gaitguard"], capture_output=True)
+    # QNX uses slay instead of pkill
+    subprocess.run(["slay", "-f", "gaitguard"], capture_output=True)
     if _pipeline_proc:
         try:
             _pipeline_proc.terminate()
@@ -105,9 +112,8 @@ def pipeline_running():
     global _pipeline_proc
     if _pipeline_proc and _pipeline_proc.poll() is None:
         return True
-    # Also check if any gaitguard process exists
-    r = subprocess.run(["pgrep", "-f", "gaitguard"], capture_output=True)
-    return r.returncode == 0
+    # QNX doesn't have pgrep — just rely on _pipeline_proc tracking
+    return False
 
 
 class GaitGuardHandler(SimpleHTTPRequestHandler):
@@ -139,6 +145,8 @@ class GaitGuardHandler(SimpleHTTPRequestHandler):
             self._json_response(read_json(STRIDES_PATH, DEFAULT_STRIDES))
         elif self.path == "/api/imu":
             self._json_response(read_json(IMU_PATH, DEFAULT_IMU))
+        elif self.path == "/api/axis-config":
+            self._json_response(read_json(AXIS_CONFIG_PATH, DEFAULT_AXIS_CONFIG))
         elif self.path == "/":
             self.path = "/index.html"
             super().do_GET()
@@ -177,12 +185,22 @@ class GaitGuardHandler(SimpleHTTPRequestHandler):
             if mode not in ("record", "test"):
                 self._json_response({"ok": False, "error": "mode must be 'record' or 'test'"})
                 return
-            pid = pipeline_start(mode)
-            self._json_response({"ok": True, "mode": mode, "pid": pid})
+            activity = data.get("activity", "walking")
+            pid = pipeline_start(mode, activity)
+            self._json_response({"ok": True, "mode": mode, "activity": activity, "pid": pid})
 
         elif self.path == "/api/pipeline/stop":
             pipeline_stop()
             self._json_response({"ok": True})
+
+        elif self.path == "/api/axis-config":
+            data = self._read_body()
+            try:
+                with open(AXIS_CONFIG_PATH, "w") as f:
+                    json.dump(data, f)
+                self._json_response({"ok": True})
+            except Exception as e:
+                self._json_response({"ok": False, "error": str(e)})
 
         else:
             self.send_response(404)

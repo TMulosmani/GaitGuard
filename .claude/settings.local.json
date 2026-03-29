@@ -27,7 +27,9 @@
       "Bash(.venv/bin/python run_pipeline.py --source synthetic --pathology mixed --n-strides 80)",
       "Bash(.venv/bin/python -c \"import reportlab; print\\(reportlab.Version\\)\")",
       "Bash(export PATH=\"/opt/homebrew/bin:/usr/local/bin:$PATH\")",
-      "Bash(npm run:*)"
+      "Bash(npm run:*)",
+      "Bash(ssh qnxuser@172.20.10.5 \"cat /tmp/gaitguard_pipeline.log\")",
+      "Bash(ssh:*)"
     ]
   }
 }
