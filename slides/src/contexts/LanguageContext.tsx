@@ -23,7 +23,7 @@ const translations: Record<Language, Record<string, string>> = {
     'nav.summary': 'Dashboard',
     // Home
     'home.title': 'GaitGuard',
-    'home.subtitle': 'Autonomously finding security vulnerabilities in your code and fixing them',
+    'home.subtitle': 'Real-time wearable gait monitoring and haptic feedback for smarter rehabilitation',
     // Problem
     'problem.title': 'The Problem',
     'problem.text': 'A pentest finds your vulnerabilities... but it costs',
