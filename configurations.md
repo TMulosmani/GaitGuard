@@ -65,7 +65,7 @@ Commands:
 
 ```
 # 1. Go to project directory    
-cd /Users/trashgimmulosmani/Cornell/comp/yhack/gaitguard
+cd {path_to_project}/gaitguard
 
 # 2. Activate the Python environment (ALWAYS do this first)
 source .venv/bin/activate
