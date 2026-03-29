@@ -30,7 +30,7 @@
 #define MPU_SHIN  0x69  // AD0 → 3.3V = 0x69
 
 // --- Haptic motor pin ---
-#define HAPTIC_PIN 13
+#define HAPTIC_PIN 19
 
 // --- Haptic patterns ---
 #define PAT_NONE        0
@@ -118,6 +118,7 @@ void startHaptic(uint8_t pattern) {
 }
 
 void updateHaptic() {
+  // Normal mode: HIGH=ON, LOW=OFF (MOSFET gate on GPIO)
   if (!hapticActive) return;
 
   unsigned long elapsed = millis() - hapticStartTime;
@@ -181,12 +182,12 @@ void connectWiFi() {
 // --------------------------------------------------------------------
 
 void setup() {
+  // FIRST THING: turn motor off before anything else
+  pinMode(HAPTIC_PIN, OUTPUT);
+  digitalWrite(HAPTIC_PIN, LOW);  // OFF
+
   Serial.begin(115200);
   delay(100);
-
-  // Haptic motor
-  pinMode(HAPTIC_PIN, OUTPUT);
-  digitalWrite(HAPTIC_PIN, LOW);
 
   // I2C on GPIO 21 (SDA) / 22 (SCL)
   Wire.begin(I2C_SDA, I2C_SCL);
@@ -200,10 +201,9 @@ void setup() {
   // WiFi
   connectWiFi();
 
-  // UDP sockets
-  udpOut.begin(0);                   // ephemeral port for sending
-  udpIn.begin(PORT_HAPTIC_CMD);     // listen for haptic commands on :5003
-  Serial.printf("Listening for haptic cmds on port %d\n", PORT_HAPTIC_CMD);
+  // UDP sockets — use port 5003 for both sending and receiving
+  udpOut.begin(PORT_HAPTIC_CMD);     // bind to 5003, also used for sending
+  Serial.printf("UDP bound to port %d (send + receive haptic)\n", PORT_HAPTIC_CMD);
 
   // Pre-fill static header byte
   txBuf[0] = DEVICE_ID_THIGH_SHIN;
@@ -237,10 +237,10 @@ void loop() {
   }
 
   // --- Check for incoming haptic commands ---
-  int packetSize = udpIn.parsePacket();
+  int packetSize = udpOut.parsePacket();
   if (packetSize >= 1) {
     uint8_t cmdBuf[2] = {0, 0};
-    udpIn.read(cmdBuf, min(packetSize, 2));
+    udpOut.read(cmdBuf, min(packetSize, 2));
     uint8_t pattern = cmdBuf[0];
     if (pattern >= PAT_TWO_SHORT && pattern <= PAT_THREE_SHORT) {
       Serial.printf("Haptic cmd: pattern=%d\n", pattern);

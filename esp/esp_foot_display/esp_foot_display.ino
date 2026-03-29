@@ -304,20 +304,37 @@ void connectWiFi() {
   tft.setTextSize(1);
   tft.drawString(WIFI_SSID, 120, 160);
 
-  Serial.printf("Connecting to %s", WIFI_SSID);
+  Serial.printf("Connecting to %s\n", WIFI_SSID);
+  WiFi.mode(WIFI_STA);
   WiFi.begin(WIFI_SSID, WIFI_PASSWORD);
 
   int dots = 0;
-  while (WiFi.status() != WL_CONNECTED) {
+  int max_attempts = 40;  // 20 seconds max
+  while (WiFi.status() != WL_CONNECTED && dots < max_attempts) {
     delay(500);
     Serial.print(".");
     dots++;
-    // Show progress on LCD
     tft.fillCircle(80 + (dots % 5) * 20, 200, 4, TFT_CYAN);
     if (dots % 5 == 0) {
       tft.fillRect(70, 190, 120, 20, TFT_BLACK);
     }
   }
+
+  if (WiFi.status() != WL_CONNECTED) {
+    Serial.println("\nWiFi failed! Retrying...");
+    tft.fillScreen(TFT_BLACK);
+    tft.setTextColor(TFT_RED, TFT_BLACK);
+    tft.setTextSize(2);
+    tft.drawString("WiFi Failed", 120, 100);
+    tft.setTextColor(TFT_WHITE, TFT_BLACK);
+    tft.setTextSize(1);
+    tft.drawString(WIFI_SSID, 120, 140);
+    tft.drawString("Retrying in 5s...", 120, 170);
+    delay(5000);
+    ESP.restart();
+    return;
+  }
+
   Serial.printf("\nConnected! IP: %s\n", WiFi.localIP().toString().c_str());
 
   tft.fillScreen(TFT_BLACK);
@@ -355,12 +372,13 @@ void setup() {
   Wire.setClock(400000);
 
   if (!qmiInit()) {
-    tft.fillScreen(TFT_RED);
-    tft.setTextColor(TFT_WHITE, TFT_RED);
-    tft.drawString("IMU ERROR", 120, 140);
-    while (1) delay(1000);
+    Serial.println("WARNING: QMI8658 not found, running without foot IMU");
+    tft.setTextColor(TFT_YELLOW, TFT_BLACK);
+    tft.drawString("IMU not found", 120, 180);
+    delay(1000);
+  } else {
+    Serial.println("QMI8658 initialized");
   }
-  Serial.println("QMI8658 initialized");
 
   // WiFi
   connectWiFi();
