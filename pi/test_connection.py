@@ -24,6 +24,10 @@ GYRO_SCALE  = 65.0
 def listen_port(port: int, label: str):
     sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
     sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+    try:
+        sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEPORT, 1)
+    except (AttributeError, OSError):
+        pass
     sock.bind(("0.0.0.0", port))
     sock.settimeout(1.0)
 

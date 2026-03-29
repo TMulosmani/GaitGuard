@@ -5,7 +5,7 @@
 #define GAITGUARD_CONFIG_H
 
 // WiFi credentials
-#define WIFI_SSID "UNH_ROBOT_5"
+#define WIFI_SSID "UNH_ROBOT_24"
 #define WIFI_PASSWORD "unh@robot11"
 
 // Raspberry Pi IP address (qnxpi)
