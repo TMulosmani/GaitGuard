@@ -6,7 +6,7 @@ import PaperBackground from '@/components/PaperBackground';
 import { LinesPatternCard, LinesPatternCardBody } from '@/components/ui/card-with-lines-pattern';
 import { LanguageSwitcher } from '@/components/LanguageSwitcher';
 import { useLanguage } from '@/contexts/LanguageContext';
-const dispatchWordmark = '/dispatch-name-logo.png';
+const gaitguardLogo = '/logo_gaitguard2.svg';
 
 const problemCards = [
   {
@@ -39,7 +39,7 @@ const problemCards = [
     citation: '(IBM, 2025; IBM, 2026).',
     numberClassName: 'text-primary',
     borderClassName: 'border-primary/25',
-    shadowClassName: 'shadow-[0_30px_80px_rgba(62,207,142,0.12)]',
+    shadowClassName: 'shadow-[0_30px_80px_rgba(74,159,212,0.12)]',
   },
 ];
 
@@ -248,7 +248,7 @@ const businessTiers = [
     borderClassName: 'border-secondary/30',
     dotClassName: 'bg-secondary',
     priceClassName: 'text-4xl md:text-5xl text-secondary',
-    shadowClassName: 'shadow-[0_24px_70px_rgba(33,166,103,0.12)]',
+    shadowClassName: 'shadow-[0_24px_70px_rgba(47,107,168,0.12)]',
   },
   {
     name: 'Team',
@@ -265,7 +265,7 @@ const businessTiers = [
     borderClassName: 'border-primary/70',
     dotClassName: 'bg-primary',
     priceClassName: 'text-4xl md:text-5xl text-primary',
-    shadowClassName: 'shadow-[0_32px_90px_rgba(62,207,142,0.18)]',
+    shadowClassName: 'shadow-[0_32px_90px_rgba(74,159,212,0.18)]',
     badge: 'Most popular',
   },
   {
@@ -283,7 +283,7 @@ const businessTiers = [
     borderClassName: 'border-accent/35',
     dotClassName: 'bg-accent',
     priceClassName: 'text-3xl md:text-4xl text-accent',
-    shadowClassName: 'shadow-[0_24px_70px_rgba(20,141,120,0.12)]',
+    shadowClassName: 'shadow-[0_24px_70px_rgba(126,200,232,0.12)]',
   },
 ];
 
@@ -331,7 +331,7 @@ const marketCards = [
     borderClassName: 'border-primary/45',
     accentClassName: 'text-primary',
     dotClassName: 'bg-primary',
-    shadowClassName: 'shadow-[0_28px_80px_rgba(62,207,142,0.14)]',
+    shadowClassName: 'shadow-[0_28px_80px_rgba(74,159,212,0.14)]',
   },
   {
     title: 'SOM - Year 3',
@@ -518,8 +518,8 @@ const Index = () => {
 
   const teamMembers = [
     { name: 'Arsh Singh', role: 'Computer Science', initials: 'A', image: '/arsh.jpeg' },
-    { name: 'Mateo del Rio Lanse', role: 'Electrical & Computer Engineering', initials: 'M', image: '/Mateo_Headshot.jpeg' },
-    { name: 'Diya Sheth', role: 'Mechanical Engineering', initials: 'D', image: '/Diya_Headshot.jpeg' },
+    { name: 'Paul Trusov', role: 'Computer Science, Cornell University', initials: 'P', image: '/paultrusov.jpeg' },
+    { name: 'Sam Rosen', role: 'Mechanical Engineering, University of New Haven', initials: 'S', image: '/samrosen.jpeg' },
     { name: 'Jimmy Mulosmani', role: 'Computer Science', initials: 'J', image: '/Jimmy_Headshot.jpeg' },
   ];
 
@@ -636,7 +636,7 @@ const Index = () => {
               className="mx-auto max-w-6xl text-center"
             >
               <img
-                src={dispatchWordmark}
+                src={gaitguardLogo}
                 alt={t('home.title')}
                 className="mx-auto w-full max-w-[23rem] sm:max-w-[26rem] md:max-w-[30rem] xl:max-w-[36rem] object-contain drop-shadow-[0_28px_50px_rgba(0,0,0,0.3)]"
               />
@@ -970,7 +970,7 @@ const Index = () => {
                           {row.features.map((feature, index) => (
                             <td key={`${row.tool}-${competitorColumns[index]}`} className="py-4 px-3 text-center align-top">
                               {feature === 'yes' ? (
-                                <span className={`text-3xl leading-none ${row.isDispatch ? 'text-primary' : 'text-[#23c59a]'}`}>✓</span>
+                                <span className={`text-3xl leading-none ${row.isDispatch ? 'text-primary' : 'text-[#4A9FD4]'}`}>✓</span>
                               ) : feature === 'partial' ? (
                                 <span className="text-lg font-semibold text-[#d99321]">Partial</span>
                               ) : (
@@ -986,7 +986,7 @@ const Index = () => {
 
                 <div className="mt-4 flex flex-wrap items-center gap-6 text-sm md:text-base">
                   <div className="flex items-center gap-2 text-foreground/90">
-                    <span className="text-2xl text-[#23c59a]">✓</span>
+                    <span className="text-2xl text-[#4A9FD4]">✓</span>
                     <span>Yes</span>
                   </div>
                   <div className="flex items-center gap-2 text-foreground/90">
@@ -1015,8 +1015,8 @@ const Index = () => {
               className="mx-auto max-w-6xl text-center"
             >
               <img
-                src={dispatchWordmark}
-                alt="Dispatch"
+                src={gaitguardLogo}
+                alt="GaitGuard"
                 className="mx-auto w-full max-w-[23rem] sm:max-w-[26rem] md:max-w-[30rem] xl:max-w-[36rem] object-contain drop-shadow-[0_28px_50px_rgba(0,0,0,0.3)]"
               />
             </motion.div>
@@ -1203,7 +1203,7 @@ const Index = () => {
                   className="relative"
                 >
                   {tier.badge ? (
-                    <div className="absolute left-1/2 top-0 z-10 -translate-x-1/2 -translate-y-1/2 rounded-full bg-primary px-4 py-1 text-xs font-semibold text-primary-foreground shadow-[0_18px_40px_rgba(62,207,142,0.25)]">
+                    <div className="absolute left-1/2 top-0 z-10 -translate-x-1/2 -translate-y-1/2 rounded-full bg-primary px-4 py-1 text-xs font-semibold text-primary-foreground shadow-[0_18px_40px_rgba(74,159,212,0.25)]">
                       {tier.badge}
                     </div>
                   ) : null}
