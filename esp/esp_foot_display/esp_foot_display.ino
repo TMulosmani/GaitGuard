@@ -260,20 +260,29 @@ void drawIdleScreen() {
   tft.setTextColor(TFT_WHITE, TFT_BLACK);
   tft.setTextDatum(MC_DATUM);
   tft.setTextSize(3);
-  tft.drawString("GaitGuard", 120, 110);
-
-  tft.setTextSize(1);
-  tft.setTextColor(TFT_LIGHTGREY, TFT_BLACK);
-  tft.drawString("Waiting for Pi...", 120, 160);
+  tft.drawString("GaitGuard", 120, 60);
 
   // WiFi status
+  tft.setTextSize(1);
   if (WiFi.status() == WL_CONNECTED) {
     tft.setTextColor(TFT_GREEN, TFT_BLACK);
-    tft.drawString(WiFi.localIP().toString().c_str(), 120, 200);
+    tft.drawString("WiFi: Connected", 120, 110);
+    tft.setTextColor(TFT_LIGHTGREY, TFT_BLACK);
+    tft.drawString(WiFi.localIP().toString().c_str(), 120, 130);
   } else {
     tft.setTextColor(TFT_RED, TFT_BLACK);
-    tft.drawString("WiFi disconnected", 120, 200);
+    tft.drawString("WiFi: Disconnected", 120, 110);
   }
+
+  // Pi connection status
+  tft.setTextColor(TFT_YELLOW, TFT_BLACK);
+  tft.drawString("Pi: Waiting for data...", 120, 160);
+
+  // ESP info
+  tft.setTextColor(TFT_LIGHTGREY, TFT_BLACK);
+  tft.drawString("Foot IMU Sensor", 120, 195);
+  tft.drawString("Sending UDP :" + String(PORT_IMU_FOOT), 120, 215);
+  tft.drawString("-> " + String(PI_IP), 120, 235);
 }
 
 void updateDisplay() {

@@ -126,7 +126,7 @@ static void seg_confirm_boundary(Segmenter *s, float t_ms) {
 }
 
 /* Returns 1 if a stride boundary was just confirmed */
-static int seg_feed(Segmenter *s, const SensorPacket *pkt, float knee, float ankle) {
+int seg_feed(Segmenter *s, const SensorPacket *pkt, float knee, float ankle) {
     float t = pkt->timestamp_ms;
     StrideBuffer *cur = &s->current;
 
@@ -382,7 +382,7 @@ int pipeline_load_lstm(Pipeline *p, const char *weights_path) {
     return 0;
 }
 
-static void build_profile(Pipeline *p) {
+void build_profile(Pipeline *p) {
     GaitProfile *prof = &p->profile;
     Segmenter *s = &p->seg;
 
@@ -421,7 +421,7 @@ static void build_profile(Pipeline *p) {
     memcpy(prof->anchor_ankle, prof->mean_ankle, ANCHOR_PTS * sizeof(float));
 }
 
-static void generate_twin(Pipeline *p) {
+void generate_twin(Pipeline *p) {
     LSTMWeights *w = &p->lstm;
     GaitProfile *prof = &p->profile;
     DigitalTwin *twin = &p->twin;

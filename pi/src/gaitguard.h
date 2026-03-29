@@ -243,6 +243,13 @@ StrideResult score_stride(const float *obs_knee, const float *obs_ankle,
                           const DigitalTwin *twin, const GaitProfile *prof,
                           int stride_num);
 
+/* Profile building & twin generation (called from main for record mode) */
+void  build_profile(Pipeline *p);
+void  generate_twin(Pipeline *p);
+
+/* Segmenter (exposed for test mode direct use) */
+int   seg_feed(Segmenter *s, const SensorPacket *pkt, float knee, float ankle);
+
 /* UDP packet parsing */
 void  parse_thigh_shin(const uint8_t *data, float ts_ms, SensorPacket *pkt);
 void  parse_foot(const uint8_t *data, float ts_ms, IMURaw *foot);

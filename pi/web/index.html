@@ -1,0 +1,903 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <title>GaitGuard Dashboard</title>
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+        <link
+            href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap"
+            rel="stylesheet"
+        />
+        <style>
+            *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+            html, body { height: 100%; }
+
+            /* Material You — Blue seed #4A9FD4 */
+            :root {
+                --md-bg: #FAFCFF;
+                --md-on-bg: #1A1C1E;
+                --md-surface: #FAFCFF;
+                --md-surface-container: #EDF1F6;
+                --md-surface-container-low: #E1E7ED;
+                --md-surface-container-high: #E7ECF2;
+                --md-primary: #4A9FD4;
+                --md-primary-dark: #3A7FAA;
+                --md-on-primary: #FFFFFF;
+                --md-primary-container: #D0E8F8;
+                --md-on-primary-container: #0A1E2D;
+                --md-secondary-container: #D6E4EE;
+                --md-on-secondary-container: #1A2A34;
+                --md-tertiary: #7D5260;
+                --md-outline: #72787E;
+                --md-outline-variant: #C2C7CE;
+                --md-on-surface-variant: #42484E;
+                --md-good: #2E7D5B;
+                --md-warn: #8B6914;
+                --md-bad: #BA1A1A;
+                --md-good-container: #B8F0D3;
+                --md-warn-container: #FFDEA6;
+                --md-bad-container: #FFDAD6;
+                --md-gap: 16px;
+                --md-ease: cubic-bezier(0.2, 0, 0, 1);
+            }
+
+            body {
+                font-family: "Roboto", system-ui, -apple-system, sans-serif;
+                background: var(--md-bg);
+                color: var(--md-on-bg);
+                line-height: 1.5;
+                min-height: 100vh;
+                display: flex;
+                flex-direction: column;
+                -webkit-font-smoothing: antialiased;
+                position: relative;
+                overflow-x: hidden;
+            }
+
+            /* Organic blur shapes (Material You signature) */
+            body::before, body::after {
+                content: "";
+                position: fixed;
+                border-radius: 50%;
+                z-index: 0;
+                pointer-events: none;
+            }
+            body::before {
+                width: 500px;
+                height: 500px;
+                background: radial-gradient(circle, rgba(74,159,212,0.10) 0%, transparent 70%);
+                top: -100px;
+                right: -150px;
+                filter: blur(60px);
+            }
+            body::after {
+                width: 400px;
+                height: 400px;
+                background: radial-gradient(circle, rgba(125,82,96,0.08) 0%, transparent 70%);
+                bottom: -80px;
+                left: -120px;
+                filter: blur(60px);
+            }
+
+            .container {
+                width: 100%;
+                max-width: 1120px;
+                margin: 0 auto;
+                padding: 16px;
+                display: grid;
+                grid-template-columns: 1fr 340px;
+                gap: var(--md-gap);
+                align-items: start;
+                position: relative;
+                z-index: 1;
+            }
+
+            /* ---- HEADER ---- */
+            header.app-header {
+                grid-column: 1 / -1;
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                gap: 12px;
+                padding: 12px 24px;
+                background: rgba(237,241,246,0.75);
+                backdrop-filter: blur(12px);
+                -webkit-backdrop-filter: blur(12px);
+                border-bottom: 1px solid var(--md-outline-variant);
+                border-radius: 28px;
+                position: sticky;
+                top: 8px;
+                z-index: 10;
+                transition: box-shadow 300ms var(--md-ease);
+            }
+
+            .brand {
+                display: flex;
+                gap: 12px;
+                align-items: center;
+                min-width: 0;
+            }
+            .brand .logo {
+                width: 44px;
+                height: 44px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                background: var(--md-primary);
+                color: var(--md-on-primary);
+                font-weight: 700;
+                font-size: 20px;
+                border-radius: 16px;
+                transition: transform 300ms var(--md-ease), box-shadow 300ms var(--md-ease);
+            }
+            .brand .logo:hover {
+                transform: scale(1.05);
+                box-shadow: 0 4px 12px rgba(74,159,212,0.3);
+            }
+            .brand .title {
+                font-size: 1.15rem;
+                font-weight: 500;
+                line-height: 1.2;
+                color: var(--md-on-bg);
+            }
+            .brand .subtitle {
+                font-size: 0.8rem;
+                color: var(--md-on-surface-variant);
+                margin-top: 1px;
+            }
+
+            /* Connection badges — pill-shaped */
+            .conn {
+                display: flex;
+                gap: 8px;
+                align-items: center;
+            }
+            .conn .badge {
+                display: flex;
+                align-items: center;
+                gap: 8px;
+                padding: 8px 16px;
+                background: var(--md-secondary-container);
+                border: none;
+                border-radius: 9999px;
+                font-size: 0.85rem;
+                font-weight: 500;
+                color: var(--md-on-secondary-container);
+                transition: all 300ms var(--md-ease);
+                cursor: default;
+            }
+            .conn .badge:hover {
+                background: rgba(74,159,212,0.12);
+                box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            }
+            .conn .dot {
+                width: 10px;
+                height: 10px;
+                border-radius: 50%;
+                background: var(--md-outline);
+                flex-shrink: 0;
+                transition: all 300ms var(--md-ease);
+            }
+            .conn .dot.connected {
+                background: var(--md-good);
+                box-shadow: 0 0 0 3px rgba(46,125,91,0.2);
+            }
+            .conn .dot.disconnected {
+                background: var(--md-bad);
+                box-shadow: 0 0 0 3px rgba(186,26,26,0.15);
+            }
+
+            /* ---- CARDS — Tonal surface, no borders ---- */
+            .card {
+                background: var(--md-surface-container);
+                border: none;
+                border-radius: 24px;
+                padding: 24px;
+                box-shadow: 0 1px 3px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.04);
+                transition: all 300ms var(--md-ease);
+                position: relative;
+                overflow: hidden;
+            }
+            .card:hover {
+                box-shadow: 0 4px 12px rgba(0,0,0,0.08), 0 2px 4px rgba(0,0,0,0.04);
+                transform: translateY(-1px);
+            }
+            .card h2 {
+                font-size: 0.75rem;
+                font-weight: 500;
+                letter-spacing: 0.5px;
+                color: var(--md-on-surface-variant);
+                text-transform: uppercase;
+                margin-bottom: 14px;
+            }
+
+            /* ---- SCORE ---- */
+            .main {
+                display: grid;
+                grid-template-rows: auto auto auto 1fr;
+                gap: 16px;
+            }
+
+            .score-card {
+                background: var(--md-primary-container);
+                border-radius: 32px;
+                padding: 28px;
+                box-shadow: 0 2px 6px rgba(74,159,212,0.12);
+            }
+            .score-card:hover {
+                box-shadow: 0 6px 20px rgba(74,159,212,0.18);
+            }
+            .score-card h2 {
+                color: var(--md-on-primary-container);
+                opacity: 0.7;
+            }
+
+            .score {
+                display: flex;
+                gap: 16px;
+                align-items: center;
+                justify-content: space-between;
+            }
+            .score .value {
+                font-size: 4rem;
+                font-weight: 700;
+                line-height: 1;
+                letter-spacing: -0.02em;
+                color: var(--md-on-primary-container);
+            }
+            .score .meta {
+                text-align: right;
+                min-width: 110px;
+            }
+            .score .meta .label {
+                font-size: 0.82rem;
+                font-weight: 500;
+                color: var(--md-on-primary-container);
+                opacity: 0.6;
+            }
+            .score .meta .tag {
+                display: inline-block;
+                margin-top: 8px;
+                padding: 6px 16px;
+                font-size: 0.8rem;
+                font-weight: 500;
+                color: var(--md-on-primary-container);
+                background: rgba(255,255,255,0.45);
+                border: none;
+                border-radius: 9999px;
+                backdrop-filter: blur(4px);
+            }
+
+            /* ---- PIPELINE SIDEBAR ---- */
+            .side { display: grid; gap: 16px; }
+
+            .state-row {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                padding: 8px 0;
+                font-size: 0.92rem;
+            }
+            .state-row .label {
+                color: var(--md-on-surface-variant);
+                font-weight: 400;
+            }
+            .state-row .value {
+                font-weight: 500;
+                padding: 6px 16px;
+                background: var(--md-surface-container-high);
+                border: none;
+                border-radius: 9999px;
+                color: var(--md-on-bg);
+                font-size: 0.88rem;
+            }
+
+            /* Progress */
+            .progress { margin-top: 12px; }
+            .progress .bar {
+                background: var(--md-surface-container-low);
+                height: 8px;
+                border-radius: 9999px;
+                overflow: hidden;
+            }
+            .progress .fill {
+                height: 100%;
+                background: var(--md-primary);
+                border-radius: 9999px;
+                transition: width 300ms var(--md-ease);
+            }
+            .progress .pmeta {
+                display: flex;
+                justify-content: space-between;
+                font-size: 0.82rem;
+                font-weight: 500;
+                color: var(--md-on-surface-variant);
+                margin-bottom: 6px;
+            }
+
+            /* ---- CHART ---- */
+            .chart-well {
+                width: 100%;
+                height: 220px;
+                background: var(--md-surface-container-high);
+                border-radius: 16px;
+                overflow: hidden;
+                box-shadow: inset 0 2px 4px rgba(0,0,0,0.04);
+            }
+
+            /* ---- HAPTIC BUTTONS — Pill shaped ---- */
+            .haptic-btn {
+                flex: 1;
+                padding: 12px 20px;
+                background: var(--md-surface-container);
+                border: none;
+                border-radius: 9999px;
+                color: var(--md-primary-dark);
+                font-family: "Roboto", sans-serif;
+                font-size: 0.88rem;
+                font-weight: 500;
+                cursor: pointer;
+                transition: all 300ms var(--md-ease);
+                box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+                min-height: 44px;
+            }
+            .haptic-btn:hover {
+                background: rgba(74,159,212,0.12);
+                box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+            }
+            .haptic-btn:active {
+                transform: scale(0.95);
+                box-shadow: 0 1px 2px rgba(0,0,0,0.06);
+            }
+
+            /* ---- STRIDE LIST ---- */
+            .stride-list {
+                max-height: 320px;
+                overflow: auto;
+                padding-right: 4px;
+            }
+            .stride-list::-webkit-scrollbar { width: 4px; }
+            .stride-list::-webkit-scrollbar-track { background: transparent; }
+            .stride-list::-webkit-scrollbar-thumb {
+                background: var(--md-outline-variant);
+                border-radius: 9999px;
+            }
+
+            .stride {
+                display: flex;
+                gap: 12px;
+                align-items: center;
+                padding: 12px 14px;
+                margin-bottom: 6px;
+                background: var(--md-surface-container-high);
+                border: none;
+                border-radius: 16px;
+                font-size: 0.9rem;
+                color: var(--md-on-bg);
+                transition: all 300ms var(--md-ease);
+            }
+            .stride:hover {
+                background: rgba(74,159,212,0.08);
+                box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+                transform: scale(1.01);
+            }
+            .stride .num {
+                color: var(--md-on-surface-variant);
+                min-width: 48px;
+                text-align: right;
+                font-weight: 400;
+                font-size: 0.82rem;
+            }
+            .stride .color-dot {
+                width: 10px;
+                height: 10px;
+                border-radius: 50%;
+                flex-shrink: 0;
+            }
+            .stride .ghs {
+                font-weight: 500;
+                min-width: 54px;
+                text-align: right;
+            }
+            .stride .meta {
+                color: var(--md-on-surface-variant);
+                font-size: 0.78rem;
+                margin-left: auto;
+                text-align: right;
+                min-width: 120px;
+            }
+
+            /* ---- FOOTER ---- */
+            footer.app-footer {
+                grid-column: 1 / -1;
+                margin: 20px 0 12px;
+                text-align: center;
+                font-size: 0.8rem;
+                font-weight: 400;
+                color: var(--md-on-surface-variant);
+            }
+
+            /* Focus — MD3 ring */
+            *:focus-visible {
+                outline: none;
+                box-shadow: 0 0 0 2px var(--md-bg), 0 0 0 4px var(--md-primary);
+            }
+
+            /* Touch targets */
+            .conn .badge, .state-row .value, .score .meta .tag {
+                touch-action: manipulation;
+                min-height: 44px;
+                display: flex;
+                align-items: center;
+            }
+
+            /* ---- RESPONSIVE: Tablet ---- */
+            @media (max-width: 820px) {
+                .container {
+                    grid-template-columns: 1fr;
+                    padding: 10px;
+                    gap: 14px;
+                }
+                header.app-header {
+                    flex-direction: column;
+                    align-items: stretch;
+                    gap: 10px;
+                    padding: 12px 16px;
+                    border-radius: 20px;
+                    position: relative;
+                    top: 0;
+                }
+                .conn { justify-content: center; }
+                .card { padding: 18px; border-radius: 20px; }
+                .score-card { padding: 20px; border-radius: 24px; }
+                .score .value { font-size: 3.2rem; }
+                .chart-well { height: 180px; }
+                .stride .meta { min-width: 0; font-size: 0.72rem; }
+                .stride .num { min-width: 36px; font-size: 0.8rem; }
+                .stride .ghs { min-width: 44px; font-size: 0.85rem; }
+            }
+
+            /* ---- RESPONSIVE: Phone ---- */
+            @media (max-width: 420px) {
+                .container { padding: 8px; gap: 12px; }
+                header.app-header { padding: 10px 14px; border-radius: 16px; }
+                .brand .title { font-size: 1rem; }
+                .brand .subtitle { font-size: 0.75rem; }
+                .brand .logo { width: 38px; height: 38px; font-size: 17px; border-radius: 12px; }
+                .conn { flex-direction: column; gap: 6px; }
+                .conn .badge {
+                    width: 100%;
+                    justify-content: center;
+                    padding: 8px 14px;
+                    font-size: 0.82rem;
+                }
+                .card { padding: 16px; border-radius: 18px; }
+                .score-card { padding: 18px; border-radius: 22px; }
+                .score {
+                    flex-direction: column;
+                    align-items: flex-start;
+                    gap: 10px;
+                }
+                .score .value { font-size: 2.8rem; }
+                .score .meta {
+                    text-align: left;
+                    min-width: 0;
+                    display: flex;
+                    align-items: center;
+                    gap: 10px;
+                }
+                .chart-well { height: 160px; border-radius: 12px; }
+                .stride { padding: 10px; gap: 8px; border-radius: 12px; }
+                .stride .num { min-width: 32px; font-size: 0.78rem; }
+                .stride .ghs { min-width: 40px; font-size: 0.82rem; }
+                .stride .meta { min-width: 0; font-size: 0.7rem; }
+                .state-row { font-size: 0.88rem; }
+                .state-row .value { padding: 5px 12px; font-size: 0.82rem; }
+                .card h2 { font-size: 0.7rem; }
+                footer.app-footer { font-size: 0.75rem; margin: 14px 0 8px; }
+                .haptic-btn { padding: 10px 14px; font-size: 0.82rem; }
+            }
+
+            /* ---- RESPONSIVE: Tiny ---- */
+            @media (max-width: 340px) {
+                .score .value { font-size: 2.2rem; }
+                .chart-well { height: 140px; }
+                .stride .meta { display: none; }
+            }
+
+            @media (prefers-reduced-motion: reduce) {
+                *, *::before, *::after {
+                    transition-duration: 0.01ms !important;
+                    animation-duration: 0.01ms !important;
+                }
+            }
+        </style>
+    </head>
+    <body>
+        <div class="container" role="main">
+            <header class="app-header" aria-label="GaitGuard header">
+                <div class="brand">
+                    <div class="logo" aria-hidden="true">G</div>
+                    <div style="min-width: 0">
+                        <div class="title">GaitGuard</div>
+                        <div class="subtitle">Real-time Gait Monitoring</div>
+                    </div>
+                </div>
+
+                <div class="conn" aria-label="Device connections">
+                    <div class="badge" title="ESP device 1" tabindex="0">
+                        <div id="esp1Dot" class="dot disconnected" aria-hidden="true"></div>
+                        <div>
+                            <span id="esp1Label">ESP #1</span>
+                            <span id="esp1Ip" style="color: var(--md-on-surface-variant); font-size: 0.78rem"></span>
+                        </div>
+                    </div>
+                    <div class="badge" title="ESP device 2" tabindex="0">
+                        <div id="esp2Dot" class="dot disconnected" aria-hidden="true"></div>
+                        <div>
+                            <span id="esp2Label">ESP #2</span>
+                            <span id="esp2Ip" style="color: var(--md-on-surface-variant); font-size: 0.78rem"></span>
+                        </div>
+                    </div>
+                </div>
+            </header>
+
+            <section class="main">
+                <div class="card score-card" aria-live="polite" aria-atomic="true">
+                    <h2>Gait Health Score</h2>
+                    <div class="score">
+                        <div>
+                            <div id="ghsNum" class="value" aria-label="Gait health score">—</div>
+                            <div style="color: var(--md-on-primary-container); opacity: 0.5; margin-top: 4px; font-size: 0.85rem; font-weight: 500">out of 100</div>
+                        </div>
+                        <div class="meta" style="align-self: center">
+                            <div class="label">Haptic</div>
+                            <div id="hapticTag" class="tag" role="status" aria-live="polite">—</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card" style="display: flex; flex-direction: column; gap: 12px">
+                    <h2>GHS Over Time</h2>
+                    <div class="chart-well">
+                        <canvas id="ghsChart" style="width: 100%; height: 100%; display: block"></canvas>
+                    </div>
+                </div>
+
+                <div class="card" style="display: flex; flex-direction: column; gap: 12px">
+                    <h2>Haptic Test</h2>
+                    <div style="display: flex; gap: 8px; flex-wrap: wrap">
+                        <button class="haptic-btn" onclick="sendHaptic(1)">Two Short</button>
+                        <button class="haptic-btn" onclick="sendHaptic(2)">One Long</button>
+                        <button class="haptic-btn" onclick="sendHaptic(3)">Three Short</button>
+                    </div>
+                    <div id="hapticStatus" style="font-size: 0.82rem; color: var(--md-on-surface-variant); min-height: 1.2em;"></div>
+                </div>
+
+                <div class="card" style="display: flex; flex-direction: column; gap: 12px">
+                    <h2>Recent Strides</h2>
+                    <div id="strideList" class="stride-list" aria-live="polite">
+                        <div style="color: var(--md-on-surface-variant); padding: 18px 0; text-align: center; font-size: 0.88rem;">
+                            Waiting for stride data…
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <aside class="side">
+                <div class="card">
+                    <h2>Pipeline</h2>
+                    <div class="state-row">
+                        <div class="label">State</div>
+                        <div id="pipeState" class="value">—</div>
+                    </div>
+                    <div class="state-row">
+                        <div class="label">Mode</div>
+                        <div id="pipeMode" class="value">—</div>
+                    </div>
+                    <div class="state-row">
+                        <div class="label">Strides</div>
+                        <div id="strideCount" class="value">0</div>
+                    </div>
+
+                    <div style="margin-top: 14px">
+                        <div class="progress">
+                            <div class="pmeta">
+                                <div>Calibration</div>
+                                <div id="calPct">0%</div>
+                            </div>
+                            <div class="bar" aria-hidden="true">
+                                <div id="calFill" class="fill" style="width: 0%"></div>
+                            </div>
+                        </div>
+                        <div class="progress" style="margin-top: 12px">
+                            <div class="pmeta">
+                                <div>Profile Collection</div>
+                                <div id="profPct">0 / 20</div>
+                            </div>
+                            <div class="bar" aria-hidden="true">
+                                <div id="profFill" class="fill" style="width: 0%"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card" style="background: var(--md-secondary-container)">
+                    <h2 style="color: var(--md-on-secondary-container); opacity: 0.6">Device Status</h2>
+                    <div style="font-size: 0.88rem; color: var(--md-on-secondary-container); line-height: 1.6; font-weight: 400">
+                        Connection states and metadata for connected ESP devices.
+                    </div>
+                </div>
+            </aside>
+
+            <footer class="app-footer">
+                GaitGuard — © Monitoring & Insights
+            </footer>
+        </div>
+
+        <script>
+            (function () {
+                "use strict";
+
+                const $ = (id) => document.getElementById(id);
+
+                const ghsNum = $("ghsNum");
+                const hapticTag = $("hapticTag");
+                const pipeState = $("pipeState");
+                const pipeMode = $("pipeMode");
+                const strideCount = $("strideCount");
+                const calPct = $("calPct");
+                const calFill = $("calFill");
+                const profPct = $("profPct");
+                const profFill = $("profFill");
+                const esp1Dot = $("esp1Dot");
+                const esp2Dot = $("esp2Dot");
+                const esp1Ip = $("esp1Ip");
+                const esp2Ip = $("esp2Ip");
+                const strideListEl = $("strideList");
+                const chartCanvas = $("ghsChart");
+                const ctx = chartCanvas.getContext("2d");
+
+                const HAPTIC_LABELS = {
+                    none: "No Haptic",
+                    two_short: "Two Short Pulses",
+                    three_short: "Three Short Pulses",
+                    long_buzz: "Long Buzz",
+                    sos: "SOS Pattern",
+                };
+
+                function colorFor(name) {
+                    if (name === "red") return getComputedStyle(document.documentElement).getPropertyValue("--md-bad").trim();
+                    if (name === "yellow") return getComputedStyle(document.documentElement).getPropertyValue("--md-warn").trim();
+                    return getComputedStyle(document.documentElement).getPropertyValue("--md-good").trim();
+                }
+
+                const MAX_POINTS = 60;
+                let ghsHistory = [];
+
+                function resizeCanvas() {
+                    const dpr = Math.max(window.devicePixelRatio || 1, 1);
+                    const rect = chartCanvas.getBoundingClientRect();
+                    chartCanvas.width = Math.round(rect.width * dpr);
+                    chartCanvas.height = Math.round(rect.height * dpr);
+                    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+                    drawChart();
+                }
+                window.addEventListener("resize", resizeCanvas);
+                requestAnimationFrame(resizeCanvas);
+
+                function drawChart() {
+                    const rect = chartCanvas.getBoundingClientRect();
+                    const W = rect.width;
+                    const H = rect.height;
+                    ctx.clearRect(0, 0, W, H);
+
+                    if (!ghsHistory.length) {
+                        ctx.fillStyle = "#72787E";
+                        ctx.font = '14px "Roboto", system-ui, sans-serif';
+                        ctx.textAlign = "center";
+                        ctx.fillText("No data yet", W / 2, H / 2);
+                        return;
+                    }
+
+                    const padding = { left: 36, right: 14, top: 14, bottom: 24 };
+                    const cw = W - padding.left - padding.right;
+                    const ch = H - padding.top - padding.bottom;
+
+                    // Grid lines
+                    ctx.strokeStyle = "rgba(194,199,206,0.5)";
+                    ctx.lineWidth = 1;
+                    ctx.font = '11px "Roboto", sans-serif';
+                    ctx.fillStyle = "#72787E";
+                    ctx.textAlign = "right";
+                    for (let v = 0; v <= 100; v += 25) {
+                        const y = padding.top + ch - (v / 100) * ch;
+                        ctx.beginPath();
+                        ctx.moveTo(padding.left, y);
+                        ctx.lineTo(W - padding.right, y);
+                        ctx.stroke();
+                        ctx.fillText(String(v), padding.left - 6, y + 4);
+                    }
+
+                    const n = ghsHistory.length;
+                    const step = cw / Math.max(n - 1, 1);
+
+                    // Area fill
+                    const grad = ctx.createLinearGradient(0, padding.top, 0, padding.top + ch);
+                    grad.addColorStop(0, "rgba(74,159,212,0.18)");
+                    grad.addColorStop(1, "rgba(74,159,212,0.00)");
+
+                    ctx.beginPath();
+                    ctx.moveTo(padding.left, padding.top + ch);
+                    for (let i = 0; i < n; i++) {
+                        const x = padding.left + i * step;
+                        const val = Math.min(100, Math.max(0, ghsHistory[i].ghs));
+                        ctx.lineTo(x, padding.top + ch - (val / 100) * ch);
+                    }
+                    ctx.lineTo(padding.left + (n - 1) * step, padding.top + ch);
+                    ctx.closePath();
+                    ctx.fillStyle = grad;
+                    ctx.fill();
+
+                    // Line
+                    ctx.beginPath();
+                    ctx.strokeStyle = "#4A9FD4";
+                    ctx.lineWidth = 2.5;
+                    ctx.lineJoin = "round";
+                    ctx.lineCap = "round";
+                    for (let i = 0; i < n; i++) {
+                        const x = padding.left + i * step;
+                        const y = padding.top + ch - (Math.min(100, Math.max(0, ghsHistory[i].ghs)) / 100) * ch;
+                        if (i === 0) ctx.moveTo(x, y);
+                        else ctx.lineTo(x, y);
+                    }
+                    ctx.stroke();
+
+                    // Dots
+                    for (let i = 0; i < n; i++) {
+                        const x = padding.left + i * step;
+                        const y = padding.top + ch - (Math.min(100, Math.max(0, ghsHistory[i].ghs)) / 100) * ch;
+                        // White fill behind
+                        ctx.beginPath();
+                        ctx.arc(x, y, 4.5, 0, Math.PI * 2);
+                        ctx.fillStyle = "#FAFCFF";
+                        ctx.fill();
+                        // Colored fill
+                        ctx.beginPath();
+                        ctx.arc(x, y, 3.5, 0, Math.PI * 2);
+                        ctx.fillStyle = colorFor(ghsHistory[i].color);
+                        ctx.fill();
+                    }
+                }
+
+                function applyStatus(s) {
+                    const ghs = typeof s.current_ghs === "number" ? s.current_ghs : 0;
+                    ghsNum.textContent = Number.isFinite(ghs) ? ghs.toFixed(1) : "—";
+                    ghsNum.style.color = colorFor(s.current_color || "green");
+
+                    hapticTag.textContent = HAPTIC_LABELS[s.last_haptic || "none"] || s.last_haptic || "—";
+
+                    pipeState.textContent = s.state || "—";
+                    pipeMode.textContent =
+                        s.mode === "record" ? "Record Healthy"
+                        : s.mode === "test" ? "Test Patient"
+                        : s.mode || "—";
+                    strideCount.textContent = s.stride_count ?? 0;
+
+                    const cp = Math.max(0, Math.min(1, s.calibration_progress || 0));
+                    calPct.textContent = Math.round(cp * 100) + "%";
+                    calFill.style.width = cp * 100 + "%";
+
+                    const sc = s.stride_count || 0;
+                    const ps = s.profile_strides || 20;
+                    profPct.textContent = sc + " / " + ps;
+                    profFill.style.width = Math.min(sc / ps, 1) * 100 + "%";
+
+                    if (s.esp1_connected) {
+                        esp1Dot.classList.replace("disconnected", "connected");
+                        esp1Ip.textContent = s.esp1_ip ? " (" + s.esp1_ip + ")" : "";
+                    } else {
+                        esp1Dot.classList.replace("connected", "disconnected");
+                        esp1Ip.textContent = "";
+                    }
+                    if (s.esp2_connected) {
+                        esp2Dot.classList.replace("disconnected", "connected");
+                        esp2Ip.textContent = s.esp2_ip ? " (" + s.esp2_ip + ")" : "";
+                    } else {
+                        esp2Dot.classList.replace("connected", "disconnected");
+                        esp2Ip.textContent = "";
+                    }
+                }
+
+                let prevStrideLen = -1;
+                function applyStrides(data) {
+                    const strides = Array.isArray(data.strides) ? data.strides : [];
+                    ghsHistory = strides.slice(-MAX_POINTS).map((s) => ({ ghs: s.ghs ?? 0, color: s.color ?? "green" }));
+                    drawChart();
+
+                    if (strides.length === prevStrideLen) return;
+                    prevStrideLen = strides.length;
+
+                    if (strides.length === 0) {
+                        strideListEl.innerHTML = '<div style="color:var(--md-on-surface-variant); padding:18px 0; text-align:center; font-size:0.88rem;">Waiting for stride data…</div>';
+                        return;
+                    }
+
+                    const frag = document.createDocumentFragment();
+                    for (let i = strides.length - 1; i >= 0; i--) {
+                        const s = strides[i];
+                        const row = document.createElement("div");
+                        row.className = "stride";
+                        const num = document.createElement("div");
+                        num.className = "num";
+                        num.textContent = "#" + (s.num ?? i + 1);
+                        const dot = document.createElement("div");
+                        dot.className = "color-dot";
+                        dot.style.background = colorFor(s.color || "green");
+                        dot.setAttribute("aria-hidden", "true");
+                        const ghs = document.createElement("div");
+                        ghs.className = "ghs";
+                        ghs.textContent = typeof s.ghs === "number" ? s.ghs.toFixed(1) : "—";
+                        const meta = document.createElement("div");
+                        meta.className = "meta";
+                        const zk = s.z_knee != null ? Number(s.z_knee).toFixed(2) : "—";
+                        const za = s.z_ankle != null ? Number(s.z_ankle).toFixed(2) : "—";
+                        const hap = HAPTIC_LABELS[s.haptic] || s.haptic || "—";
+                        meta.innerHTML = "Zk " + zk + " / Za " + za + '<br><span style="color:var(--md-on-surface-variant);font-size:0.72rem;">' + hap + "</span>";
+
+                        row.appendChild(num);
+                        row.appendChild(dot);
+                        row.appendChild(ghs);
+                        row.appendChild(meta);
+                        frag.appendChild(row);
+                    }
+                    strideListEl.innerHTML = "";
+                    strideListEl.appendChild(frag);
+                }
+
+                async function pollOnce() {
+                    try {
+                        const [statusRes, stridesRes] = await Promise.allSettled([
+                            fetch("/api/status"),
+                            fetch("/api/strides"),
+                        ]);
+                        if (statusRes.status === "fulfilled" && statusRes.value.ok) applyStatus(await statusRes.value.json());
+                        if (stridesRes.status === "fulfilled" && stridesRes.value.ok) applyStrides(await stridesRes.value.json());
+                    } catch (e) {}
+                }
+
+                setInterval(pollOnce, 1000);
+                pollOnce();
+                requestAnimationFrame(resizeCanvas);
+            })();
+
+            async function sendHaptic(pattern) {
+                const el = document.getElementById("hapticStatus");
+                const names = {1: "Two Short", 2: "One Long", 3: "Three Short"};
+                el.textContent = "Sending " + (names[pattern] || pattern) + "...";
+                el.style.color = "var(--md-on-surface-variant)";
+                try {
+                    const res = await fetch("/api/haptic", {
+                        method: "POST",
+                        headers: {"Content-Type": "application/json"},
+                        body: JSON.stringify({pattern: pattern})
+                    });
+                    const data = await res.json();
+                    if (data.ok) {
+                        el.textContent = "Sent " + (names[pattern] || pattern) + " to " + data.sent_to;
+                        el.style.color = "var(--md-good)";
+                    } else {
+                        el.textContent = data.error || "Failed";
+                        el.style.color = "var(--md-bad)";
+                    }
+                } catch (e) {
+                    el.textContent = "Error: " + e.message;
+                    el.style.color = "var(--md-bad)";
+                }
+                setTimeout(() => { el.textContent = ""; el.style.color = "var(--md-on-surface-variant)"; }, 3000);
+            }
+        </script>
+    </body>
+</html>
