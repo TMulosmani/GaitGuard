@@ -32,6 +32,7 @@ sys.path.insert(0, os.path.dirname(__file__))
 from core.config import SystemConfig
 from data_io.logger import SessionLogger
 from pipeline import GaitPipeline
+from report import generate_report
 from visualise import plot_session
 
 
@@ -130,6 +131,14 @@ def main():
                 profile  = pipeline._profile,
                 save_dir = logger._session_dir,
                 show     = False,
+            )
+            generate_report(
+                results     = results,
+                twin        = pipeline._twin,
+                profile     = pipeline._profile,
+                session_dir = logger._session_dir,
+                source      = args.source,
+                condition   = args.pathology if args.source == "synthetic" else args.condition,
             )
 
     print("\n=== Session complete ===")

@@ -58,15 +58,15 @@ class GaitProfile:
     mean_ankle: np.ndarray    # (100,)
     std_knee: float           # stride-to-stride scalar SD (degrees)
     std_ankle: float
-    anchor_knee: np.ndarray   # (20,)  first 20 % of gait cycle
-    anchor_ankle: np.ndarray  # (20,)
+    anchor_knee: np.ndarray   # (30,)  first 30 % of gait cycle
+    anchor_ankle: np.ndarray  # (30,)
     n_strides: int
 
 
 @dataclass
 class DigitalTwin:
     """LSTM-generated healthy twin waveform for this patient."""
-    twin_knee: np.ndarray    # (100,) = anchor[20] + predicted[80]
+    twin_knee: np.ndarray    # (100,) = anchor[30] + predicted[70]
     twin_ankle: np.ndarray   # (100,)
 
 
@@ -89,8 +89,8 @@ class StrideResult:
     z_knee: float
     z_ankle: float
     haptic: HapticPattern
-    knee_dev: np.ndarray        # (80,) absolute deviations at tp 21-100
-    ankle_dev: np.ndarray       # (80,)
+    knee_dev: np.ndarray        # (70,) absolute deviations at tp 31-100
+    ankle_dev: np.ndarray       # (70,)
     observed_knee: np.ndarray   # (100,) time-normalised observed
     observed_ankle: np.ndarray  # (100,)
     stride_number: int = 0

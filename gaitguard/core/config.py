@@ -65,6 +65,7 @@ class SystemConfig:
 
     # ---- Paths -------------------------------------------------------
     model_path: str = "models/lstm_twin.pt"
+    norm_stats_path: str = "models/lstm_norm.npz"
     session_log_dir: str = "sessions/"
 
     # ------------------------------------------------------------------

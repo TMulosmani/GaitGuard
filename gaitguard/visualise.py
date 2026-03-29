@@ -48,6 +48,8 @@ def _plot_overlay(
     fig, axes = plt.subplots(2, 1, figsize=(12, 7), sharex=True)
     t = np.arange(100)
 
+    ap = len(profile.anchor_knee)   # dynamic: 30 with current config
+
     for result in results[-10:]:   # last 10 strides
         axes[0].plot(t, result.observed_knee,  color="#90caf9", alpha=0.4, lw=0.8)
         axes[1].plot(t, result.observed_ankle, color="#a5d6a7", alpha=0.4, lw=0.8)
@@ -60,14 +62,14 @@ def _plot_overlay(
         profile.mean_knee + profile.std_knee,
         alpha=0.15, color="#ef9a9a",
     )
-    axes[0].axvline(x=20, color="grey", ls=":", lw=1, label="Anchor boundary")
+    axes[0].axvline(x=ap, color="grey", ls=":", lw=1, label="Anchor boundary")
     axes[0].set_ylabel("Knee angle (°)\nflexion positive")
     axes[0].legend(fontsize=8)
     axes[0].set_title("Knee Flexion/Extension — Observed vs. Healthy Digital Twin")
 
     axes[1].plot(t, twin.twin_ankle,  color="#2e7d32", lw=2.5, label="Digital Twin (healthy)")
     axes[1].plot(t, profile.mean_ankle, color="#ef9a9a", lw=1.5, ls="--", label="Patient mean")
-    axes[1].axvline(x=20, color="grey", ls=":", lw=1)
+    axes[1].axvline(x=ap, color="grey", ls=":", lw=1)
     axes[1].set_ylabel("Ankle angle (°)\ndorsiflexion positive")
     axes[1].set_xlabel("Gait cycle (%)")
     axes[1].legend(fontsize=8)
@@ -118,20 +120,21 @@ def _plot_deviation_heatmap(results: List[StrideResult], save_dir: str, show: bo
     if not results:
         return
 
-    knee_matrix  = np.stack([r.knee_dev  for r in results])   # (S, 80)
-    ankle_matrix = np.stack([r.ankle_dev for r in results])   # (S, 80)
-    t80 = np.arange(21, 101)
+    knee_matrix  = np.stack([r.knee_dev  for r in results])
+    ankle_matrix = np.stack([r.ankle_dev for r in results])
+    ap = knee_matrix.shape[1]   # number of post-anchor points (70 with current config)
+    ax_start = 100 - ap         # first scored gait-cycle % (30 with current config)
 
     fig, axes = plt.subplots(2, 1, figsize=(13, 6), sharex=True)
 
     im0 = axes[0].imshow(knee_matrix,  aspect="auto", cmap="YlOrRd",
-                          extent=[21, 100, len(results), 0])
+                          extent=[ax_start, 100, len(results), 0])
     axes[0].set_title("Knee deviation from Digital Twin (°)")
     axes[0].set_ylabel("Stride #")
     plt.colorbar(im0, ax=axes[0])
 
     im1 = axes[1].imshow(ankle_matrix, aspect="auto", cmap="YlOrRd",
-                          extent=[21, 100, len(results), 0])
+                          extent=[ax_start, 100, len(results), 0])
     axes[1].set_title("Ankle deviation from Digital Twin (°)")
     axes[1].set_ylabel("Stride #")
     axes[1].set_xlabel("Gait cycle (%)")

@@ -35,27 +35,29 @@ from ml.model import build_model
 
 def _normative_knee(t: np.ndarray) -> np.ndarray:
     """
-    Approximate normative knee flexion curve (degrees) over 0-100% gait cycle.
-    Based on Winter (2009) normative data.
+    Knee flexion curve aligned to Phase 1 segmented stride timing.
+
+    Phase 1's heel-strike detector fires ~12 timepoints into the true gait
+    cycle (after the flat-foot dwell), so every segmented stride starts at
+    ~tp 12 of the underlying waveform.  Shifting swing onset to tp 28 here
+    makes the LSTM training distribution match what Phase 1 actually produces.
     """
-    # Piece-wise sinusoidal approximation
     k = (
-          5.0 * np.ones_like(t)                            # baseline extension
-        + 10.0 * np.sin(np.pi * t / 20.0) * (t < 20)      # loading-response flex
-        + 55.0 * np.sin(np.pi * (t - 40) / 40.0) * ((t >= 40) & (t < 80))  # swing flex
+          2.0 * np.ones_like(t)                                          # baseline
+        + 10.0 * np.sin(np.pi * t / 15.0) * (t < 15)                   # loading-response bump
+        + 55.0 * np.sin(np.pi * (t - 28) / 42.0) * ((t >= 28) & (t < 70))  # swing flex: onset 28, peak ~49
     )
     return np.clip(k, 0, 70)
 
 
 def _normative_ankle(t: np.ndarray) -> np.ndarray:
     """
-    Approximate normative ankle dorsiflexion/plantarflexion curve (degrees).
-    Positive = dorsiflexion, negative = plantarflexion.
+    Ankle curve aligned to Phase 1 segmented stride timing (same ~12 tp offset).
     """
     a = (
-        -5.0 * np.sin(np.pi * t / 15.0) * (t < 15)           # initial PF
-        + 12.0 * np.sin(np.pi * (t - 15) / 45.0) * ((t >= 15) & (t < 60))  # DF stance
-        - 20.0 * np.sin(np.pi * (t - 55) / 15.0) * ((t >= 55) & (t < 70))  # push-off PF
+        -4.0 * np.sin(np.pi * t / 12.0) * (t < 12)                     # initial PF
+        + 12.0 * np.sin(np.pi * (t - 12) / 35.0) * ((t >= 12) & (t < 47))  # DF stance: peak ~29
+        - 20.0 * np.sin(np.pi * (t - 43) / 15.0) * ((t >= 43) & (t < 58))  # push-off PF: peak ~50
     )
     return a
 
@@ -92,6 +94,29 @@ def generate_healthy_strides(n_strides: int, rng: np.random.Generator) -> np.nda
 # Training loop
 # ---------------------------------------------------------------------------
 
+def compute_norm_stats(data: np.ndarray) -> tuple[np.ndarray, np.ndarray]:
+    """
+    Compute per-channel (knee, ankle) mean and std across all strides and timepoints.
+
+    data: (N, 100, 2)
+    Returns: mean (2,), std (2,)
+    """
+    mean = data.mean(axis=(0, 1))   # (2,)
+    std  = data.std(axis=(0, 1))    # (2,)
+    std  = np.where(std < 1e-6, 1.0, std)  # guard against zero std
+    return mean.astype(np.float32), std.astype(np.float32)
+
+
+def normalize(data: np.ndarray, mean: np.ndarray, std: np.ndarray) -> np.ndarray:
+    """Apply z-score normalization. data: (..., 2), mean/std: (2,)."""
+    return (data - mean) / std
+
+
+def denormalize(data: np.ndarray, mean: np.ndarray, std: np.ndarray) -> np.ndarray:
+    """Invert z-score normalization."""
+    return data * std + mean
+
+
 def train(
     data: np.ndarray,
     config: SystemConfig,
@@ -104,10 +129,20 @@ def train(
     Train LSTMTwin and save the model to config.model_path.
 
     data: (N, 100, 2) float32 array of healthy strides.
+    Normalisation stats are saved alongside the model at config.norm_stats_path.
     """
+    # --- Normalise (per-channel z-score) before any splitting ---
+    mean, std = compute_norm_stats(data)
+    data_norm = normalize(data, mean, std)
+
+    os.makedirs(os.path.dirname(config.norm_stats_path) or ".", exist_ok=True)
+    np.savez(config.norm_stats_path, mean=mean, std=std)
+    print(f"Norm stats saved → {config.norm_stats_path}  "
+          f"(knee μ={mean[0]:.2f} σ={std[0]:.2f} | ankle μ={mean[1]:.2f} σ={std[1]:.2f})")
+
     ap = config.lstm_anchor_len
-    X = torch.from_numpy(data[:, :ap, :])         # (N, 20, 2) — anchor
-    Y = torch.from_numpy(data[:, ap:, :])         # (N, 80, 2) — target
+    X = torch.from_numpy(data_norm[:, :ap, :])    # (N, 20, 2) — normalised anchor
+    Y = torch.from_numpy(data_norm[:, ap:, :])    # (N, 80, 2) — normalised target
 
     dataset = TensorDataset(X, Y)
     n_val = max(1, int(len(dataset) * val_split))
