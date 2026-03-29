@@ -25,6 +25,7 @@
 
 #include <WiFi.h>
 #include <WiFiUdp.h>
+#include <esp_wifi.h>
 #include <Wire.h>
 #include <TFT_eSPI.h>
 #include "../config.h"
@@ -309,35 +310,66 @@ void connectWiFi() {
   tft.setTextColor(TFT_WHITE, TFT_BLACK);
   tft.setTextDatum(MC_DATUM);
   tft.setTextSize(2);
+  tft.drawString("Scanning...", 120, 40);
+
+  // Scan to see what networks are visible
+  WiFi.mode(WIFI_STA);
+  WiFi.setMinSecurity(WIFI_AUTH_WPA_PSK);
+  WiFi.setTxPower(WIFI_POWER_8_5dBm);
+  esp_wifi_set_protocol(WIFI_IF_STA, WIFI_PROTOCOL_11B | WIFI_PROTOCOL_11G);
+  int n = WiFi.scanNetworks();
+  tft.setTextSize(1);
+  tft.setTextColor(TFT_LIGHTGREY, TFT_BLACK);
+  bool found = false;
+  for (int i = 0; i < n && i < 6; i++) {
+    String label = WiFi.SSID(i) + " ch" + String(WiFi.channel(i)) + " " + String(WiFi.RSSI(i)) + "dBm";
+    tft.drawString(label, 120, 65 + i * 15);
+    if (WiFi.SSID(i) == WIFI_SSID) found = true;
+  }
+  if (n == 0) {
+    tft.setTextColor(TFT_RED, TFT_BLACK);
+    tft.drawString("No networks found!", 120, 65);
+  }
+  delay(2000);
+
+  tft.fillScreen(TFT_BLACK);
+  tft.setTextColor(TFT_WHITE, TFT_BLACK);
+  tft.setTextDatum(MC_DATUM);
+  tft.setTextSize(2);
   tft.drawString("Connecting...", 120, 120);
   tft.setTextSize(1);
-  tft.drawString(WIFI_SSID, 120, 160);
+  tft.drawString(WIFI_SSID, 120, 150);
+  if (!found) {
+    tft.setTextColor(TFT_RED, TFT_BLACK);
+    tft.drawString("NOT FOUND IN SCAN!", 120, 170);
+  }
 
-  Serial.printf("Connecting to %s\n", WIFI_SSID);
-  WiFi.mode(WIFI_STA);
   WiFi.begin(WIFI_SSID, WIFI_PASSWORD);
 
   int dots = 0;
-  int max_attempts = 40;  // 20 seconds max
+  int max_attempts = 40;
   while (WiFi.status() != WL_CONNECTED && dots < max_attempts) {
     delay(500);
-    Serial.print(".");
     dots++;
-    tft.fillCircle(80 + (dots % 5) * 20, 200, 4, TFT_CYAN);
-    if (dots % 5 == 0) {
-      tft.fillRect(70, 190, 120, 20, TFT_BLACK);
-    }
+    // Show status code on screen
+    char statusBuf[32];
+    snprintf(statusBuf, sizeof(statusBuf), "status=%d  attempt %d/40", WiFi.status(), dots);
+    tft.fillRect(0, 200, 240, 30, TFT_BLACK);
+    tft.setTextColor(TFT_YELLOW, TFT_BLACK);
+    tft.drawString(statusBuf, 120, 210);
   }
 
   if (WiFi.status() != WL_CONNECTED) {
-    Serial.println("\nWiFi failed! Retrying...");
     tft.fillScreen(TFT_BLACK);
     tft.setTextColor(TFT_RED, TFT_BLACK);
     tft.setTextSize(2);
-    tft.drawString("WiFi Failed", 120, 100);
-    tft.setTextColor(TFT_WHITE, TFT_BLACK);
+    tft.drawString("WiFi Failed", 120, 80);
     tft.setTextSize(1);
-    tft.drawString(WIFI_SSID, 120, 140);
+    tft.setTextColor(TFT_WHITE, TFT_BLACK);
+    tft.drawString(WIFI_SSID, 120, 120);
+    char codeBuf[32];
+    snprintf(codeBuf, sizeof(codeBuf), "Status code: %d", WiFi.status());
+    tft.drawString(codeBuf, 120, 145);
     tft.drawString("Retrying in 5s...", 120, 170);
     delay(5000);
     ESP.restart();

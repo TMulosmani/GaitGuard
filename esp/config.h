@@ -5,11 +5,11 @@
 #define GAITGUARD_CONFIG_H
 
 // WiFi credentials
-#define WIFI_SSID "UNH_ROBOT_24"
-#define WIFI_PASSWORD "unh@robot11"
+#define WIFI_SSID "Arsh iPhone"
+#define WIFI_PASSWORD "12345678"
 
-// Raspberry Pi IP address (qnxpi)
-#define PI_IP "192.168.1.249"
+// Raspberry Pi — broadcast so it works on any network/DHCP
+#define PI_IP "255.255.255.255"
 
 // UDP ports — must match pi/wifi_receiver.py
 #define PORT_IMU_THIGH_SHIN 5001 // ESP#1 → Pi (IMU data)
