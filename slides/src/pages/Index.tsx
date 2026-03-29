@@ -10,33 +10,33 @@ const gaitguardLogo = '/logo_gaitguard2.svg';
 
 const problemCards = [
   {
-    number: '45.4%',
-    text: 'Of vulnerabilities remain unpatched after 12 months.',
-    citation: '(EdgeScan, 2025).',
+    number: '200K+',
+    text: 'ACL surgeries performed per year in the US alone.',
+    citation: '(NCBI StatPearls, 2024; Biology Insights, 2024).',
     numberClassName: 'text-destructive',
     borderClassName: 'border-destructive/25',
     shadowClassName: 'shadow-[0_30px_80px_rgba(255,79,79,0.08)]',
   },
   {
-    number: '17+ hrs',
-    text: 'Per week 72% of developers spend on security work.',
-    citation: '(Checkmarx, 2025).',
+    number: '1 in 4',
+    text: 'ACL patients re-tear within 2 years of surgery.',
+    citation: '(Princeton Medicine, 2024; MOON Knee ACL Research).',
     numberClassName: 'text-[#7fb0ff]',
     borderClassName: 'border-[#7fb0ff]/25',
     shadowClassName: 'shadow-[0_30px_80px_rgba(127,176,255,0.12)]',
   },
   {
-    number: '$5K-$100K',
-    text: 'Pentests cost before remediation even starts.',
-    citation: '(Invicti, 2025).',
+    number: '70%',
+    text: 'Of physical therapy patients fail to complete their full course of rehab.',
+    citation: '(WebPT, 2024; JOSPT, 2024).',
     numberClassName: 'text-[#e4b24d]',
     borderClassName: 'border-[#e4b24d]/25',
     shadowClassName: 'shadow-[0_30px_80px_rgba(228,178,77,0.12)]',
   },
   {
-    number: '$4.44M',
-    text: 'Average global breach cost in 2025.',
-    citation: '(IBM, 2025; IBM, 2026).',
+    number: '$200-$500',
+    text: 'Per clinical gait analysis session — unaffordable for regular monitoring.',
+    citation: '(UCSF RunSafe Clinic; Celution Education, 2024).',
     numberClassName: 'text-primary',
     borderClassName: 'border-primary/25',
     shadowClassName: 'shadow-[0_30px_80px_rgba(74,159,212,0.12)]',
@@ -45,23 +45,23 @@ const problemCards = [
 
 const preReconCards = [
   {
-    title: 'Route Map',
-    text: 'Before any live testing, Dispatch reads the codebase, developer docs, and RULES.md to map endpoints, handler files, middleware chains, and parameters.',
-    citation: '(OWASP Foundation, 2020; Scarfone et al., 2008).',
+    title: 'Baseline Capture',
+    text: '2-minute standing-still phase at 50 Hz. Complementary filter (α=0.98) fuses accelerometer and gyro to lock in thigh, shin, and foot angle baselines.',
+    citation: '(Winter, 2009; Madgwick et al., 2011).',
     accentClassName: 'text-primary',
     borderClassName: 'border-primary/30',
   },
   {
-    title: 'Risk Signals',
-    text: 'The orchestrator flags raw SQL concatenation, missing auth middleware, hardcoded secrets, eval/exec use, and unvalidated input to focus the attack surface.',
-    citation: '(OWASP Foundation, 2021).',
+    title: 'Heel-Strike Detection',
+    text: 'Triple-condition trigger: foot gyro <15°/s + accel_z within ±0.15g of 1g + knee within ±15° of baseline, held for ≥80ms. 300ms lockout prevents double-detection.',
+    citation: '(Tao et al., 2012; Perry & Burnfield, 2010).',
     accentClassName: 'text-secondary',
     borderClassName: 'border-secondary/30',
   },
   {
-    title: 'Attack Matrix',
-    text: 'Those signals become an endpoint-by-attack-type matrix so Dispatch sends workers only where the code suggests real risk, instead of blasting the whole app blindly.',
-    citation: '(Scarfone et al., 2008; OWASP Foundation, 2020).',
+    title: 'Stride Library',
+    text: 'Valid strides (400–2500ms) are Butterworth low-pass filtered (6Hz, order 4) and time-normalized to 100 points. 20 strides = profile ready for twin generation.',
+    citation: '(Winter, 2009; Butterworth, 1930).',
     accentClassName: 'text-accent',
     borderClassName: 'border-accent/30',
   },
@@ -69,64 +69,64 @@ const preReconCards = [
 
 const architectureCards = [
   {
-    title: 'Orchestrator',
-    text: 'Ingests the codebase, spec, and team rules, uses runtime context, and decides which workers to launch first.',
-    citation: '(Souppaya et al., 2022).',
+    title: 'IMU Layer',
+    text: 'Three MPU-6050 sensors (thigh, shin, foot) transmit via BLE at 50 Hz. Complementary filter fuses accel + gyro into joint angles. Swappable via IMUSource strategy pattern.',
+    citation: '(Madgwick et al., 2011; InvenSense, 2013).',
     accentClassName: 'text-primary',
     borderClassName: 'border-primary/30',
   },
   {
-    title: 'Pentester Workers',
-    text: 'Specialized workers cover route/auth, injection, auth, config, AI-agent security, and UI flows, then report file, line, severity, reproduction, and suggested fix.',
-    citation: '(OWASP Foundation, 2021; Booth et al., 2024).',
+    title: 'LSTM Digital Twin',
+    text: '2-layer stacked LSTM (hidden=64) trained on 3000 normative healthy strides. Given the first 20% of a stride as anchor, predicts the healthy continuation for the remaining 80%.',
+    citation: '(Hochreiter & Schmidhuber, 1997; Winter, 2009).',
     accentClassName: 'text-secondary',
     borderClassName: 'border-secondary/30',
   },
   {
-    title: 'Construction Worker',
-    text: 'Reads the tracked finding, patches the code, validates the fix, and updates remediation state so progress stays visible and verifiable.',
-    citation: '(Souppaya et al., 2022; OWASP Foundation, 2025).',
+    title: 'Scoring & Haptics',
+    text: 'GHS = clamp(100 − dev_score × 25, 0–100). Three haptic patterns: TWO_SHORT (knee extension), ONE_LONG (foot clearance), THREE_SHORT (general deviation). Fires within the stride.',
+    citation: '(Tao et al., 2012; Perry & Burnfield, 2010).',
     accentClassName: 'text-accent',
     borderClassName: 'border-accent/30',
   },
 ];
 
 const workflowSteps = [
-  { title: 'Read Repo', borderClassName: 'border-primary/30', arrowClassName: 'text-primary' },
-  { title: 'Attack App', borderClassName: 'border-secondary/30', arrowClassName: 'text-secondary' },
-  { title: 'Open Issue', borderClassName: 'border-accent/30', arrowClassName: 'text-accent' },
-  { title: 'Fix PR', borderClassName: 'border-destructive/30', arrowClassName: 'text-destructive' },
+  { title: 'Calibrate', borderClassName: 'border-primary/30', arrowClassName: 'text-primary' },
+  { title: 'Segment', borderClassName: 'border-secondary/30', arrowClassName: 'text-secondary' },
+  { title: 'Twin', borderClassName: 'border-accent/30', arrowClassName: 'text-accent' },
+  { title: 'Monitor', borderClassName: 'border-destructive/30', arrowClassName: 'text-destructive' },
 ];
 
 const workflowArtifacts = [
   {
-    title: 'Repo Map',
-    text: 'Routes, files, and risk signals for context-aware testing.',
-    citation: '(OWASP Foundation, 2020; Scarfone et al., 2008).',
+    title: 'Baseline Profile',
+    text: '2-minute standing + walking calibration builds your personal joint angle baseline from thigh, shin, and foot IMUs.',
+    citation: '(Winter, 2009; Madgwick et al., 2011).',
     accentClassName: 'text-primary',
     borderClassName: 'border-primary/30',
     bgClassName: 'bg-primary/10',
   },
   {
-    title: 'Exploit Evidence',
-    text: 'Live attack output and proof of reproduction.',
-    citation: '(Scarfone et al., 2008; OWASP Foundation, 2025).',
+    title: 'Stride Library',
+    text: '20 segmented strides with Butterworth-filtered knee and ankle waveforms form your Phase 1 gait profile.',
+    citation: '(Perry & Burnfield, 2010; Tao et al., 2012).',
     accentClassName: 'text-secondary',
     borderClassName: 'border-secondary/30',
     bgClassName: 'bg-secondary/10',
   },
   {
-    title: 'Auto-Created Issue',
-    text: 'Severity, repro steps, and recommended fix posted automatically.',
-    citation: '(OWASP Foundation, 2025; Souppaya et al., 2022).',
+    title: 'Digital Twin',
+    text: 'A 2-layer LSTM trained on normative gait predicts your healthy continuation from each stride\'s first 20% anchor.',
+    citation: '(Hochreiter & Schmidhuber, 1997; Winter, 2009).',
     accentClassName: 'text-accent',
     borderClassName: 'border-accent/30',
     bgClassName: 'bg-accent/10',
   },
   {
-    title: 'Fix Pull Request',
-    text: 'Patch written and validated. Ready for dev review.',
-    citation: '(Souppaya et al., 2022; OWASP Foundation, 2025).',
+    title: 'Live Scoring',
+    text: 'Every new stride is scored against the twin. GHS = 0–100. Deviations trigger targeted haptic patterns within the stride.',
+    citation: '(Tao et al., 2012; Perry & Burnfield, 2010).',
     accentClassName: 'text-destructive',
     borderClassName: 'border-destructive/30',
     bgClassName: 'bg-destructive/10',
@@ -135,30 +135,30 @@ const workflowArtifacts = [
 
 const outputCards = [
   {
-    title: 'Interactive Graph View',
-    text: 'Endpoints, files, and findings become a severity-colored network so developers can drill into relationships instead of scanning a static report.',
-    citation: '(Hasselbring et al., 2020).',
+    title: 'Overlay Chart',
+    text: 'Last 10 observed strides plotted against the healthy digital twin with ±1σ confidence band. Clinician sees exactly where the patient deviates.',
+    citation: '(Winter, 2009; Perry & Burnfield, 2010).',
     accentClassName: 'text-primary',
     borderClassName: 'border-primary/30',
   },
   {
-    title: 'PDF Reports',
-    text: 'Executive summary plus critical/high/medium-low sections, with GitHub permalinks and linked tickets on every page.',
-    citation: '(OWASP Foundation, 2025; Scarfone et al., 2008).',
+    title: 'GHS Trend Chart',
+    text: 'Per-stride Gait Health Score colored green (≥80) / yellow (50–79) / red (<50). Immediate visual of session quality and progression.',
+    citation: '(Tao et al., 2012).',
     accentClassName: 'text-secondary',
     borderClassName: 'border-secondary/30',
   },
   {
-    title: 'RAG Q&A',
-    text: 'Developers ask natural-language questions like "What is the most critical finding?" and get direct answers with code references.',
-    citation: '(Lewis et al., 2020).',
+    title: 'Deviation Heatmap',
+    text: 'S×80 matrix showing knee and ankle deviation at every timepoint across all monitored strides. Pinpoints which phase of gait is most impaired.',
+    citation: '(Perry & Burnfield, 2010; Winter, 2009).',
     accentClassName: 'text-accent',
     borderClassName: 'border-accent/30',
   },
   {
-    title: 'Workflow Integrations',
-    text: 'Chat, ticketing, observability, and browser-automation integrations keep Dispatch inside the tooling developers already use.',
-    citation: '(Souppaya et al., 2022).',
+    title: 'Session PDF Report',
+    text: 'Auto-generated per session: cover page, methodology, all 3 charts, per-stride table, and haptic trigger log. Ready for clinician review or patient record.',
+    citation: '(APTA Clinical Practice Guidelines, 2022).',
     accentClassName: 'text-destructive',
     borderClassName: 'border-destructive/30',
   },
@@ -166,26 +166,26 @@ const outputCards = [
 
 const fixLoopCards = [
   {
-    title: 'Exploit Confidence',
-    badge: 'exploit:confirmed | exploit:unconfirmed',
-    text: 'Dispatch distinguishes suspicious code patterns from vulnerabilities it actually reproduced against the live app.',
-    citation: '(Scarfone et al., 2008).',
+    title: 'TWO_SHORT Pattern',
+    badge: 'knee:extension-deficit',
+    text: 'GaitGuard detects insufficient knee extension at heel strike (gait cycle 21–35%). Two short pulses prompt the patient to fully extend before weight-loading.',
+    citation: '(Perry & Burnfield, 2010; Tao et al., 2012).',
     accentClassName: 'text-primary',
     borderClassName: 'border-primary/30',
   },
   {
-    title: 'Monkeypatch Status',
-    badge: 'validated | failed | not-attempted',
-    text: 'Pentester workers try fast proof fixes, restart the app, and re-attack so the next worker knows whether the direction is sound.',
-    citation: '(Souppaya et al., 2022).',
+    title: 'ONE_LONG Pattern',
+    badge: 'ankle:clearance-deficit',
+    text: 'Reduced plantarflexion push-off at swing phase (gait cycle 60–85%) triggers one long pulse — a cue to drive through the toe-off for foot clearance.',
+    citation: '(Winter, 2009; Perry & Burnfield, 2010).',
     accentClassName: 'text-secondary',
     borderClassName: 'border-secondary/30',
   },
   {
-    title: 'Fix Status',
-    badge: 'unfixed -> in-progress -> verified',
-    text: 'Construction workers update issue labels as they patch, validate, and open PRs, making remediation state visible to everyone.',
-    citation: '(Souppaya et al., 2022; OWASP Foundation, 2025).',
+    title: 'THREE_SHORT Pattern',
+    badge: 'gait:high-deviation',
+    text: 'When overall GHS drops below threshold across both joints, three short pulses signal general compensation — prompting the patient to slow down and reset.',
+    citation: '(Tao et al., 2012; Winter, 2009).',
     accentClassName: 'text-accent',
     borderClassName: 'border-accent/30',
   },
@@ -193,23 +193,23 @@ const fixLoopCards = [
 
 const summaryCards = [
   {
-    title: 'Research-Informed',
-    text: 'Threat-informed testing, staged execution, and evidence-first reporting shape Dispatch from the start.',
-    citation: '(Scarfone et al., 2008; OWASP Foundation, 2025).',
+    title: 'Clinically Grounded',
+    text: 'Complementary filter fusion, Butterworth signal processing, and Winter (2009) normative gait data underpin every Gait Health Score.',
+    citation: '(Winter, 2009; Madgwick et al., 2011; Butterworth, 1930).',
     accentClassName: 'text-primary',
     borderClassName: 'border-primary/30',
   },
   {
-    title: 'Developer-Native',
-    text: 'Grounded Q&A, tracked remediation, and workflow integrations keep security inside the engineering loop instead of a separate silo.',
-    citation: '(Souppaya et al., 2022; Lewis et al., 2020).',
+    title: 'Patient-Native',
+    text: 'Real-time haptic feedback keeps correction inside the patient\'s movement loop instead of a post-session report that arrives too late.',
+    citation: '(Tao et al., 2012; Perry & Burnfield, 2010).',
     accentClassName: 'text-secondary',
     borderClassName: 'border-secondary/30',
   },
   {
     title: 'Closed Loop',
-    text: 'Dispatch differentiates on code-aware planning, structured findings, automated remediation, and verification after the patch.',
-    citation: '(Souppaya et al., 2022; OWASP Foundation, 2025).',
+    text: 'GaitGuard differentiates on personalized twin generation, per-stride deviation scoring, targeted haptic patterns, and session-level PDF reporting.',
+    citation: '(Hochreiter & Schmidhuber, 1997; Winter, 2009).',
     accentClassName: 'text-accent',
     borderClassName: 'border-accent/30',
   },
@@ -220,13 +220,13 @@ const businessTiers = [
     name: 'Free',
     price: '$0',
     period: '/mo',
-    subtitle: 'Solo devs and side projects',
+    subtitle: 'Individual patients & researchers',
     features: [
-      '5 scans per month',
-      '1 repo workspace',
-      'Severity dashboard',
-      'OWASP tagging',
-      'Issue export',
+      'Unlimited local sessions',
+      'Session CSV export',
+      'Basic GHS trend view',
+      'Synthetic data mode',
+      'Open-source pipeline',
     ],
     borderClassName: 'border-white/10',
     dotClassName: 'bg-primary',
@@ -234,16 +234,16 @@ const businessTiers = [
     shadowClassName: 'shadow-[0_24px_70px_rgba(0,0,0,0.22)]',
   },
   {
-    name: 'Startup',
+    name: 'Clinic',
     price: '$99',
     period: '/mo',
-    subtitle: 'Small teams shipping fast',
+    subtitle: 'Physical therapy & sports medicine',
     features: [
-      '50 scans per month',
-      'AI attack testing',
-      'GitHub or Linear tickets',
-      'Fixer-agent PR drafts',
-      'Code-aware planning',
+      'Multi-patient dashboard',
+      'Session PDF reports',
+      'LSTM twin per patient',
+      'Haptic pattern configuration',
+      'Clinic-branded reports',
     ],
     borderClassName: 'border-secondary/30',
     dotClassName: 'bg-secondary',
@@ -251,16 +251,16 @@ const businessTiers = [
     shadowClassName: 'shadow-[0_24px_70px_rgba(47,107,168,0.12)]',
   },
   {
-    name: 'Team',
+    name: 'Pro',
     price: '$299',
     period: '/mo',
-    subtitle: 'Growing engineering teams',
+    subtitle: 'High-volume rehab centers',
     features: [
-      'Everything in Startup',
-      'CI/CD scans on every push',
-      'Slack alerts on critical findings',
-      'PDF and compliance-ready reports',
-      'Multi-repo workspace',
+      'Everything in Clinic',
+      'Longitudinal progress tracking',
+      'EHR-ready data export',
+      'Team accounts & roles',
+      'Priority support',
     ],
     borderClassName: 'border-primary/70',
     dotClassName: 'bg-primary',
@@ -272,13 +272,13 @@ const businessTiers = [
     name: 'Enterprise',
     price: 'Custom',
     period: '',
-    subtitle: 'Large orgs and compliance-heavy teams',
+    subtitle: 'Hospital systems & payer integrations',
     features: [
-      'Everything in Team',
-      'Human security engineer review',
+      'Custom LSTM training on institution data',
+      'IRB-ready data exports',
       'SSO and audit logs',
-      'VPC or self-hosted runner options',
-      'Custom SLA and procurement support',
+      'VPC or on-premise deployment',
+      'Clinical outcome reporting',
     ],
     borderClassName: 'border-accent/35',
     dotClassName: 'bg-accent',
@@ -288,31 +288,31 @@ const businessTiers = [
 ];
 
 const businessModelRows = [
-  { label: 'Primary revenue', value: 'Monthly and annual SaaS subscriptions' },
-  { label: 'Secondary revenue', value: 'Usage overages on scans and agent runtime' },
-  { label: 'Enterprise revenue', value: 'Human review, VPC, and compliance add-ons' },
-  { label: 'Pricing model', value: 'Hybrid: platform fee + usage' },
+  { label: 'Primary revenue', value: 'Monthly SaaS subscriptions (clinic-facing)' },
+  { label: 'Secondary revenue', value: 'Hardware kit sales (~$150 margin per unit, <$500 retail)' },
+  { label: 'Enterprise revenue', value: 'Hospital system contracts, payer integrations, CPT pathway' },
+  { label: 'Pricing model', value: 'Platform fee + hardware kit' },
   { label: 'Billing', value: 'Monthly by default, annual discount available' },
-  { label: 'Growth motion', value: 'Bottom-up -> team expansion -> enterprise' },
+  { label: 'Growth motion', value: 'Patient -> clinic adoption -> hospital system -> payer reimbursement' },
 ];
 
 const upgradeRows = [
-  { label: 'Free -> Startup', value: 'Hit scan cap or need auto-fix PRs' },
-  { label: 'Startup -> Team', value: 'Need CI/CD, Slack alerts, and multi-repo' },
-  { label: 'Team -> Enterprise', value: 'Need SSO, audit logs, or VPC deployment' },
-  { label: 'Compliance trigger', value: 'SOC 2 / ISO 27001 evidence for procurement' },
-  { label: 'Market benchmark', value: '$25-$40/dev/mo or €90/app/mo', isBadge: true },
+  { label: 'Free -> Clinic', value: 'Need multi-patient tracking and PDF reports' },
+  { label: 'Clinic -> Pro', value: 'Need longitudinal tracking, EHR export, and team accounts' },
+  { label: 'Pro -> Enterprise', value: 'Need SSO, IRB data exports, or on-premise deployment' },
+  { label: 'Compliance trigger', value: 'Hospital credentialing or payer reimbursement requirement' },
+  { label: 'Market benchmark', value: 'Vicon ~$12,500 system | Physitrack $21.99/mo/provider', isBadge: true },
 ];
 
 const marketCards = [
   {
     title: 'TAM',
-    value: '$13.6B',
-    description: 'Every company worldwide that buys security testing tools',
-    methodology: '$13.64B global AppSec market (Mordor Intelligence, 2025)',
+    value: '$50B',
+    description: 'Global wearable medical device market',
+    methodology: 'Grand View Research / MarketsandMarkets 2025; CAGR 25.5% → $168B by 2030',
     bullets: [
-      'Any industry, any size, any geography',
-      'SAST, DAST, and penetration-testing budgets',
+      '200,000+ ACL surgeries/year in the US; $7B annual ACL injury cost',
+      'Wearable rehab tech demand spiked 34% from 2024–2026',
     ],
     borderClassName: 'border-[#5a98f2]/45',
     accentClassName: 'text-[#7fb0ff]',
@@ -321,12 +321,12 @@ const marketCards = [
   },
   {
     title: 'SAM',
-    value: '$1.5B',
-    description: 'SaaS companies with a GitHub repo and 5-500 engineers',
-    methodology: '$13.64B × 40% (English-first markets) × 28% (SME/startup segment) = $1.53B',
+    value: '$1.4B',
+    description: 'Gait analysis devices + software market globally',
+    methodology: 'Research and Markets 2025; CAGR 10.4% → $2.1B by 2029',
     bullets: [
-      'Cloud-native, English-first markets (US, UK, CA, AU)',
-      'Teams shipping continuously under compliance pressure',
+      'AI-powered gait & mobility analytics: $950M (2025) → $1.67B (2030)',
+      'PT + sports medicine clinics adopting outcomes-driven digital tools',
     ],
     borderClassName: 'border-primary/45',
     accentClassName: 'text-primary',
@@ -335,12 +335,12 @@ const marketCards = [
   },
   {
     title: 'SOM - Year 3',
-    value: '$0.75M-$2.5M',
-    description: 'Series A-B startups finding Dispatch via GitHub or dev communities',
-    methodology: '1.5M reachable devs × 0.1% sign-up × 17% paid convert × $3,000 ACV',
+    value: '$0.5M-$1.5M',
+    description: 'Orthopedic rehab clinics + sports medicine practices adopting digital rehab tools',
+    methodology: '5,000 reachable ACL-focused US clinics × 1% adoption × $3,000 ACV',
     bullets: [
-      '10-100 engineers, hitting a SOC 2 or fundraise deadline',
-      'Teams that outgrow the Free tier and need auto-fix PRs',
+      'Orthopedic rehab clinics seeing post-surgical ACL patients',
+      'Sports medicine and athletic training programs with return-to-sport protocols',
     ],
     borderClassName: 'border-[#d9a441]/45',
     accentClassName: 'text-[#e4b24d]',
@@ -350,131 +350,128 @@ const marketCards = [
 ];
 
 const ganttMetrics = [
-  { label: 'Traditional workflow', value: '4-10 weeks', valueClassName: 'text-[#f27e73]' },
+  { label: 'Traditional monitoring', value: '~1 hr/week', valueClassName: 'text-[#f27e73]' },
 ];
 
 const ganttDays = Array.from({ length: 22 }, (_, index) => index + 1);
 
 const traditionalWorkflowRows = [
-  { label: 'Vendor RFP & scheduling', dotClassName: 'bg-[#c83a36]', barClassName: 'bg-[#c83a36]', start: 1, span: 4, barLabel: 'Find & book pentest' },
-  { label: 'Scoping call & NDA', dotClassName: 'bg-[#9b9a94]', barClassName: 'bg-[#a6a39c]', start: 5, span: 2, barLabel: 'Scope docs' },
-  { label: 'Pentest execution', dotClassName: 'bg-[#c83a36]', barClassName: 'bg-[#c83a36]', start: 7, span: 5, barLabel: 'Manual testing (5 days)' },
-  { label: 'Waiting for report', dotClassName: 'bg-[#9b9a94]', barClassName: 'bg-[#a6a39c]', start: 12, span: 4, barLabel: 'Report generation' },
-  { label: 'PDF report delivered', dotClassName: 'bg-[#c83a36]', barClassName: 'bg-[#c83a36]', start: 16, span: 1 },
-  { label: 'Internal triage meeting', dotClassName: 'bg-[#9b9a94]', barClassName: 'bg-[#a6a39c]', start: 17, span: 2 },
-  { label: 'Manual ticket creation', dotClassName: 'bg-[#c83a36]', barClassName: 'bg-[#c83a36]', start: 19, span: 2, barLabel: 'Jira / Linear' },
-  { label: 'Dev fixes (manual)', dotClassName: 'bg-[#2f6fb6]', barClassName: 'bg-[#2f6fb6]', start: 21, span: 2, barLabel: 'Code fixes' },
-  { label: 'Re-test & verify', dotClassName: 'bg-[#9b9a94]', barClassName: 'bg-[#a6a39c]', start: 22, span: 1 },
+  { label: 'Schedule clinic visit', dotClassName: 'bg-[#c83a36]', barClassName: 'bg-[#c83a36]', start: 1, span: 4, barLabel: '3–7 day wait' },
+  { label: 'Clinician observes walking', dotClassName: 'bg-[#9b9a94]', barClassName: 'bg-[#a6a39c]', start: 5, span: 2, barLabel: 'Manual observation' },
+  { label: 'Notes + subjective assessment', dotClassName: 'bg-[#c83a36]', barClassName: 'bg-[#c83a36]', start: 7, span: 3, barLabel: 'No quantification' },
+  { label: 'Homework assigned', dotClassName: 'bg-[#9b9a94]', barClassName: 'bg-[#a6a39c]', start: 10, span: 4, barLabel: 'Adherence unknown' },
+  { label: 'No data between sessions', dotClassName: 'bg-[#c83a36]', barClassName: 'bg-[#c83a36]', start: 14, span: 5, barLabel: '167 hrs unmonitored' },
+  { label: 'Re-injury occurs', dotClassName: 'bg-[#9b9a94]', barClassName: 'bg-[#a6a39c]', start: 19, span: 2, barLabel: 'No warning given' },
+  { label: 'Next visit (repeat cycle)', dotClassName: 'bg-[#c83a36]', barClassName: 'bg-[#c83a36]', start: 21, span: 2 },
 ];
 
 const dispatchWorkflowRows = [
-  { label: 'Pre-recon (automated)', dotClassName: 'bg-[#1fb388]', barClassName: 'bg-[#1fb388]', start: 1, span: 1 },
-  { label: 'Parallel worker testing', dotClassName: 'bg-[#1fb388]', barClassName: 'bg-[#24b587]', start: 2, span: 2 },
-  { label: 'GitHub issues created', dotClassName: 'bg-[#1fb388]', barClassName: 'bg-[#24b587]', start: 4, span: 1 },
-  { label: 'Construction worker patches', dotClassName: 'bg-[#1fb388]', barClassName: 'bg-[#24b587]', start: 5, span: 1 },
-  { label: 'Dev review & merge', dotClassName: 'bg-[#2f6fb6]', barClassName: 'bg-[#2f6fb6]', start: 6, span: 1 },
-  { label: 'Automated verification', dotClassName: 'bg-[#1fb388]', barClassName: 'bg-[#24b587]', start: 7, span: 1 },
-  { label: 'PDF + graph report', dotClassName: 'bg-[#1fb388]', barClassName: 'bg-[#24b587]', start: 8, span: 1 },
+  { label: 'Strap 3 sensors (60 sec)', dotClassName: 'bg-[#1fb388]', barClassName: 'bg-[#1fb388]', start: 1, span: 1 },
+  { label: 'Calibration walk (Phase 0+1)', dotClassName: 'bg-[#1fb388]', barClassName: 'bg-[#24b587]', start: 2, span: 1 },
+  { label: 'LSTM twin generated (Phase 2)', dotClassName: 'bg-[#1fb388]', barClassName: 'bg-[#24b587]', start: 3, span: 1 },
+  { label: 'Session begins — strides scored live', dotClassName: 'bg-[#1fb388]', barClassName: 'bg-[#24b587]', start: 4, span: 2 },
+  { label: 'Haptic cue fires on deviation', dotClassName: 'bg-[#2f6fb6]', barClassName: 'bg-[#2f6fb6]', start: 6, span: 1 },
+  { label: 'Session PDF + CSV generated', dotClassName: 'bg-[#1fb388]', barClassName: 'bg-[#24b587]', start: 7, span: 1 },
+  { label: 'Clinician reviews remotely', dotClassName: 'bg-[#1fb388]', barClassName: 'bg-[#24b587]', start: 8, span: 1 },
 ];
 
 const demoMoments = [
-  'Dispatch ingests the repo and reads the rules like a developer.',
-  'Workers attack the app in parallel and prove what is actually exploitable.',
-  'Issues are created automatically and the construction worker opens the fix PR.',
-  '90 seconds later, the developer reviews the PR instead of reading a PDF.',
+  'Patient straps three IMU sensors and stands still for a 2-minute calibration.',
+  'GaitGuard segments 20 strides, filters and normalizes them, and builds the personal gait profile.',
+  'The LSTM digital twin is generated from the healthy gait anchor — automatically.',
+  'Every new stride is scored live. Haptic cues fire within the stride when deviations are detected.',
 ];
 
 const competitorRows = [
   {
-    tool: 'Casco',
-    description: 'YC S25 · Agentic pentest',
-    pricing: 'Custom (startup-focused)',
-    features: ['yes', 'yes', 'yes', 'no', 'no', 'partial', 'no', 'yes'],
+    tool: 'Vicon',
+    description: 'Lab optical motion capture',
+    pricing: '~$12,500+ system',
+    features: ['no', 'no', 'no', 'no', 'no', 'no', 'yes'],
   },
   {
-    tool: 'Aikido',
-    description: 'Unified AppSec + AI pentest',
-    pricing: 'Per app (custom quote)',
-    features: ['partial', 'yes', 'yes', 'partial', 'no', 'yes', 'yes', 'yes'],
+    tool: 'Biodex Gait Trainer 3',
+    description: 'Instrumented treadmill',
+    pricing: 'Enterprise (undisclosed)',
+    features: ['no', 'partial', 'no', 'no', 'no', 'no', 'yes'],
   },
   {
-    tool: 'XBOW',
-    description: 'Autonomous pentest agent',
-    pricing: 'Custom (early access)',
-    features: ['yes', 'yes', 'yes', 'no', 'no', 'no', 'no', 'partial'],
+    tool: 'DorsaVi ViMove+',
+    description: 'Wearable IMU + AI analysis',
+    pricing: 'Clinic contract',
+    features: ['yes', 'no', 'no', 'no', 'no', 'yes', 'yes'],
   },
   {
-    tool: 'Escape',
-    description: 'API security / agentic',
-    pricing: 'From €500/mo',
-    features: ['partial', 'yes', 'partial', 'no', 'no', 'yes', 'yes', 'yes'],
+    tool: 'XSENS / Movella',
+    description: 'Research IMU capture',
+    pricing: '$1K–$10K+',
+    features: ['yes', 'no', 'no', 'no', 'no', 'yes', 'partial'],
   },
   {
-    tool: 'Pentest firm',
-    description: 'Manual / human',
-    pricing: '$5K-$100K/yr',
-    features: ['yes', 'no', 'yes', 'no', 'no', 'no', 'no', 'yes'],
+    tool: 'Physitrack',
+    description: 'PT exercise SaaS',
+    pricing: '$10.99–$21.99/mo',
+    features: ['no', 'no', 'no', 'no', 'no', 'no', 'yes'],
   },
   {
-    tool: 'Dispatch',
-    description: 'Agentic AppSec',
-    pricing: '$0-$299/mo flat',
-    features: ['yes', 'yes', 'yes', 'yes', 'yes', 'yes', 'yes', 'yes'],
+    tool: 'GaitGuard',
+    description: 'Wearable + LSTM AI rehab',
+    pricing: '<$500 HW + $0–$99/mo',
+    features: ['yes', 'yes', 'yes', 'yes', 'yes', 'yes', 'yes'],
     isDispatch: true,
   },
 ];
 
 const competitorColumns = [
-  'Code-aware recon',
-  'Agentic testing',
-  'Exploit validation',
-  'Auto-fix PR',
-  'Verified remediation',
-  'GitHub native',
-  'CI/CD',
-  'Compliance report',
+  'Wearable',
+  'Real-time feedback',
+  'LSTM twin',
+  'Per-stride scoring',
+  'Haptic cues',
+  'Portable',
+  'Session report',
 ];
 
 const forceCards = [
   {
     title: 'Threat of New Entrants',
-    level: 'Medium-High',
+    level: 'Medium',
     levelClassName: 'bg-[#5a4311] text-[#e4b24d]',
     barClassName: 'bg-[#d28a1d]',
-    widthClassName: 'w-[68%]',
-    text: 'AI tooling costs are falling fast. Moats must come from data network effects and developer workflow stickiness, not the orchestrator pattern alone.',
+    widthClassName: 'w-[55%]',
+    text: 'AI + IMU hardware costs are falling. Moat comes from the LSTM training data flywheel and clinical validation — not the sensor hardware alone.',
   },
   {
     title: 'Bargaining Power of Buyers',
     level: 'Medium',
     levelClassName: 'bg-[#5a4311] text-[#e4b24d]',
     barClassName: 'bg-[#d28a1d]',
-    widthClassName: 'w-[56%]',
-    text: 'Developers have many alternatives, but switching cost rises once Dispatch is embedded into CI/CD and GitHub workflows.',
+    widthClassName: 'w-[50%]',
+    text: 'Clinics have limited alternatives for affordable real-time gait monitoring. Switching cost rises once GaitGuard is embedded in patient session workflow.',
   },
   {
     title: 'Bargaining Power of Suppliers',
     level: 'Low',
     levelClassName: 'bg-[#214b18] text-[#7fd14c]',
     barClassName: 'bg-[#15876d]',
-    widthClassName: 'w-[26%]',
-    text: 'LLM APIs are the main supplier dependency. Multi-model support is straightforward and cloud infrastructure remains commoditized.',
+    widthClassName: 'w-[20%]',
+    text: 'MPU-6050 IMUs cost under $5 each. BLE modules are commoditized. No single supplier dependency. Cloud ML inference via PyTorch is fully portable.',
   },
   {
     title: 'Threat of Substitutes',
-    level: 'High',
-    levelClassName: 'bg-[#5e2a25] text-[#f27e73]',
-    barClassName: 'bg-[#be3a35]',
-    widthClassName: 'w-[80%]',
-    text: 'Snyk, Semgrep, GitHub Advanced Security, Checkmarx, Veracode, and manual pentests all compete for the same budget.',
+    level: 'Medium',
+    levelClassName: 'bg-[#5a4311] text-[#e4b24d]',
+    barClassName: 'bg-[#d28a1d]',
+    widthClassName: 'w-[52%]',
+    text: 'Manual observation, video review, and periodic in-lab gait analysis (Vicon, Biodex) are the current standard — but none provide real-time per-stride haptic feedback.',
   },
   {
     title: 'Competitive Rivalry',
-    level: 'High',
-    levelClassName: 'bg-[#5e2a25] text-[#f27e73]',
-    barClassName: 'bg-[#be3a35]',
-    widthClassName: 'w-[84%]',
-    text: "Dispatch's agentic remediation loop is differentiated today, but larger AppSec vendors can close feature gaps quickly if customer pull is real.",
+    level: 'Low–Medium',
+    levelClassName: 'bg-[#214b18] text-[#7fd14c]',
+    barClassName: 'bg-[#15876d]',
+    widthClassName: 'w-[35%]',
+    text: "Lab systems (Vicon, Biodex) don't compete on portability or price. Wearable competitors (DorsaVi) lack LSTM twins and haptic feedback. No direct equivalent exists today.",
     fullWidth: true,
   },
 ];
@@ -488,7 +485,7 @@ const Citation = ({ text, className = '' }: { text: string; className?: string }
 const MAIN_NAV_ITEMS = [
   { label: 'Home', id: 'home' },
   { label: 'Problem', id: 'problem' },
-  { label: 'Dispatch', id: 'how-it-works' },
+  { label: 'GaitGuard', id: 'how-it-works' },
   { label: 'Demo', id: 'demo' },
   { label: 'Output', id: 'pdf-output' },
   { label: 'Market', id: 'market-size' },
@@ -502,10 +499,10 @@ const APPENDIX_NAV_ITEMS = [
   { label: 'Business', id: 'business-model' },
   { label: 'Timeline', id: 'timeline' },
   { label: 'EVA', id: 'eva' },
-  { label: 'Pre-Recon', id: 'clinical' },
+  { label: 'Calibration', id: 'clinical' },
   { label: 'Architecture', id: 'solution' },
   { label: 'Outputs', id: 'dashboard' },
-  { label: 'Fix Loop', id: 'muscle' },
+  { label: 'Feedback Loop', id: 'muscle' },
 ];
 
 const SECTION_IDS = [...MAIN_NAV_ITEMS.map((item) => item.id), ...APPENDIX_NAV_ITEMS.map((item) => item.id)];
@@ -617,7 +614,7 @@ const Index = () => {
         <div className="fixed bottom-6 left-6 z-[70] flex flex-col items-center gap-2">
           <div className="rounded-2xl bg-white p-3 shadow-lg">
             <img
-              src="https://api.qrserver.com/v1/create-qr-code/?size=160x160&data=https://github.com/Arsh-S/Dispatch&bgcolor=ffffff&color=000000"
+              src="https://api.qrserver.com/v1/create-qr-code/?size=160x160&data=https://github.com/TMulosmani/GaitGuard&bgcolor=ffffff&color=000000"
               alt="GitHub QR Code"
               className="h-36 w-36"
             />
@@ -709,10 +706,10 @@ const Index = () => {
               className="mx-auto max-w-6xl text-center"
             >
               <h2 className="text-3xl font-black tracking-tight leading-[1.05] text-foreground md:text-5xl xl:text-6xl">
-                Security tools find vulnerabilities. Then they <span className="text-destructive">stop</span>.
+                Gait rehab is <span className="text-destructive">flying blind</span>.
               </h2>
               <p className="mx-auto mt-3 max-w-5xl text-lg leading-relaxed text-muted-foreground md:text-xl">
-                The real problem is not finding vulnerabilities. It is fixing them.
+                Clinicians see patients once a week. The other 167 hours? Nobody is watching.
               </p>
             </motion.div>
 
@@ -747,20 +744,20 @@ const Index = () => {
                 <LinesPatternCardBody className="p-5 md:p-6">
                   <div className="grid gap-4 md:grid-cols-2">
                     <div className="rounded-xl border border-destructive/30 bg-destructive/5 p-5">
-                      <p className="text-lg font-semibold text-destructive mb-1">Traditional Workflow</p>
-                      <p className="text-4xl md:text-5xl font-black text-destructive">4-10 weeks</p>
+                      <p className="text-lg font-semibold text-destructive mb-1">Traditional Rehab</p>
+                      <p className="text-4xl md:text-5xl font-black text-destructive">~1 hr/week</p>
                       <p className="mt-3 text-base text-muted-foreground leading-relaxed">
-                        RFP to remediation: vendor selection, scoping, manual testing, report generation, triage, ticket creation, then dev fixes.
+                        In-clinic only. Gait assessed once or twice per rehab cycle. No feedback between sessions. Patient re-injures with no warning. $500/session, 6–18 month recovery, 1 in 4 re-tears.
                       </p>
-                      <Citation text="(Triaxiom Security, 2025; Invicti, 2025)." className="!mt-2" />
+                      <Citation text="(Princeton Medicine, 2024; WebPT, 2024; UCSF RunSafe Clinic)." className="!mt-2" />
                     </div>
                     <div className="rounded-xl border border-primary/30 bg-primary/5 p-5">
-                      <p className="text-lg font-semibold text-primary mb-1">With Dispatch</p>
-                      <p className="text-4xl md:text-5xl font-black text-primary">1-3 days</p>
+                      <p className="text-lg font-semibold text-primary mb-1">With GaitGuard</p>
+                      <p className="text-4xl md:text-5xl font-black text-primary">Every stride</p>
                       <p className="mt-3 text-base text-muted-foreground leading-relaxed">
-                        Automated recon and parallel testing (hours), instant issue creation, auto-generated fix PR, developer review and merge.
+                        Continuous wearable monitoring every session. Real-time haptic cues correct errors as they happen. LSTM digital twin tracks progress toward healthy gait. Rehab guided by data, not memory.
                       </p>
-                      <Citation text="(Estimate based on automation of manual steps)." className="!mt-2" />
+                      <Citation text="(Tao et al., 2012; Hochreiter & Schmidhuber, 1997)." className="!mt-2" />
                     </div>
                   </div>
                 </LinesPatternCardBody>
@@ -773,10 +770,10 @@ const Index = () => {
           <div className="space-y-5">
             <div className="text-center space-y-3">
               <h1 className="text-3xl font-bold text-foreground md:text-5xl xl:text-6xl">
-                <span className="text-primary">Dispatch</span> reads the repo, attacks the app, and <span className="text-primary">writes</span> the fix.
+                <span className="text-primary">GaitGuard</span> learns your healthy gait — then <span className="text-primary">guards</span> it, in real time.
               </h1>
               <p className="max-w-5xl mx-auto text-lg md:text-xl text-muted-foreground">
-                Give Dispatch your repo. It reads the code, attacks the app, opens the issue, and writes the fix PR.
+                Strap on three sensors. Walk for 2 minutes. GaitGuard builds your personal healthy twin and monitors every stride from there.
               </p>
             </div>
 
@@ -828,7 +825,7 @@ const Index = () => {
             <LinesPatternCard className="max-w-5xl mx-auto rounded-xl shadow-2xl border-primary/25">
               <LinesPatternCardBody className="p-4 text-center">
                 <p className="text-2xl md:text-3xl font-semibold text-foreground leading-snug">
-                  Not just a <span className="text-destructive">PDF</span>, but also a <span className="text-primary">pull request</span>.
+                  Not just a <span className="text-destructive">score</span> — a <span className="text-primary">haptic cue</span> at the exact moment the error happens.
                 </p>
               </LinesPatternCardBody>
             </LinesPatternCard>
@@ -839,7 +836,7 @@ const Index = () => {
           <div className="space-y-6">
             <div className="text-center">
               <h1 className="text-4xl md:text-6xl font-bold text-foreground">
-                <span className="text-primary">Dispatch</span> Video Demo
+                <span className="text-primary">GaitGuard</span> Live Demo
               </h1>
             </div>
             <div className="rounded-2xl overflow-hidden border border-primary/30 bg-black shadow-[0_30px_90px_rgba(0,0,0,0.4)]">
@@ -860,17 +857,17 @@ const Index = () => {
           <div className="space-y-6">
             <div className="text-center">
               <h1 className="text-4xl md:text-6xl font-bold text-foreground">
-                <span className="text-primary">Dispatch</span> PDF Output
+                <span className="text-primary">GaitGuard</span> Session Report
               </h1>
               <p className="mt-3 text-lg md:text-xl text-muted-foreground">
-                Auto-generated security report with findings, severity ratings, and remediation guidance.
+                Auto-generated per-session PDF with Gait Health Score trend, observed vs. digital twin overlay, deviation heatmap, and haptic trigger log.
               </p>
             </div>
             <div className="rounded-2xl overflow-hidden border border-primary/30 bg-white shadow-[0_30px_90px_rgba(0,0,0,0.4)]" style={{ height: '70vh' }}>
               <iframe
                 src="/dispatch-output.pdf"
                 className="w-full h-full"
-                title="Dispatch PDF Output"
+                title="GaitGuard Session Report"
               />
             </div>
           </div>
@@ -881,7 +878,7 @@ const Index = () => {
             <div className="text-center space-y-4">
               <h1 className="text-5xl md:text-7xl font-bold text-foreground">Market Size</h1>
               <p className="max-w-5xl mx-auto text-xl md:text-2xl text-muted-foreground">
-                Year 3: $750K-$2.5M ARR. Expanding into a $1.5B GitHub-native SaaS segment.
+                Year 3: $500K–$1.5M ARR. Expanding into a $1.4B wearable gait analysis market growing at 10% CAGR.
               </p>
             </div>
 
@@ -931,7 +928,7 @@ const Index = () => {
             <div className="text-center space-y-1">
               <h1 className="text-4xl md:text-6xl font-bold text-foreground">Competitive Landscape</h1>
               <p className="max-w-5xl mx-auto text-lg md:text-xl text-muted-foreground">
-                Others stop at detection. Dispatch closes the loop to verified remediation.
+                Others require a lab or cost six figures. GaitGuard brings clinical-grade gait analysis to every session for under $500 in hardware.
               </p>
             </div>
 
@@ -998,7 +995,7 @@ const Index = () => {
                     <span>No</span>
                   </div>
                   <div className="font-semibold text-muted-foreground">
-                    Gap: nobody else closes the loop from exploit evidence to verified remediation.
+                    Gap: nobody else combines a personalized healthy digital twin with real-time per-stride haptic correction in a portable, affordable package.
                   </div>
                 </div>
               </LinesPatternCardBody>
@@ -1074,7 +1071,7 @@ const Index = () => {
               className="text-center"
             >
               <p className="text-3xl md:text-4xl font-bold text-foreground">
-                Finding vulnerabilities is easy. Fixing them is <span className="text-destructive">hard</span>. <span className="text-primary">We do both</span>.
+                Gait rehab shouldn't require a $12,000 lab. <span className="text-primary">We built the lab into a wristband</span>.
               </p>
             </motion.div>
 
@@ -1086,7 +1083,7 @@ const Index = () => {
             <div className="text-center space-y-1">
               <h1 className="text-4xl md:text-6xl font-bold text-foreground">Porter's Five Forces</h1>
               <p className="max-w-5xl mx-auto text-lg md:text-xl text-muted-foreground">
-                Market dynamics shaping the agentic security space.
+                Market dynamics shaping the wearable gait rehabilitation space.
               </p>
             </div>
 
@@ -1138,9 +1135,9 @@ const Index = () => {
         <Section id="summary" className="bg-transparent" contentClassName="max-w-6xl py-12">
           <div className="space-y-6">
             <div className="text-center space-y-3">
-              <h1 className="text-5xl md:text-6xl font-bold text-foreground">Why Dispatch Stands Out</h1>
+              <h1 className="text-5xl md:text-6xl font-bold text-foreground">Why GaitGuard Stands Out</h1>
               <p className="max-w-5xl mx-auto text-xl md:text-2xl text-muted-foreground">
-                Dispatch is not just another scanner. It is a developer-native remediation workflow built on top of code-aware security testing.
+                GaitGuard is not just a sensor. It is a personalized rehabilitation co-pilot built on top of real-time biomechanical intelligence.
               </p>
             </div>
 
@@ -1166,13 +1163,13 @@ const Index = () => {
             <LinesPatternCard className="max-w-6xl mx-auto rounded-2xl shadow-2xl border-primary/30">
               <LinesPatternCardBody className="p-7 text-center">
                 <p className="text-3xl md:text-4xl font-bold text-foreground leading-tight">
-                  Security tools give you a PDF. Dispatch gives you a pull request.
+                  Rehab tools give you a weekly summary. GaitGuard corrects you mid-stride.
                 </p>
                 <p className="mt-3 text-lg md:text-xl text-muted-foreground max-w-4xl mx-auto leading-relaxed">
-                  The next step is obvious: run this on every push, prioritize by real-world runtime risk, and keep the fix loop inside the developer workflow from start to finish.
+                  The next step is clear: integrate real patient data from COMPWALK and clinical cohorts, validate with IRB studies, and expand haptic patterns to cover the full lower-limb kinematic chain.
                 </p>
                 <Citation
-                  text={'(Souppaya et al., 2022; Lewis et al., 2020).'}
+                  text={'(Winter, 2009; Tao et al., 2012; Hochreiter & Schmidhuber, 1997).'}
                   className="text-center !mt-2"
                 />
               </LinesPatternCardBody>
@@ -1183,12 +1180,12 @@ const Index = () => {
         <Section id="business-model" className="bg-transparent" contentClassName="max-w-7xl py-6">
           <div className="space-y-4">
             <div className="text-center space-y-1">
-              <h1 className="text-4xl md:text-5xl font-bold text-foreground">Dispatch Business Model</h1>
+              <h1 className="text-4xl md:text-5xl font-bold text-foreground">GaitGuard Business Model</h1>
               <p className="max-w-5xl mx-auto text-base md:text-lg text-muted-foreground">
-                Self-serve pricing for developers, expansion revenue from teams, and enterprise upsell when compliance and sign-off matter.
+                Hardware kit for the clinic. Software subscription for the data. Enterprise for hospital systems and payer integration.
               </p>
               <Citation
-                text={'(Snyk, 2026; Semgrep, 2026; Detectify, 2026).'}
+                text={'(Grand View Research, 2025; MarketsandMarkets, 2025; Physitrack Pricing, 2025).'}
                 className="text-center !mt-1"
               />
             </div>
@@ -1235,7 +1232,7 @@ const Index = () => {
             <div className="grid max-w-7xl mx-auto gap-4 lg:grid-cols-2">
               <LinesPatternCard className="rounded-[1.5rem] shadow-2xl border-primary/25">
                 <LinesPatternCardBody className="p-5">
-                  <h3 className="text-xl md:text-2xl font-bold text-foreground mb-3">How Dispatch makes money</h3>
+                  <h3 className="text-xl md:text-2xl font-bold text-foreground mb-3">How GaitGuard makes money</h3>
                   <div className="space-y-1.5">
                     {businessModelRows.map((row) => (
                       <div
@@ -1271,7 +1268,7 @@ const Index = () => {
                     ))}
                   </div>
                   <Citation
-                    text={'(Snyk, 2026; Semgrep, 2026; Detectify, 2026; Vanta, 2026).'}
+                    text={'(Vicon, 2025; DorsaVi, 2025; Physitrack Pricing, 2025; Research and Markets, 2025).'}
                     className="!mt-2"
                   />
                 </LinesPatternCardBody>
@@ -1283,9 +1280,9 @@ const Index = () => {
         <Section id="timeline" className="bg-transparent" contentClassName="max-w-7xl py-6">
           <div className="space-y-6">
             <div className="text-center space-y-2">
-              <h1 className="text-4xl md:text-6xl font-bold text-foreground">Timeline Comparison</h1>
+              <h1 className="text-4xl md:text-6xl font-bold text-foreground">Rehab Monitoring: Traditional vs. GaitGuard</h1>
               <p className="max-w-5xl mx-auto text-lg md:text-xl text-muted-foreground">
-                Traditional pentest workflow vs. Dispatch automation.
+                Traditional gait assessment happens once a week in a clinic. GaitGuard monitors every stride of every session.
               </p>
             </div>
 
@@ -1293,8 +1290,8 @@ const Index = () => {
               <LinesPatternCard className="rounded-[1.5rem] shadow-2xl border-destructive/30">
                 <LinesPatternCardBody className="p-5">
                   <div className="flex items-center justify-between mb-4">
-                    <h3 className="text-2xl font-bold text-destructive">Traditional Workflow</h3>
-                    <span className="text-3xl font-black text-destructive">4-10 weeks</span>
+                    <h3 className="text-2xl font-bold text-destructive">Traditional Rehab</h3>
+                    <span className="text-3xl font-black text-destructive">~1 hr/week</span>
                   </div>
                   <div className="space-y-2">
                     {traditionalWorkflowRows.map((row) => (
@@ -1309,15 +1306,15 @@ const Index = () => {
                       </div>
                     ))}
                   </div>
-                  <Citation text="(Triaxiom Security, 2025; Invicti, 2025)." className="!mt-4" />
+                  <Citation text="(WebPT, 2024; JOSPT, 2024; Princeton Medicine, 2024)." className="!mt-4" />
                 </LinesPatternCardBody>
               </LinesPatternCard>
 
               <LinesPatternCard className="rounded-[1.5rem] shadow-2xl border-primary/30">
                 <LinesPatternCardBody className="p-5">
                   <div className="flex items-center justify-between mb-4">
-                    <h3 className="text-2xl font-bold text-primary">With Dispatch</h3>
-                    <span className="text-3xl font-black text-primary">1-3 days</span>
+                    <h3 className="text-2xl font-bold text-primary">With GaitGuard</h3>
+                    <span className="text-3xl font-black text-primary">Every session</span>
                   </div>
                   <div className="space-y-2">
                     {dispatchWorkflowRows.map((row) => (
@@ -1327,15 +1324,15 @@ const Index = () => {
                       </div>
                     ))}
                   </div>
-                  <Citation text="(Estimate based on automation of manual steps)." className="!mt-4" />
+                  <Citation text="(Tao et al., 2012; Hochreiter & Schmidhuber, 1997; Winter, 2009)." className="!mt-4" />
                 </LinesPatternCardBody>
               </LinesPatternCard>
             </div>
 
             <LinesPatternCard className="max-w-4xl mx-auto rounded-2xl shadow-xl border-[#7fb0ff]/30">
               <LinesPatternCardBody className="p-5 text-center">
-                <p className="text-4xl md:text-5xl font-black text-[#7fb0ff]">~90% faster</p>
-                <p className="mt-2 text-lg text-muted-foreground">From weeks of vendor coordination to days of developer review</p>
+                <p className="text-4xl md:text-5xl font-black text-[#7fb0ff]">167× more data</p>
+                <p className="mt-2 text-lg text-muted-foreground">1 clinic hour/week vs. continuous monitoring of every session stride</p>
               </LinesPatternCardBody>
             </LinesPatternCard>
           </div>
@@ -1345,60 +1342,60 @@ const Index = () => {
           <div className="space-y-5">
             <div className="text-center space-y-2">
               <p className="text-sm font-semibold tracking-[0.24em] uppercase text-primary">EVA — Economic Value Added</p>
-              <h1 className="text-4xl md:text-5xl font-bold text-foreground">Unit Economics per Customer</h1>
+              <h1 className="text-4xl md:text-5xl font-bold text-foreground">Unit Economics per Clinic Customer</h1>
             </div>
 
             <div className="grid gap-4 md:grid-cols-4">
               <div className="rounded-xl border border-primary/25 bg-card/90 p-4 text-center">
-                <p className="text-sm text-muted-foreground">Avg. Revenue / Customer (blended)</p>
-                <p className="text-3xl md:text-4xl font-black text-primary mt-1">$1,800</p>
-                <p className="text-xs text-muted-foreground mt-1">/year — weighted Startup/Team mix</p>
+                <p className="text-sm text-muted-foreground">Avg. Revenue / Clinic (blended)</p>
+                <p className="text-3xl md:text-4xl font-black text-primary mt-1">$2,400</p>
+                <p className="text-xs text-muted-foreground mt-1">/year — weighted Clinic/Pro mix</p>
               </div>
               <div className="rounded-xl border border-[#e4b24d]/25 bg-card/90 p-4 text-center">
-                <p className="text-sm text-muted-foreground">Est. Gross Margin (SaaS infra)</p>
-                <p className="text-3xl md:text-4xl font-black text-[#e4b24d] mt-1">72%</p>
-                <p className="text-xs text-muted-foreground mt-1">AI inference costs deducted</p>
+                <p className="text-sm text-muted-foreground">Est. Gross Margin (SaaS)</p>
+                <p className="text-3xl md:text-4xl font-black text-[#e4b24d] mt-1">78%</p>
+                <p className="text-xs text-muted-foreground mt-1">ML inference + cloud infra deducted</p>
               </div>
               <div className="rounded-xl border border-[#7fb0ff]/25 bg-card/90 p-4 text-center">
-                <p className="text-sm text-muted-foreground">CAC (bottom-up PLG)</p>
-                <p className="text-3xl md:text-4xl font-black text-[#7fb0ff] mt-1">$420</p>
-                <p className="text-xs text-muted-foreground mt-1">Assuming PLG + content flywheel</p>
+                <p className="text-sm text-muted-foreground">CAC (direct clinic outreach)</p>
+                <p className="text-3xl md:text-4xl font-black text-[#7fb0ff] mt-1">$1,800</p>
+                <p className="text-xs text-muted-foreground mt-1">6–12 month sales cycle, inbound-assisted</p>
               </div>
               <div className="rounded-xl border border-foreground/15 bg-card/90 p-4 text-center">
                 <p className="text-sm text-muted-foreground">Target LTV:CAC</p>
-                <p className="text-3xl md:text-4xl font-black text-foreground mt-1">3.4×</p>
-                <p className="text-xs text-muted-foreground mt-1">Industry healthy: {'>'}3×</p>
+                <p className="text-3xl md:text-4xl font-black text-foreground mt-1">4×</p>
+                <p className="text-xs text-muted-foreground mt-1">B2B healthtech benchmark: {'>'}3×</p>
               </div>
             </div>
 
             <div className="grid gap-4 lg:grid-cols-2">
               <LinesPatternCard className="rounded-[1.5rem] shadow-xl border-white/10">
                 <LinesPatternCardBody className="p-5">
-                  <h3 className="text-xl font-bold text-foreground mb-4">EVA per Customer (3-year horizon)</h3>
+                  <h3 className="text-xl font-bold text-foreground mb-4">EVA per Clinic (3-year horizon)</h3>
                   <div className="space-y-3">
                     <div className="flex justify-between items-center border-b border-border/40 pb-2">
-                      <span className="text-muted-foreground">Annual revenue (blended)</span>
-                      <span className="font-semibold text-foreground">$1,800</span>
+                      <span className="text-muted-foreground">Annual SaaS revenue (blended)</span>
+                      <span className="font-semibold text-foreground">$2,400</span>
                     </div>
                     <div className="flex justify-between items-center border-b border-border/40 pb-2">
-                      <span className="text-muted-foreground">Gross profit (72%)</span>
-                      <span className="font-semibold text-foreground">$1,296</span>
+                      <span className="text-muted-foreground">Gross profit (78%)</span>
+                      <span className="font-semibold text-foreground">$1,872</span>
                     </div>
                     <div className="flex justify-between items-center border-b border-border/40 pb-2">
-                      <span className="text-muted-foreground">3-year LTV (8% annual churn)</span>
-                      <span className="font-semibold text-foreground">$3,596</span>
+                      <span className="text-muted-foreground">3-year LTV (10% annual churn)</span>
+                      <span className="font-semibold text-foreground">$5,040</span>
                     </div>
                     <div className="flex justify-between items-center border-b border-border/40 pb-2">
-                      <span className="text-muted-foreground">CAC (PLG model)</span>
-                      <span className="font-semibold text-destructive">-$420</span>
+                      <span className="text-muted-foreground">CAC (direct outreach)</span>
+                      <span className="font-semibold text-destructive">-$1,800</span>
                     </div>
                     <div className="flex justify-between items-center border-b border-border/40 pb-2">
-                      <span className="text-muted-foreground">Allocated S&M (20% rev)</span>
-                      <span className="font-semibold text-destructive">-$1,080</span>
+                      <span className="text-muted-foreground">Hardware margin per kit</span>
+                      <span className="font-semibold text-primary">+$150</span>
                     </div>
                     <div className="flex justify-between items-center pt-1">
-                      <span className="font-bold text-foreground">Net EVA / Customer (3yr)</span>
-                      <span className="font-black text-xl text-primary">$2,096</span>
+                      <span className="font-bold text-foreground">Net EVA / Clinic (3yr)</span>
+                      <span className="font-black text-xl text-primary">$3,240</span>
                     </div>
                   </div>
                 </LinesPatternCardBody>
@@ -1406,27 +1403,27 @@ const Index = () => {
 
               <LinesPatternCard className="rounded-[1.5rem] shadow-xl border-white/10">
                 <LinesPatternCardBody className="p-5">
-                  <h3 className="text-xl font-bold text-foreground mb-4">Value created vs. traditional pentest</h3>
+                  <h3 className="text-xl font-bold text-foreground mb-4">Value created vs. traditional gait lab</h3>
                   <div className="space-y-3">
                     <div className="flex justify-between items-center border-b border-border/40 pb-2">
-                      <span className="text-muted-foreground">Traditional pentest cost (annual)</span>
-                      <span className="font-semibold text-destructive">$25,000</span>
+                      <span className="text-muted-foreground">Vicon system (one-time)</span>
+                      <span className="font-semibold text-destructive">$12,500+</span>
                     </div>
                     <div className="flex justify-between items-center border-b border-border/40 pb-2">
-                      <span className="text-muted-foreground">Dispatch Team plan (annual)</span>
+                      <span className="text-muted-foreground">GaitGuard Pro (annual)</span>
                       <span className="font-semibold text-foreground">$3,588</span>
                     </div>
                     <div className="flex justify-between items-center border-b border-border/40 pb-2">
-                      <span className="text-muted-foreground">Developer time saved (17 hrs/wk × $80)</span>
-                      <span className="font-semibold text-primary">$70,720/yr</span>
+                      <span className="text-muted-foreground">Clinical sessions replaced (2×/mo × $350)</span>
+                      <span className="font-semibold text-primary">$8,400/yr/patient</span>
                     </div>
                     <div className="flex justify-between items-center border-b border-border/40 pb-2">
-                      <span className="text-muted-foreground">Breach cost avoided (% reduction est.)</span>
-                      <span className="font-semibold text-primary">~$133K/event</span>
+                      <span className="text-muted-foreground">ACL re-reconstruction cost avoided</span>
+                      <span className="font-semibold text-primary">~$30–50K/event</span>
                     </div>
                     <div className="flex justify-between items-center pt-1">
                       <span className="font-bold text-foreground">Customer ROI multiplier</span>
-                      <span className="font-black text-xl text-primary">~20-25×</span>
+                      <span className="font-black text-xl text-primary">~10–15×</span>
                     </div>
                   </div>
                 </LinesPatternCardBody>
@@ -1436,7 +1433,7 @@ const Index = () => {
             <LinesPatternCard className="max-w-6xl mx-auto rounded-2xl shadow-xl border-[#e4b24d]/25">
               <LinesPatternCardBody className="p-5">
                 <p className="text-foreground leading-relaxed">
-                  <span className="font-bold text-[#e4b24d]">Key risk to EVA:</span> AI inference costs (Claude API + workers running per scan) could compress gross margin significantly at scale. A cap on worker runtime per scan or tiered compute pricing is critical to protect unit economics at the Startup tier ($99/mo, 50 scans).
+                  <span className="font-bold text-[#e4b24d]">Key risk to EVA:</span> B2B clinic sales cycles are 6–12 months, making early CAC recovery slow. Partnering with orthopedic surgery groups and PT schools as distribution channels can compress CAC and accelerate adoption beyond cold outreach.
                 </p>
               </LinesPatternCardBody>
             </LinesPatternCard>
@@ -1446,9 +1443,9 @@ const Index = () => {
         <Section id="clinical" className="bg-transparent">
           <div className="space-y-8">
             <div className="text-center space-y-4">
-              <h1 className="text-5xl md:text-7xl font-bold text-foreground">Pre-Recon Intelligence</h1>
+              <h1 className="text-5xl md:text-7xl font-bold text-foreground">Phase 0 + 1: Calibration</h1>
               <p className="max-w-4xl mx-auto text-xl md:text-2xl text-muted-foreground">
-                Dispatch does not start by attacking blindly. It plans from the codebase first.
+                GaitGuard does not start scoring immediately. It first learns your baseline — then segments every stride automatically.
               </p>
             </div>
 
@@ -1474,10 +1471,10 @@ const Index = () => {
             <LinesPatternCard className="max-w-6xl mx-auto rounded-2xl shadow-2xl border-primary/25">
               <LinesPatternCardBody className="p-8 text-center">
                 <p className="text-2xl md:text-3xl font-semibold text-foreground leading-snug">
-                  Before any live testing, the orchestrator runs a code-analysis-only pass to produce a route map, dependency graph, risk signals, and the attack matrix that drives worker assignment.
+                  Before any scoring begins, GaitGuard runs a fully automated calibration pass to produce a personalized joint angle baseline and stride library that drives twin generation.
                 </p>
                 <Citation
-                  text={'(Scarfone et al., 2008; OWASP Foundation, 2020).'}
+                  text={'(Winter, 2009; Madgwick et al., 2011; Tao et al., 2012).'}
                   className="text-center"
                 />
               </LinesPatternCardBody>
@@ -1488,9 +1485,9 @@ const Index = () => {
         <Section id="solution" className="bg-transparent" contentClassName="max-w-6xl py-12">
           <div className="space-y-6">
             <div className="text-center space-y-3">
-              <h1 className="text-5xl md:text-6xl font-bold text-foreground">Dispatch Architecture</h1>
+              <h1 className="text-5xl md:text-6xl font-bold text-foreground">GaitGuard Architecture</h1>
               <p className="text-xl md:text-2xl text-muted-foreground font-light max-w-4xl mx-auto">
-                Security tools give you a PDF. Dispatch gives you a pull request.
+                Rehab tools give you a weekly summary. GaitGuard corrects you mid-stride.
               </p>
             </div>
 
@@ -1516,13 +1513,13 @@ const Index = () => {
             <LinesPatternCard className="max-w-6xl mx-auto rounded-2xl shadow-2xl border-accent/30">
               <LinesPatternCardBody className="text-center p-7">
                 <div className="text-3xl md:text-4xl font-bold text-accent mb-2">
-                  Triggered from chat, your terminal, or the dashboard
+                  All four phases run automatically from one command
                 </div>
                 <p className="text-xl text-foreground font-semibold mb-1">
-                  Findings become tracked remediation work. Remediation work becomes validated code changes.
+                  Hardware, synthetic data, or public dataset replay — the IMUSource pipeline is fully swappable.
                 </p>
                 <Citation
-                  text={'(Souppaya et al., 2022; OWASP Foundation, 2025).'}
+                  text={'(Hochreiter & Schmidhuber, 1997; Madgwick et al., 2011; Winter, 2009).'}
                   className="text-center !mt-2"
                 />
               </LinesPatternCardBody>
@@ -1533,9 +1530,9 @@ const Index = () => {
         <Section id="dashboard" className="bg-transparent" contentClassName="max-w-7xl py-8">
           <div className="space-y-5">
             <div className="text-center space-y-2">
-              <h1 className="text-4xl md:text-6xl font-bold text-foreground">Outputs Developers Actually Use</h1>
+              <h1 className="text-4xl md:text-6xl font-bold text-foreground">Outputs Clinicians and Patients Actually Use</h1>
               <p className="max-w-5xl mx-auto text-lg md:text-xl text-muted-foreground">
-                Dispatch is designed around operational outputs developers can act on immediately, not another dead-end report.
+                GaitGuard is designed around actionable outputs — not another dead-end score sheet.
               </p>
             </div>
 
@@ -1561,10 +1558,10 @@ const Index = () => {
             <LinesPatternCard className="max-w-6xl mx-auto rounded-2xl shadow-2xl border-secondary/30">
               <LinesPatternCardBody className="p-6 text-center">
                 <p className="text-lg md:text-xl font-semibold text-foreground leading-snug">
-                  The barrier to running a security test drops to zero: no separate workflow, no manual triage spreadsheet, just the tools the team already uses.
+                  The barrier to a gait assessment drops to zero: strap sensors, walk, get report.
                 </p>
                 <Citation
-                  text={'(Souppaya et al., 2022).'}
+                  text={'(APTA Clinical Practice Guidelines, 2022; Winter, 2009).'}
                   className="text-center !mt-2"
                 />
               </LinesPatternCardBody>
@@ -1575,9 +1572,9 @@ const Index = () => {
         <Section id="muscle" className="bg-transparent" contentClassName="max-w-7xl py-12">
           <div className="space-y-6">
             <div className="text-center space-y-3">
-              <h1 className="text-5xl md:text-6xl font-bold text-foreground">GitHub Issue = The Contract</h1>
+              <h1 className="text-5xl md:text-6xl font-bold text-foreground">The Haptic Cue = The Contract</h1>
               <p className="max-w-5xl mx-auto text-lg md:text-xl text-muted-foreground">
-                Dispatch keeps the fix loop explicit by making the issue itself the machine-readable handoff between pentesting and remediation.
+                GaitGuard closes the loop between deviation detection and real-time behavioral correction — within the same stride.
               </p>
             </div>
 
@@ -1604,10 +1601,10 @@ const Index = () => {
             <LinesPatternCard className="max-w-6xl mx-auto rounded-2xl shadow-2xl border-accent/30">
               <LinesPatternCardBody className="p-6">
                 <p className="text-xl md:text-2xl font-semibold text-foreground leading-snug text-center">
-                  The issue body carries metadata, reproduction steps, server logs, monkeypatch diff, RULES.md violations, and the recommended fix. The issue thread becomes the audit trail: finding, fix attempt, and PR all live in one place.
+                  Each stride carries its GHS, z-score deviation for knee and ankle, and the haptic pattern fired. The session CSV becomes the audit trail: every deviation, every cue, every step — in one file.
                 </p>
                 <Citation
-                  text={'(OWASP Foundation, 2025; Scarfone et al., 2008).'}
+                  text={'(Perry & Burnfield, 2010; Tao et al., 2012; Winter, 2009).'}
                   className="text-center !mt-2"
                 />
               </LinesPatternCardBody>

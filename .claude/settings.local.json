@@ -25,7 +25,9 @@
       "Bash(python run_pipeline.py --source synthetic --pathology mixed --n-strides 80)",
       "Bash(.venv/bin/python -m ml.train --n 3000 --epochs 60)",
       "Bash(.venv/bin/python run_pipeline.py --source synthetic --pathology mixed --n-strides 80)",
-      "Bash(.venv/bin/python -c \"import reportlab; print\\(reportlab.Version\\)\")"
+      "Bash(.venv/bin/python -c \"import reportlab; print\\(reportlab.Version\\)\")",
+      "Bash(export PATH=\"/opt/homebrew/bin:/usr/local/bin:$PATH\")",
+      "Bash(npm run:*)"
     ]
   }
 }
