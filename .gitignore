@@ -25,3 +25,16 @@ models/*.pt
 
 # Jupyter
 .ipynb_checkpoints/
+
+# Claude Code
+.claude/
+
+# Documentation / internal
+docs/
+DEMO_STEPS.md
+
+# Research papers (copyrighted)
+papers/
+
+# Build output
+slides/dist/
