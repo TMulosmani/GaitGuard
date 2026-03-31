@@ -838,7 +838,7 @@ const Index = () => {
                 playsInline
                 preload="metadata"
               >
-                <source src="/demo.mp4" type="video/mp4" />
+                <source src="/yhacksvid.mov" type="video/mp4" />
                 Your browser does not support the video tag.
               </video>
             </div>
@@ -1041,11 +1041,19 @@ const Index = () => {
               initial={{ opacity: 0, y: 24 }}
               whileInView={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, delay: 0.15, ease: [0.22, 1, 0.36, 1] }}
-              className="text-center"
+              className="flex flex-col items-center gap-6 text-center"
             >
-              <p className="text-3xl md:text-4xl font-bold text-foreground">
-                Gait rehab shouldn't require a $12,000 lab. <span className="text-primary">We built the lab into a wristband</span>.
+              <p className="text-2xl md:text-3xl font-semibold text-muted-foreground">
+                {t('home.subtitle')}
               </p>
+              <a href="https://github.com/TMulosmani/GaitGuard" target="_blank" rel="noopener noreferrer" className="inline-block">
+                <img
+                  src="/qr-github.png"
+                  alt="GitHub QR Code"
+                  className="w-40 h-40 md:w-48 md:h-48 rounded-xl opacity-90 hover:opacity-100 transition-opacity"
+                />
+              </a>
+              <p className="text-sm text-muted-foreground/60 font-mono">github.com/TMulosmani/GaitGuard</p>
             </motion.div>
 
           </div>
