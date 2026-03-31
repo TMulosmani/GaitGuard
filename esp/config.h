@@ -5,8 +5,8 @@
 #define GAITGUARD_CONFIG_H
 
 // WiFi credentials
-#define WIFI_SSID "Arsh iPhone"
-#define WIFI_PASSWORD "12345678"
+#define WIFI_SSID "YOUR_SSID"
+#define WIFI_PASSWORD "YOUR_PASSWORD"
 
 // Raspberry Pi — broadcast so it works on any network/DHCP
 #define PI_IP "255.255.255.255"

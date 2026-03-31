@@ -38,3 +38,12 @@ papers/
 
 # Build output
 slides/dist/
+
+# Compiled binaries
+pi/gaitguard
+
+# Large media
+slides/public/yhacksvid.mov
+
+# Binary lockfiles
+slides/bun.lockb
